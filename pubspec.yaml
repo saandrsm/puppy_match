@@ -30,4 +30,5 @@ flutter:
 
   assets:
     - assets/diamond.png
+    - assets/logo_doggy.png
 

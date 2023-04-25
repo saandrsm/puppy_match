@@ -39,12 +39,17 @@ class _LoginPageState extends State<LoginPage>{
           const SizedBox(height: 16.0),
           Column(
             children: <Widget> [
-              Image.asset('assets/diamond.png'),
+              Image.asset(
+                'assets/logo_doggy.png',
+                height: 120,
+                width: 100,
+                fit: BoxFit.fitWidth,
+              ),
               const SizedBox(height: 16.0),
-              const Text('SHRINE'),
+              // const Text('SHRINE'),
             ],
     ),
-          const SizedBox(height: 100.0),
+          const SizedBox(height: 30.0),
           TextFormField(
             controller: _usernameController,
             decoration: const InputDecoration(

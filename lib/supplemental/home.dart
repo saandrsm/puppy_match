@@ -62,7 +62,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SHRINE'),
+        title: const Text('DOGGY'),
         actions: <Widget>[
           IconButton(
               onPressed:(){
@@ -102,12 +102,23 @@ class HomePage extends StatelessWidget {
           },
         ),
       ),
-      body: GridView.count(
-        crossAxisCount: 2,
-        padding: const EdgeInsets.all(16.0),
-        childAspectRatio: 8.0 / 9.0,
-        children: _buildGridCards(context)
-      ),
+      body: OrientationBuilder(
+        builder: (context, orientation){
+          return GridView.count(
+                crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
+                padding: const EdgeInsets.all(16.0),
+                childAspectRatio: 8.0 / 9.0,
+                children: _buildGridCards(context)
+              );
+        }
+      )
+
+      // GridView.count(
+      //   crossAxisCount: 2,
+      //   padding: const EdgeInsets.all(16.0),
+      //   childAspectRatio: 8.0 / 9.0,
+      //   children: _buildGridCards(context)
+      // ),
     );
   }
 }

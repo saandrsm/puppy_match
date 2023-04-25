@@ -15,7 +15,7 @@ class Api extends StatefulWidget {
 class _ApiState extends State<Api> {
   //se convierte en un objeto dart
   Future<List<Dogdata>> fetchDogdata() async {
-    final response = await http.get(Uri.parse('https://dog.ceo/api/breed/hound/images'));
+    final response = await http.get(Uri.parse('https://dog.ceo/api/breed/leonberg/images'));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
@@ -36,7 +36,7 @@ class _ApiState extends State<Api> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PERROS CON MELENA'),
+        title: const Text('LEONBERGS'),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios,
@@ -60,9 +60,9 @@ class _ApiState extends State<Api> {
                   return Image.network(
                     lista[index].imagen,
                     alignment: Alignment.center,
-                    width: 700,
-                    height: 460,
-                    fit: BoxFit.fill,
+                    // width: 300,
+                    // height: 330,
+                    fit: BoxFit.fitHeight,
                   );
                 },
               );
