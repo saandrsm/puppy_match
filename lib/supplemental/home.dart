@@ -130,21 +130,6 @@ class HomePage extends StatelessWidget {
         }
       )
 
-      // GridView.count(
-      //   crossAxisCount: 2,
-      //   padding: const EdgeInsets.all(16.0),
-      //   childAspectRatio: 8.0 / 9.0,
-      //   children: _buildGridCards(context)
-      // ),
     );
   }
 }
-
-/*
-final _routes = {
-    '/': (context) => const LoginPage(),
-    '/home': (context) => const HomePage(),
-    '/api': (context) => const Api(),
-    // '/servicios': (context) => const ServiciosPage(),
-  };
- */
