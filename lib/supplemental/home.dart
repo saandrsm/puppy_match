@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
       return const <Card>[];
     }
 
-    final ThemeData theme = Theme.of(context);
+    final ThemeData theme = Theme.of(context);        //theme para usar colores
     final NumberFormat formatter = NumberFormat.simpleCurrency(
       locale : Localizations.localeOf(context).toString()
     );
@@ -58,15 +58,32 @@ class HomePage extends StatelessWidget {
     }).toList();
   }
 
+  //static TextEditingController _searchController = TextEditingController();  //controlador de texto de barra de búsqueda
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DOGGY'),
+        // title: const Text('DOGGY'),
         actions: <Widget>[
           IconButton(
               onPressed:(){
-                print('Search button');
+                //  TextFormField(
+                //   controller: _searchController,
+                //   decoration: InputDecoration(
+                //     hintText: 'Search...',
+                //     suffixIcon: IconButton(
+                //       icon: const Icon(Icons.clear, color: Colors.black,),
+                //       onPressed: () => _searchController.clear(),
+                //     ),
+                //     prefixIcon: IconButton(
+                //       icon: const Icon(Icons.search, color: Colors.black,),
+                //       onPressed: () {
+                //         // Perform the search here
+                //       },
+                //     ),
+                //   ),
+                // );
               },
               icon: const Icon(
                 Icons.search,
@@ -87,7 +104,7 @@ class HomePage extends StatelessWidget {
               Navigator.pushNamed(context, '/api');
             },
             icon: const Icon(
-              Icons.photo,
+              Icons.pets,
               semanticLabel: 'api',
             ),
           ),

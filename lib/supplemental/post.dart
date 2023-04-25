@@ -63,6 +63,7 @@ class _ApiState extends State<Api> {
                     // width: 300,
                     // height: 330,
                     fit: BoxFit.fitHeight,
+                    filterQuality: FilterQuality.medium,
                   );
                 },
               );
