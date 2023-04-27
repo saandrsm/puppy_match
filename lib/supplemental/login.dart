@@ -9,8 +9,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage>{
 
+  //metodo para visibilizar e invisibilizar texto (contraseñas)
   bool _isVisible = true;
-
   void _toggleVisible(){
     setState(() {
       if(_isVisible) {
@@ -22,6 +22,8 @@ class _LoginPageState extends State<LoginPage>{
   }
 
   bool shouldPop = true;  //vueltra atrás activada
+
+  //contrtoladores de texto de TextFields
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -147,6 +149,7 @@ showAlertDialog(BuildContext context) {
   );
 }
 
+//metodo aparte para visibilizar e invisibilizar contraseñas pero impide controlar el texto del TextField
 
 // class PasswordVisible extends StatefulWidget {
 //   const PasswordVisible({super.key});

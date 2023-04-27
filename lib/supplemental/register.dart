@@ -11,17 +11,19 @@ class RegisterPage extends StatefulWidget {
 
 
 class _RegisterPageState extends State<RegisterPage> {
+  //controladores de texto de TextFields
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _confPasswordController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _provController = TextEditingController();
+
   //bool shouldPop = true;
-  String dropdownValue = 'Dog';
 
+  String dropdownValue = 'Dog'; //item por defecto en lista de DropDownButton de mascotas
+ //metodo para visibilizar e invisibilizar texto (contraseñas)
   bool _isVisible = true;
-
   void _toggleVisible(){
     setState(() {
       if(_isVisible) {
@@ -74,6 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
             // ),
             const SizedBox(height: 30.0),
             TextFormField(
+              maxLength: 13,
               controller: _usernameController,
               decoration: const InputDecoration(
                 filled: false,
@@ -82,14 +85,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 16.0),
             TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                filled: false,
-                labelText: 'Nombre completo',
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            TextFormField(
+              maxLength: 20,
               decoration: InputDecoration(
                 filled: false,
                 labelText: 'Nueva contraseña',
@@ -109,6 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 16.0),
             TextFormField(
+              maxLength: 20,
               decoration: InputDecoration(
                 filled: false,
                 labelText: 'Confirmar contraseña',
@@ -125,6 +122,14 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               obscureText: _isVisible,
               controller: _confPasswordController,
+            ),
+            const SizedBox(height: 16.0),
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                filled: false,
+                labelText: 'Nombre completo',
+              ),
             ),
             const SizedBox(height: 16.0),
             TextFormField(
@@ -154,7 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(width: 110),
                 DropdownButton(
                   value: dropdownValue,
-                  items: <String>['Dog', 'Cat', 'Hamster', 'Nothing']
+                  items: <String>['Dog', 'Cat', 'Hamster', 'Other', 'Nothing']
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,

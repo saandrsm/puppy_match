@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage>{
 
   final TextEditingController _searchController = TextEditingController();  //controlador de texto de barra de búsqueda
 
-  Widget customSearchBar = const Text('WELCOME');
+  Widget customSearchBar = const Text('Welcome');
   Icon customIcon = const Icon(Icons.search);
 
   @override
