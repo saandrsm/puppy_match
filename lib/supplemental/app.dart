@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tutorial3_flutter/supplemental/register.dart';
 
 import 'home.dart';
 import 'login.dart';
@@ -17,6 +18,7 @@ class ShrineApp extends StatelessWidget {
         '/': (context) => const LoginPage(),
         '/home': (context) => const HomePage(),
         '/api': (context) => const Api(),
+        '/register': (context) => const RegisterPage(),
       },
       theme: ThemeData(
         useMaterial3: true,

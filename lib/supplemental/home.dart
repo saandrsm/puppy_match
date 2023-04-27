@@ -3,10 +3,15 @@ import 'package:intl/intl.dart';
 
 import '/model/product.dart';
 import '/model/products_repository.dart';
-import 'package:http/http.dart' as http;
 
-class HomePage extends StatelessWidget {
+
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+class _HomePageState extends State<HomePage>{
 
   List<Card> _buildGridCards(BuildContext context){
     List<Product> products = ProductsRepository.loadProducts(Category.all);
@@ -58,47 +63,62 @@ class HomePage extends StatelessWidget {
     }).toList();
   }
 
-  //static TextEditingController _searchController = TextEditingController();  //controlador de texto de barra de búsqueda
+  final TextEditingController _searchController = TextEditingController();  //controlador de texto de barra de búsqueda
+
+  Widget customSearchBar = const Text('MY DOGGY');
+  Icon customIcon = const Icon(Icons.search);
 
   @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        // title: const Text('DOGGY'),
-        actions: <Widget>[
+        title: customSearchBar,
+        automaticallyImplyLeading: false,
+        actions: [
           IconButton(
               onPressed:(){
-                //  TextFormField(
-                //   controller: _searchController,
-                //   decoration: InputDecoration(
-                //     hintText: 'Search...',
-                //     suffixIcon: IconButton(
-                //       icon: const Icon(Icons.clear, color: Colors.black,),
-                //       onPressed: () => _searchController.clear(),
-                //     ),
-                //     prefixIcon: IconButton(
-                //       icon: const Icon(Icons.search, color: Colors.black,),
-                //       onPressed: () {
-                //         // Perform the search here
-                //       },
-                //     ),
-                //   ),
-                // );
+                setState(() {
+                  if (customIcon.icon == Icons.search) {
+                    customIcon = const Icon(Icons.cancel);
+                    customSearchBar = const ListTile(
+                    // leading: Icon(
+                    //   Icons.search,
+                    //   size: 26,
+                    // ),
+                    title: TextField(
+                      //controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: ' Search...',
+                        hintStyle: TextStyle(
+                          fontSize: 18,
+                          fontStyle: FontStyle.normal,
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black38)
+                          ),
+                      ),
+                      // style: TextStyle(
+                      //   color: Colors.white,
+                      //   ),
+                      ),
+                    );
+                } else {
+                    customIcon = const Icon(Icons.search);
+                    customSearchBar = const Text('Adoptions');
+                }
+                });
               },
-              icon: const Icon(
-                Icons.search,
-                semanticLabel: 'search',
+              icon: customIcon,
               ),
-          ),
-          IconButton(
-              onPressed: (){
-                print('Filter button');
-              },
-              icon: const Icon(
-                Icons.tune,
-                semanticLabel: 'filter',
-              ),
-          ),
+          // IconButton(
+          //     onPressed: (){
+          //       print('Filter button');
+          //     },
+          //     icon: const Icon(
+          //       Icons.tune,
+          //       semanticLabel: 'filter',
+          //     ),
+          // ),
           IconButton(
             onPressed: (){
               Navigator.pushNamed(context, '/api');

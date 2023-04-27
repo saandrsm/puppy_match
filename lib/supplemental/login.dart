@@ -21,14 +21,14 @@ class _LoginPageState extends State<LoginPage>{
     });
   }
 
-  bool shouldPop = true;
+  bool shouldPop = true;  //vueltra atrás activada
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return WillPopScope(  //devuelve un Future
+      onWillPop: () async {  //volver a pantalla anterior
         return shouldPop;
     },
     child: Scaffold(
@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage>{
               // const Text('SHRINE'),
             ],
     ),
-          const SizedBox(height: 30.0),
+          const SizedBox(height: 70.0),
           TextFormField(
             controller: _usernameController,
             decoration: const InputDecoration(
@@ -98,10 +98,21 @@ class _LoginPageState extends State<LoginPage>{
                       Navigator.pushNamed(context, '/home');
                     }
                   },
-                  child: const Text('NEXT'),
+                  child: const Text('LOG IN'),
               )
             ],
-          )
+          ),
+          const SizedBox(height: 240.0),
+          const Text(
+              '¿Todavía no estás registrado?',
+              textAlign: TextAlign.center,
+          ),
+          TextButton(
+              onPressed: (){
+                Navigator.pushNamed(context, '/register');
+              },
+              child: const Text('Sign up')
+          ),
     ],
     ),
     )
