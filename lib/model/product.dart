@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-enum Category {
+enum Breed {  //listar todas las razas?
   all,
   accessories,
   clothing,
@@ -21,16 +21,14 @@ enum Category {
 
 class Product {
   const Product({
-    required this.category,
+    required this.breed,
     required this.id,
-    required this.isFeatured,
     required this.name,
     required this.price,
   });
 
-  final Category category;
+  final Breed breed;
   final int id;
-  final bool isFeatured;
   final String name;
   final int price;
 

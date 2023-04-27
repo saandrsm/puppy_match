@@ -14,7 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>{
 
   List<Card> _buildGridCards(BuildContext context){
-    List<Product> products = ProductsRepository.loadProducts(Category.all);
+    List<Product> products = ProductsRepository.loadProducts(Breed.all);
 
     if (products.isEmpty) {
       return const <Card>[];
@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage>{
 
   final TextEditingController _searchController = TextEditingController();  //controlador de texto de barra de búsqueda
 
-  Widget customSearchBar = const Text('MY DOGGY');
+  Widget customSearchBar = const Text('WELCOME');
   Icon customIcon = const Icon(Icons.search);
 
   @override

@@ -38,9 +38,10 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         title: const Text(
             'DOGGY',
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 30,
-            color: Colors.orange,
+            color: Colors.brown,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -99,7 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ? const Icon(Icons.remove_red_eye)
                       : const Icon(Icons.remove_red_eye_outlined)
                   ),
-                  color: Colors.orangeAccent,
+                  color: Colors.brown,
                   onPressed: _toggleVisible,
                 ),
               ),
@@ -119,7 +120,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ? const Icon(Icons.remove_red_eye)
                         : const Icon(Icons.remove_red_eye_outlined)
                     ),
-                  color: Colors.orangeAccent,
+                  color: Colors.brown,
                 ),
               ),
               obscureText: _isVisible,
@@ -193,11 +194,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                      if (_usernameController.text.isEmpty || _newPasswordController.text.isEmpty) { //provisional
-                        showAlertDialog(context); //si el insert fuese incorrecto o algún campo no estuviese completo
-                      } else {
+                      // if (_usernameController.text.isEmpty || _newPasswordController.text.isEmpty) { //provisional
+                      //   showAlertDialog(context); //si el insert fuese incorrecto o algún campo no estuviese completo
+                      // } else {
                         Navigator.pushNamed(context, '/home');
-                      }
+                      //}
                   },
                   child: const Text('SIGN UP'),
                 )
