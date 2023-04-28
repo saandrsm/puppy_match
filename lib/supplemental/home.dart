@@ -63,10 +63,10 @@ class _HomePageState extends State<HomePage>{
     }).toList();
   }
 
-  final TextEditingController _searchController = TextEditingController();  //controlador de texto de barra de búsqueda
 
   Widget customSearchBar = const Text('Welcome');
   Icon customIcon = const Icon(Icons.search);
+  List<Product> products = ProductsRepository.loadProducts(Breed.all);
 
   @override
   Widget build(BuildContext context){
@@ -80,14 +80,20 @@ class _HomePageState extends State<HomePage>{
                 setState(() {
                   if (customIcon.icon == Icons.search) {
                     customIcon = const Icon(Icons.cancel);
-                    customSearchBar = const ListTile(
+                    customSearchBar = ListTile(
                     // leading: Icon(
                     //   Icons.search,
                     //   size: 26,
                     // ),
                     title: TextField(
+                      onChanged: (text) {
+                        // if(text == products.){
+                        //
+                        // }
+                        //print('textfield: $text');
+                      },
                       //controller: _searchController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: ' Search...',
                         hintStyle: TextStyle(
                           fontSize: 18,
@@ -149,7 +155,7 @@ class _HomePageState extends State<HomePage>{
               );
         }
       )
-
     );
+
   }
 }

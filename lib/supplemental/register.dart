@@ -11,6 +11,29 @@ class RegisterPage extends StatefulWidget {
 
 
 class _RegisterPageState extends State<RegisterPage> {
+
+  var _currentSelectedDate = DateTime.now();
+
+  void callDatePicker() async{
+    var selectedDate = await getDatePickerWidget();
+    setState(() {
+      _currentSelectedDate = selectedDate!;
+    });
+  }
+  Future<DateTime?> getDatePickerWidget() {
+    return showDatePicker(
+        context: context,
+        initialDate: _currentSelectedDate,
+        firstDate: DateTime(2017),
+        lastDate: DateTime(2021),
+    //     builder: (context, child) => {
+    //     return Theme(data: ThemeData.dark(), child: child);
+    //   },
+    );
+    }
+
+
+
   //controladores de texto de TextFields
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
@@ -53,7 +76,8 @@ class _RegisterPageState extends State<RegisterPage> {
             semanticLabel: 'back',
           ),
           onPressed: () {
-            Navigator.pushNamed(context, '/');
+            //Navigator.pushNamed(context, '/');
+            Navigator.popAndPushNamed(context, "/");
           },
         ),
       ),
@@ -61,7 +85,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
-            const SizedBox(height: 30.0),
+            const SizedBox(height: 10.0),
             // Column(
             //   children: <Widget>[
             //     Image.asset(
@@ -133,9 +157,10 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 16.0),
             TextFormField(
+              onTap: callDatePicker,
               controller: _dateController,
-              decoration: const InputDecoration(
-                filled: false,
+              decoration: InputDecoration(
+                //filled: _currentSelectedDate,
                 labelText: 'Fecha de nacimiento',
               ),
             ),
@@ -156,7 +181,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       fontSize: 15,
                     ),
                 ),
-                const SizedBox(width: 110),
+                const SizedBox(width: 90),
                 DropdownButton(
                   value: dropdownValue,
                   items: <String>['Dog', 'Cat', 'Hamster', 'Other', 'Nothing']
