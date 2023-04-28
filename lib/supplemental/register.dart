@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'login.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 
@@ -12,25 +13,25 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
 
-  var _currentSelectedDate = DateTime.now();
-
-  void callDatePicker() async{
-    var selectedDate = await getDatePickerWidget();
-    setState(() {
-      _currentSelectedDate = selectedDate!;
-    });
-  }
-  Future<DateTime?> getDatePickerWidget() {
-    return showDatePicker(
-        context: context,
-        initialDate: _currentSelectedDate,
-        firstDate: DateTime(2017),
-        lastDate: DateTime(2021),
-    //     builder: (context, child) => {
-    //     return Theme(data: ThemeData.dark(), child: child);
-    //   },
-    );
-    }
+  // var _currentSelectedDate = DateTime.now();
+  //
+  // void callDatePicker() async{
+  //   var selectedDate = await getDatePickerWidget();
+  //   setState(() {
+  //     _currentSelectedDate = selectedDate!;
+  //   });
+  // }
+  // Future<DateTime?> getDatePickerWidget() {
+  //   return showDatePicker(
+  //       context: context,
+  //       initialDate: _currentSelectedDate,
+  //       firstDate: DateTime(2017),
+  //       lastDate: DateTime(2021),
+  //       builder: (context, child) => {
+  //       return Theme(data: ThemeData.dark(), child: child);
+  //     },
+  //   );
+  //   }
 
 
 
@@ -157,12 +158,25 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 16.0),
             TextFormField(
-              onTap: callDatePicker,
               controller: _dateController,
-              decoration: InputDecoration(
-                //filled: _currentSelectedDate,
+              decoration: const InputDecoration(
+                icon: Icon(Icons.calendar_today_outlined),
+                filled: false,
                 labelText: 'Fecha de nacimiento',
               ),
+              onTap: () async {
+                DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2024)
+                );
+                if(pickedDate != null) {
+                  setState(() {
+                    _dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+                  });
+                }
+              },
             ),
             const SizedBox(height: 16.0),
             TextFormField(
