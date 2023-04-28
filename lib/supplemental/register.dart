@@ -160,7 +160,7 @@ class _RegisterPageState extends State<RegisterPage> {
             TextFormField(
               controller: _dateController,
               decoration: const InputDecoration(
-                icon: Icon(Icons.calendar_today_outlined),
+                suffixIcon: Icon(Icons.calendar_today_outlined),
                 filled: false,
                 labelText: 'Fecha de nacimiento',
               ),
