@@ -73,7 +73,7 @@ class InfoDog extends StatelessWidget {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
         children: [
           Image.asset(
             'assets/puppy_match.png',

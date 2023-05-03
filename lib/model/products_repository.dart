@@ -104,13 +104,13 @@ class ProductsRepository {
       Product(
         breed: Breed.home,
         id: 14,
-        name: 'Kika',
+        name: 'Kira',
         price: 27,
       ),
       Product(
         breed: Breed.home,
         id: 15,
-        name: 'Berni',
+        name: 'Beni',
         price: 16,
       ),
       Product(
