@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tutorial3_flutter/screens/infoDog.dart';
 import 'package:tutorial3_flutter/screens/profile.dart';
 import 'package:tutorial3_flutter/screens/register.dart';
 
@@ -21,6 +22,7 @@ class ShrineApp extends StatelessWidget {
         '/api': (context) => const Api(),
         '/register': (context) => const RegisterPage(),
         '/profile': (context) => const ProfilePage(),
+        '/info': (context) => const InfoDog(),
       },
       theme: ThemeData(
         useMaterial3: true,

@@ -23,41 +23,16 @@ class _ProfilePageState extends State<ProfilePage> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        // leading: IconButton(
-        //   icon: const Icon(
-        //     Icons.arrow_back_ios,
-        //     semanticLabel: 'back',
-        //   ),
-        //   onPressed: () {
-        //     //Navigator.pushNamed(context, '/');
-        //     //Navigator.popAndPushNamed(context, "/");
-        //   },
-        // ),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.logout,
+            semanticLabel: 'logout',
+          ),
+          onPressed: () {
+            Navigator.pushNamed(context, '/');
+          },
+        ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //     items: const <BottomNavigationBarItem>[
-      //       BottomNavigationBarItem(
-      //         icon: Icon(Icons.home),
-      //         label: 'Home',
-      //       ),
-      //       BottomNavigationBarItem(
-      //         icon: Icon(Icons.person),
-      //         label: 'Profile',
-      //       ),
-      //     ],
-      //     currentIndex: _selectedIndex,
-      //     selectedItemColor: Colors.brown,
-      //     onTap: (int index) {
-      //       switch (index) {
-      //         case 0:
-      //           Navigator.pushNamed(context, '/home');
-      //           break;
-      //         case 1:
-      //
-      //           break;
-      //       }
-      //     }
-      // ),
-      );
+    );
   }
 }

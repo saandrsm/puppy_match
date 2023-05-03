@@ -43,10 +43,18 @@ class _HomePageState extends State<HomePage>{
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(
-                        product.name,
-                        style: theme.textTheme.titleLarge,
-                        maxLines: 1,
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          textStyle: const TextStyle(
+                            fontSize: 23,
+                            fontStyle: FontStyle.normal,
+                            //color: Colors.brown,
+                          ),
+                        ),
+                        onPressed: () { 
+                          Navigator.pushNamed(context, '/info');
+                        },
+                        child: Text(product.name),
                       ),
                       const SizedBox(height: 8.0),
                       Text(
@@ -138,8 +146,8 @@ class _HomePageState extends State<HomePage>{
         ],
         leading: IconButton(
           icon: const Icon(
-            Icons.arrow_back_ios,
-            semanticLabel: 'back',
+            Icons.logout,
+            semanticLabel: 'logout',
           ),
           onPressed: (){
             Navigator.pushNamed(context, '/');
@@ -156,35 +164,6 @@ class _HomePageState extends State<HomePage>{
               );
         }
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: const <BottomNavigationBarItem>[
-      //       BottomNavigationBarItem(
-      //         icon: Icon(Icons.home),
-      //         label: 'Home',
-      //       ),
-      //       BottomNavigationBarItem(
-      //           icon: Icon(Icons.person),
-      //           label: 'Profile',
-      //       ),
-      //     ],
-      //   currentIndex: _selectedIndex,
-      //   selectedItemColor: Colors.brown,
-      //     onTap: (int index) {
-      //       switch (index) {
-      //         case 0:
-      //
-      //           break;
-      //         case 1:
-      //           Navigator.pushNamed(context, '/profile');
-      //           break;
-      //       }
-      //       setState(
-      //             () {
-      //           _selectedIndex = index;
-      //         },
-      //       );
-      //     }
-      // ),
     );
 
   }
