@@ -63,12 +63,12 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-            'DOGGY',
+            'PUPPY MATCH',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 30,
             color: Colors.brown,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
         ),
         leading: IconButton(

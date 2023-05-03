@@ -63,10 +63,11 @@ class _HomePageState extends State<HomePage>{
     }).toList();
   }
 
-
   Widget customSearchBar = const Text('Welcome');
   Icon customIcon = const Icon(Icons.search);
   List<Product> products = ProductsRepository.loadProducts(Breed.all);
+
+  //int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context){
@@ -154,7 +155,36 @@ class _HomePageState extends State<HomePage>{
                 children: _buildGridCards(context)
               );
         }
-      )
+      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const <BottomNavigationBarItem>[
+      //       BottomNavigationBarItem(
+      //         icon: Icon(Icons.home),
+      //         label: 'Home',
+      //       ),
+      //       BottomNavigationBarItem(
+      //           icon: Icon(Icons.person),
+      //           label: 'Profile',
+      //       ),
+      //     ],
+      //   currentIndex: _selectedIndex,
+      //   selectedItemColor: Colors.brown,
+      //     onTap: (int index) {
+      //       switch (index) {
+      //         case 0:
+      //
+      //           break;
+      //         case 1:
+      //           Navigator.pushNamed(context, '/profile');
+      //           break;
+      //       }
+      //       setState(
+      //             () {
+      //           _selectedIndex = index;
+      //         },
+      //       );
+      //     }
+      // ),
     );
 
   }
