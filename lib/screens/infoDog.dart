@@ -24,7 +24,7 @@ class InfoDog extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Equis edad',
+                  'Ejemplo raza',
                   style: TextStyle(
                     color: Colors.grey[500],
                   ),
@@ -47,7 +47,7 @@ class InfoDog extends StatelessWidget {
     );
 
     Widget textSection = const Padding(
-      padding: EdgeInsets.all(30),
+      padding: EdgeInsets.fromLTRB(20, 0, 20, 20),  //left, top, right, bottom
       child: Text(
         'Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese '
         'Alps. Situated 1,578 meters above sea level, it is one of the '
@@ -73,15 +73,29 @@ class InfoDog extends StatelessWidget {
         ),
       ),
       body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         children: [
           Image.asset(
-            'assets/logo_doggy.png',
+            'assets/puppy_match.png',
             width: 600,
             height: 240,
             fit: BoxFit.contain,
           ),
+          const SizedBox(height: 10),
           titleSection,
           textSection,
+          const SizedBox(height: 5),
+          OverflowBar(
+            alignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed:(){
+                    //Navigator.pushNamed(context, '/home');
+                },
+                child: const Text('ENVIAR MENSAJE'),
+              )
+            ],
+          ),
         ],
       ),
     );

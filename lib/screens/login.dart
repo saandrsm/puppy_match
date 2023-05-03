@@ -36,13 +36,13 @@ class _LoginPageState extends State<LoginPage>{
     child: Scaffold(
       body: SafeArea(
         child: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),  //left, top, right, bottom
         children: <Widget> [
           const SizedBox(height: 16.0),
           Column(
             children: <Widget> [
               Image.asset(
-                'assets/logo_doggy.png',
+                'assets/puppy_match-2.png',
                 height: 120,
                 width: 100,
                 fit: BoxFit.fitWidth,
