@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
 
-class InfoDog extends StatelessWidget {
-  const InfoDog({super.key});
+class InfoDog extends StatefulWidget {
+  //const InfoDog({super.key});
+  const InfoDog({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
+  _InfoDogState createState() => _InfoDogState();
+}
+
+class _InfoDogState extends State<InfoDog> {
+
+  bool _isFavorite = true;
+  void _toggleFavorite(){
+    setState(() {
+      if(_isFavorite) {
+        _isFavorite = false;
+      } else {
+        _isFavorite = true;
+      }
+    });
+  }
+
+@override
   Widget build(BuildContext context) {
     Widget titleSection = Container(
       padding: const EdgeInsets.all(30),
@@ -33,15 +50,13 @@ class InfoDog extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: () {
-              //Navigator.pushNamed(context, '/api');
-            },
-            icon: const Icon(
-              Icons.favorite_border,
-              semanticLabel: 'fav',
+            onPressed: _toggleFavorite,
+            icon: (_isFavorite
+                  ? const Icon(Icons.favorite_border)
+                  : const Icon(Icons.favorite)
+              ),
               color: Colors.brown,
             ),
-          ),
         ],
       ),
     );
