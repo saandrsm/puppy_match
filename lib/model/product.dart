@@ -24,13 +24,13 @@ class Product {
     required this.breed,
     required this.id,
     required this.name,
-    required this.price,
+    required this.age,
   });
 
   final Breed breed;
   final int id;
   final String name;
-  final int price;
+  final String age;
 
   String get assetName => '$id-0.jpg';
   //String get assetPackage => 'assets/diamond.png';

@@ -1,3 +1,5 @@
+import 'dart:core';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'login.dart';
@@ -41,7 +43,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _confPasswordController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _provController = TextEditingController();
+  final TextEditingController _mailController = TextEditingController();
 
   //bool shouldPop = true;
 
@@ -57,6 +59,13 @@ class _RegisterPageState extends State<RegisterPage> {
       }
     });
   }
+
+  //metodo para validar email
+  void Validate(String email) {
+    bool isvalid = EmailValidator.validate(email);
+    print(isvalid);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -86,20 +95,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
-            const SizedBox(height: 10.0),
-            // Column(
-            //   children: <Widget>[
-            //     Image.asset(
-            //       'assets/logo_doggy.png',
-            //       height: 120,
-            //       width: 100,
-            //       fit: BoxFit.fitWidth,
-            //     ),
-            //     const SizedBox(height: 16.0),
-            //     // const Text('SHRINE'),
-            //   ],
-            // ),
-            const SizedBox(height: 30.0),
+            const SizedBox(height: 40.0),
             TextFormField(
               maxLength: 13,
               controller: _usernameController,
@@ -180,7 +176,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 16.0),
             TextFormField(
-              controller: _provController,
+              controller: _mailController,
               decoration: const InputDecoration(
                 filled: false,
                 labelText: 'Correo electrónico',
@@ -232,7 +228,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     _newPasswordController.clear();
                     _confPasswordController.clear();
                     _dateController.clear();
-                    _provController.clear();
+                    _mailController.clear();
                   },
                   child: const Text('CANCEL'),
                 ),
@@ -241,7 +237,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       // if (_usernameController.text.isEmpty || _newPasswordController.text.isEmpty) { //provisional
                       //   showAlertDialog(context); //si el insert fuese incorrecto o algún campo no estuviese completo
                       // } else {
-                        Navigator.pushNamed(context, '/home');
+                    Validate(_mailController.text);
+                    Navigator.pushNamed(context, '/home');
                       //}
                   },
                   child: const Text('SIGN UP'),

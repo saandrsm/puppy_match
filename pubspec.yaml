@@ -19,6 +19,7 @@ dependencies:
   dropdown_textfield: ^1.0.8
   calendar_date_picker2: ^0.5.2
   image_picker: ^0.8.7+4
+  email_validator: ^2.1.17
 
 
 dev_dependencies:
@@ -37,4 +38,5 @@ flutter:
     - assets/logo_doggy.png
     - assets/puppy_match.png
     - assets/puppy_match-2.png
+    - assets/golden-retriever.jpg
 

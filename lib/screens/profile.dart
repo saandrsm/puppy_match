@@ -38,30 +38,6 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  // File? image;
-  //
-  // Future pickImage() async {
-  //   try {
-  //     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-  //     if(image == null) return;
-  //     final imageTemp = File(image.path);
-  //     setState(() => this.image = imageTemp);
-  //   } on PlatformException catch(e) {
-  //     print('Failed to pick image: $e');
-  //   }
-  // }
-  //
-  // Future takeImage() async {
-  //   try {
-  //     final image = await ImagePicker().pickImage(source: ImageSource.camera);
-  //     if(image == null) return;
-  //     final imageTemp = File(image.path);
-  //     setState(() => this.image = imageTemp);
-  //   } on PlatformException catch(e) {
-  //     print('Failed to pick image: $e');
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -176,12 +152,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               const Text(
-                'Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese '
-                'Alps. Situated 1,578 meters above sea level, it is one of the '
-                'larger Alpine Lakes. A gondola ride from Kandersteg, followed by a '
-                'half-hour walk through pastures and pine forest, leads you to the '
-                'lake, which warms to 20 degrees Celsius in the summer. Activities '
-                'enjoyed here include rowing, and riding the summer toboggan run.',
+                'Aquí tiene que haber una descripción del usuario que explique '
+                'un poco por encima su entorno, situación y personalidad. '
+                'Cuántos animales ha cuidado, cuales son, como fue, cual es su situacion '
+                'actual, en que tipo de casa residen, si tiene experiencia en '
+                'adiestramiento, en participación en protectoras, en trabajos con '
+                'animales, etc. Tendrá un máximo de carcateres.',
                 textAlign: TextAlign.justify,
                 softWrap: true,
                 style: TextStyle(

@@ -21,45 +21,49 @@ class _HomePageState extends State<HomePage>{
     }
 
     final ThemeData theme = Theme.of(context);        //theme para usar colores
-    final NumberFormat formatter = NumberFormat.simpleCurrency(
-      locale : Localizations.localeOf(context).toString()
-    );
 
         return products.map((product) {
         return Card(
           clipBehavior: Clip.antiAlias,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              AspectRatio(
-                aspectRatio: 18 / 11,
-                child: Image.asset(
-                    'assets/diamond.png'
+              Container(
+                width: 150,
+                height: 130,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  image: DecorationImage(
+                      image: AssetImage('assets/golden-retriever.jpg'),
+                      fit: BoxFit.contain),
                 ),
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
+                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       TextButton(
                         style: TextButton.styleFrom(
                           textStyle: const TextStyle(
-                            fontSize: 23,
+                            fontSize: 22,
                             fontStyle: FontStyle.normal,
-                            //color: Colors.brown,
+                            fontWeight: FontWeight.bold,
                           ),
+                          foregroundColor: Colors.brown
                         ),
                         onPressed: () { 
                           Navigator.pushNamed(context, '/info');
                         },
                         child: Text(product.name),
                       ),
-                      const SizedBox(height: 8.0),
                       Text(
-                        formatter.format(product.price),
-                        style: theme.textTheme.titleSmall,
+                        product.age,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        )
                       ),
                     ],
                   ),
@@ -90,10 +94,6 @@ class _HomePageState extends State<HomePage>{
                   if (customIcon.icon == Icons.search) {
                     customIcon = const Icon(Icons.cancel);
                     customSearchBar = ListTile(
-                    // leading: Icon(
-                    //   Icons.search,
-                    //   size: 26,
-                    // ),
                     title: TextField(
                       onChanged: (text) {
                         // if(text == products.){
@@ -112,9 +112,6 @@ class _HomePageState extends State<HomePage>{
                             borderSide: BorderSide(color: Colors.black38)
                           ),
                       ),
-                      // style: TextStyle(
-                      //   color: Colors.white,
-                      //   ),
                       ),
                     );
                 } else {

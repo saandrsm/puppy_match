@@ -14,7 +14,7 @@ class Api extends StatefulWidget {
 
 class _ApiState extends State<Api> {
   //se convierte en un objeto dart
-  Future<List<Dogdata>> fetchDogdata() async {
+  Future<List<Dogdata>> getImagesBreed() async {
     final response = await http.get(Uri.parse('https://dog.ceo/api/breed/leonberg/images'));
 
     if (response.statusCode == 200) {
@@ -49,7 +49,7 @@ class _ApiState extends State<Api> {
       ),
       body: Center(
         child: FutureBuilder<List<Dogdata>>(
-          future: fetchDogdata(),
+          future: getImagesBreed(),
           builder:
               (BuildContext context, AsyncSnapshot<List<Dogdata>> snapshot) {
             if (snapshot.hasData) {

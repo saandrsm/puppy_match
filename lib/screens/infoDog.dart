@@ -49,12 +49,12 @@ class InfoDog extends StatelessWidget {
     Widget textSection = const Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 20),  //left, top, right, bottom
       child: Text(
-        'Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese '
-        'Alps. Situated 1,578 meters above sea level, it is one of the '
-        'larger Alpine Lakes. A gondola ride from Kandersteg, followed by a '
-        'half-hour walk through pastures and pine forest, leads you to the '
-        'lake, which warms to 20 degrees Celsius in the summer. Activities '
-        'enjoyed here include rowing, and riding the summer toboggan run.',
+        'Aquí tiene que haber una descripción sobre el animal en cuestión '
+        'que hable sobre sus principales características como edad, raza, '
+        'carcaterísticas de su raza, enfermedades o cuidados específicos, '
+        'carácter, particularidades y los detalles sobre cómo, porqué y '
+        'dónde fue rescatado. También especificar que entorno y circunstancias '
+        'serían las idóneas para su familia y hogar adoptivo.',
         softWrap: true, //saltos de linea cuando se acabe el espacio,
         // en false texto  en linea horizontal ilimitada
       ),
@@ -76,7 +76,7 @@ class InfoDog extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
         children: [
           Image.asset(
-            'assets/puppy_match.png',
+            'assets/golden-retriever.jpg',
             width: 600,
             height: 240,
             fit: BoxFit.contain,
