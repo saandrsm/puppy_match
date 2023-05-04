@@ -161,6 +161,12 @@ class _HomePageState extends State<HomePage>{
               );
         }
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add your onPressed code here!
+        },
+        child: const Icon(Icons.mark_unread_chat_alt_outlined),
+      ),
     );
 
   }

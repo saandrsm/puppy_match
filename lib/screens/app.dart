@@ -24,10 +24,16 @@ class ShrineApp extends StatelessWidget {
         '/profile': (context) => const ProfilePage(),
         '/info': (context) => const InfoDog(),
       },
-      theme: ThemeData(
+      theme: ThemeData(   //definición del tema claro
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent),
+        brightness: Brightness.light
       ),
+      darkTheme: ThemeData(  //definición del tema oscuro
+        useMaterial3: true,
+        brightness: Brightness.dark,
+      ),
+      themeMode: ThemeMode.system, //que tema se pone auotmáticamente
     );
   }
 }

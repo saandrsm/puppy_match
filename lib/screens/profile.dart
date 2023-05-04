@@ -157,7 +157,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 'Cuántos animales ha cuidado, cuales son, como fue, cual es su situacion '
                 'actual, en que tipo de casa residen, si tiene experiencia en '
                 'adiestramiento, en participación en protectoras, en trabajos con '
-                'animales, etc. Tendrá un máximo de carcateres.',
+                'animales, etc. Tendrá un máximo de caracteres.',
                 textAlign: TextAlign.justify,
                 softWrap: true,
                 style: TextStyle(
