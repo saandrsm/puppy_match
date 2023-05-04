@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -9,6 +13,54 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   //int _selectedIndex = 1;
+
+  File? _image;
+  // This is the image picker
+  final _picker = ImagePicker();
+  // Implementing the image picker
+  Future<void> _openImagePicker() async {
+    final XFile? pickedImage =
+        await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        _image = File(pickedImage.path);
+      });
+    }
+  }
+
+  Future<void> _takeImagePicker() async {
+    final XFile? pickedImage =
+        await _picker.pickImage(source: ImageSource.camera);
+    if (pickedImage != null) {
+      setState(() {
+        _image = File(pickedImage.path);
+      });
+    }
+  }
+
+  // File? image;
+  //
+  // Future pickImage() async {
+  //   try {
+  //     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+  //     if(image == null) return;
+  //     final imageTemp = File(image.path);
+  //     setState(() => this.image = imageTemp);
+  //   } on PlatformException catch(e) {
+  //     print('Failed to pick image: $e');
+  //   }
+  // }
+  //
+  // Future takeImage() async {
+  //   try {
+  //     final image = await ImagePicker().pickImage(source: ImageSource.camera);
+  //     if(image == null) return;
+  //     final imageTemp = File(image.path);
+  //     setState(() => this.image = imageTemp);
+  //   } on PlatformException catch(e) {
+  //     print('Failed to pick image: $e');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +110,33 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           const SizedBox(height: 20),
           dataSection,
+          OverflowBar(
+            alignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ElevatedButton(
+                  onPressed: () {
+                    _openImagePicker();
+                  },
+                  child: const Text("Abrir Galería",
+                      style: TextStyle(fontWeight: FontWeight.bold))),
+              const SizedBox(width: 10),
+              ElevatedButton(
+                  onPressed: () {
+                    _takeImagePicker();
+                  },
+                  child: const Text("Abrir Cámara",
+                      style: TextStyle(fontWeight: FontWeight.bold))),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Container(
+            alignment: Alignment.center,
+            width: double.infinity,
+            height: 300,
+            child: _image != null
+                ? Image.file(_image!, fit: BoxFit.cover)
+                : const Text('Please select an image'),
+          ),
         ],
       ),
     );
@@ -111,9 +190,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 20),
               TextButton(
-                onPressed: () {
-
-                },
+                onPressed: () {},
                 child: const Text(
                   'Mis Favoritos',
                   style: TextStyle(

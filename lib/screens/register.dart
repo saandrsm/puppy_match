@@ -183,7 +183,7 @@ class _RegisterPageState extends State<RegisterPage> {
               controller: _provController,
               decoration: const InputDecoration(
                 filled: false,
-                labelText: 'Provincia',
+                labelText: 'Correo electrónico',
               ),
             ),
             const SizedBox(height: 20.0),
