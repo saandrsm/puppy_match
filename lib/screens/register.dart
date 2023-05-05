@@ -38,7 +38,7 @@ class _RegisterPageState extends State<RegisterPage> {
   //   }
 
   //controlador del estado de los TextFormFields
-  final _claveFormulario = GlobalKey<FormState>();
+  final _claveSingup = GlobalKey<FormState>();
   //controladores de texto de TextFields
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
@@ -94,7 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
       body: Form(
-        key: _claveFormulario,
+        key: _claveSingup,
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -274,7 +274,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    if(_claveFormulario.currentState!.validate()) {
+                    if(_claveSingup.currentState!.validate()) {
                       // try {
                       //   final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
                       //     email: _mailController.text,

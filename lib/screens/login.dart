@@ -22,6 +22,8 @@ class _LoginPageState extends State<LoginPage> {
 
   bool shouldPop = true; //vueltra atrás activada
 
+  //controlador del estado de los TextFormFields
+  final _claveLogin = GlobalKey<FormState>();
   //contrtoladores de texto de TextFields
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -35,7 +37,8 @@ class _LoginPageState extends State<LoginPage> {
         return shouldPop;
       },
       child: Scaffold(
-          body: SafeArea(
+          body: Form(
+            key: _claveLogin,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(
               24, 20, 24, 0), //left, top, right, bottom
@@ -55,6 +58,11 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 70.0),
             TextFormField(
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Campo vacío';
+                }
+              },
               controller: _usernameController,
               decoration: const InputDecoration(
                 filled: false,
@@ -63,6 +71,11 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 16.0),
             TextFormField(
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Campo vacío';
+                }
+              },
               decoration: InputDecoration(
                 filled: false,
                 labelText: 'Password',
@@ -92,16 +105,19 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    if (_usernameController.text.isEmpty ||
-                        _passwordController.text.isEmpty) {
-                      showAlertDialog(context);
-                    } else {
-                      setState(() {
-                        shouldPop =
-                            !shouldPop; //en false hace que no funcione el swip back de ios
-                      });
-                      Navigator.pushNamed(context, '/home');
-                    }
+                    // if (_usernameController.text.isEmpty ||
+                    //     _passwordController.text.isEmpty) {
+                    //   showAlertDialog(context);
+                    // } else {
+                      if(_claveLogin.currentState!.validate()) {
+                        setState(() {
+                          shouldPop =
+                          !shouldPop; //en false hace que no funcione el swip back de ios
+                        });
+                        Navigator.pushNamed(context, '/home');
+                      }
+
+                    //}
                   },
                   child: const Text('LOG IN'),
                 )
