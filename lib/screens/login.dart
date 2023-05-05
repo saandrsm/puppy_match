@@ -7,13 +7,12 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage>{
-
+class _LoginPageState extends State<LoginPage> {
   //metodo para visibilizar e invisibilizar texto (contraseñas)
   bool _isVisible = true;
-  void _toggleVisible(){
+  void _toggleVisible() {
     setState(() {
-      if(_isVisible) {
+      if (_isVisible) {
         _isVisible = false;
       } else {
         _isVisible = true;
@@ -21,7 +20,7 @@ class _LoginPageState extends State<LoginPage>{
     });
   }
 
-  bool shouldPop = true;  //vueltra atrás activada
+  bool shouldPop = true; //vueltra atrás activada
 
   //contrtoladores de texto de TextFields
   final TextEditingController _usernameController = TextEditingController();
@@ -29,96 +28,98 @@ class _LoginPageState extends State<LoginPage>{
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(  //devuelve un Future
-      onWillPop: () async {  //volver a pantalla anterior
+    return WillPopScope(
+      //devuelve un Future
+      onWillPop: () async {
+        //volver a pantalla anterior
         return shouldPop;
-    },
-    child: Scaffold(
-      body: SafeArea(
+      },
+      child: Scaffold(
+          body: SafeArea(
         child: ListView(
-        padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),  //left, top, right, bottom
-        children: <Widget> [
-          const SizedBox(height: 16.0),
-          Column(
-            children: <Widget> [
-              Image.asset(
-                'assets/puppy_match-2.png',
-                height: 120,
-                width: 100,
-                fit: BoxFit.fitWidth,
-              ),
-              const SizedBox(height: 16.0),
-              // const Text('SHRINE'),
-            ],
-    ),
-          const SizedBox(height: 70.0),
-          TextFormField(
-            controller: _usernameController,
-            decoration: const InputDecoration(
-              filled: false,
-              labelText: 'Username',
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          TextFormField(
-            decoration: InputDecoration(
-              filled: false,
-              labelText: 'Password',
-              suffixIcon: IconButton(
-                padding: const EdgeInsets.all(0),
-                alignment: Alignment.center,
-                icon: (_isVisible
-                    ? const Icon(Icons.lock)
-                    : const Icon(Icons.lock_open)
+          padding: const EdgeInsets.fromLTRB(
+              24, 20, 24, 0), //left, top, right, bottom
+          children: <Widget>[
+            const SizedBox(height: 16.0),
+            Column(
+              children: <Widget>[
+                Image.asset(
+                  'assets/puppy_match-2.png',
+                  height: 120,
+                  width: 100,
+                  fit: BoxFit.fitWidth,
                 ),
-                color: Colors.orangeAccent,
-                onPressed: _toggleVisible,
+                const SizedBox(height: 16.0),
+                // const Text('SHRINE'),
+              ],
+            ),
+            const SizedBox(height: 70.0),
+            TextFormField(
+              controller: _usernameController,
+              decoration: const InputDecoration(
+                filled: false,
+                labelText: 'Username',
               ),
             ),
-            obscureText: _isVisible,
-            controller: _passwordController,
-          ),
-          const SizedBox(height: 10.0),
-          OverflowBar(
-            alignment: MainAxisAlignment.end,
-            children: <Widget>[
-              TextButton(
-                  onPressed:(){
+            const SizedBox(height: 16.0),
+            TextFormField(
+              decoration: InputDecoration(
+                filled: false,
+                labelText: 'Password',
+                suffixIcon: IconButton(
+                  padding: const EdgeInsets.all(0),
+                  alignment: Alignment.center,
+                  icon: (_isVisible
+                      ? const Icon(Icons.lock)
+                      : const Icon(Icons.lock_open)),
+                  color: Colors.orangeAccent,
+                  onPressed: _toggleVisible,
+                ),
+              ),
+              obscureText: _isVisible,
+              controller: _passwordController,
+            ),
+            const SizedBox(height: 10.0),
+            OverflowBar(
+              alignment: MainAxisAlignment.end,
+              children: <Widget>[
+                TextButton(
+                  onPressed: () {
                     _usernameController.clear();
                     _passwordController.clear();
-                 },
+                  },
                   child: const Text('CANCEL'),
-              ),
-              ElevatedButton(
-                  onPressed:(){
-                    if(_usernameController.text.isEmpty || _passwordController.text.isEmpty){
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_usernameController.text.isEmpty ||
+                        _passwordController.text.isEmpty) {
                       showAlertDialog(context);
                     } else {
                       setState(() {
-                        shouldPop = !shouldPop; //en false hace que no funcione el swip back de ios
+                        shouldPop =
+                            !shouldPop; //en false hace que no funcione el swip back de ios
                       });
                       Navigator.pushNamed(context, '/home');
                     }
                   },
                   child: const Text('LOG IN'),
-              )
-            ],
-          ),
-          const SizedBox(height: 240.0),
-          const Text(
+                )
+              ],
+            ),
+            const SizedBox(height: 240.0),
+            const Text(
               '¿Todavía no estás registrado?',
               textAlign: TextAlign.center,
-          ),
-          TextButton(
-              onPressed: (){
-                Navigator.pushNamed(context, '/register');
-              },
-              child: const Text('Sign up')
-          ),
-    ],
-    ),
-    )
-      ),
+            ),
+            TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/register');
+                },
+                child: const Text('Sign up')),
+          ],
+        ),
+      )),
     );
   }
 }
