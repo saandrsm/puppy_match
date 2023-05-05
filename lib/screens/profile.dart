@@ -14,6 +14,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   //int _selectedIndex = 1;
 
+
   File? _image;
   // This is the image picker
   final _picker = ImagePicker();
@@ -40,6 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);        //theme para usar colores
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -117,6 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
 
   Widget dataSection = Container(
     padding: const EdgeInsets.all(30),

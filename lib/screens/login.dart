@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
           padding: const EdgeInsets.fromLTRB(
               24, 20, 24, 0), //left, top, right, bottom
           children: <Widget>[
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 50.0),
             Column(
               children: <Widget>[
                 Image.asset(

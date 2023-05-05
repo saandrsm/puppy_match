@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage>{
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.bold,
                           ),
-                          foregroundColor: Colors.brown
+                          foregroundColor: theme.colorScheme.secondary //usar esquema determinado en app.dart
                         ),
                         onPressed: () { 
                           Navigator.pushNamed(context, '/info');

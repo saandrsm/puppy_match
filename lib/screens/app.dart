@@ -26,7 +26,7 @@ class ShrineApp extends StatelessWidget {
       },
       theme: ThemeData(   //definición del tema claro
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         brightness: Brightness.light
       ),
       darkTheme: ThemeData(  //definición del tema oscuro
