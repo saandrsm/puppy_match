@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1021609599018",
+    "firebase_url": "https://puppy-match-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "puppy-match",
+    "storage_bucket": "puppy-match.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1021609599018:android:52bae7284c50c59a3fe353",
+        "android_client_info": {
+          "package_name": "com.example.tutorial3_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1021609599018-84t3bao7rs5lgtdi37oq70f0s625khtq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAx2S4IoBrxZ87Hk8OtsTPqzqdYeWVgqXc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1021609599018-84t3bao7rs5lgtdi37oq70f0s625khtq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

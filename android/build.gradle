@@ -7,6 +7,9 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:7.2.0'
+        // START: FlutterFire Configuration
+        classpath 'com.google.gms:google-services:4.3.10'
+        // END: FlutterFire Configuration
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -28,4 +31,9 @@ subprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+dependencies {
+    implementation 'com.android.support:support-annotations:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
 }

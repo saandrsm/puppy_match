@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1021609599018-r57kvl0v97qbta3ufta0dg53nvq9oias.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1021609599018-r57kvl0v97qbta3ufta0dg53nvq9oias</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAIOijkpzsmOCKQX6yqcpTeUBnrJXKYkVs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1021609599018</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.tutorial3Flutter</string>
+	<key>PROJECT_ID</key>
+	<string>puppy-match</string>
+	<key>STORAGE_BUCKET</key>
+	<string>puppy-match.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1021609599018:ios:caa441d54e0b2a4e3fe353</string>
+	<key>DATABASE_URL</key>
+	<string>https://puppy-match-default-rtdb.europe-west1.firebasedatabase.app</string>
+</dict>
+</plist>
