@@ -1,6 +1,6 @@
-# tutorial3_flutter
+# PuppyMatch
 
-Tercer tutorial con flutter.
+Aplicación de adopción de perros desarrollada para trabajo de fin de grado de desarrollo de aplicacines multiplataforma.
 
 ## Getting Started
 
