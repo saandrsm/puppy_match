@@ -1,6 +1,6 @@
 # PuppyMatch
 
-Aplicación de adopción de perros desarrollada para trabajo de fin de grado de desarrollo de aplicacines multiplataforma.
+Aplicación de adopción de perros desarrollada para trabajo de fin de grado de desarrollo de aplicaciones multiplataforma.
 
 ## Getting Started
 
