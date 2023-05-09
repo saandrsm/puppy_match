@@ -15,10 +15,10 @@ class ShrineApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Shrine',
-      initialRoute: '/',
-      routes: {
+      initialRoute: '/', //ruta de la pantalla donde comienza a cargar la app
+      routes: {        //rutas de otras pantallas a las que dirigirnos
         '/': (context) => const LoginPage(),
-        '/home': (context) => const HomePage2(),
+        '/home': (context) => const HomePage(),
         '/api': (context) => const Api(),
         '/register': (context) => const RegisterPage(),
         '/profile': (context) => const ProfilePage(),
@@ -26,14 +26,14 @@ class ShrineApp extends StatelessWidget {
       },
       theme: ThemeData(   //definición del tema claro
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent),
         brightness: Brightness.light
       ),
       darkTheme: ThemeData(  //definición del tema oscuro
         useMaterial3: true,
         brightness: Brightness.dark,
       ),
-      themeMode: ThemeMode.system, //que tema se pone auotmáticamente
+      themeMode: ThemeMode.system, //el tema de la app será acorde al tema del sistema operativo
     );
   }
 }

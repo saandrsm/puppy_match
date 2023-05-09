@@ -2,27 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:tutorial3_flutter/screens/busqueda.dart';
 import 'package:tutorial3_flutter/screens/profile.dart';
 
-class HomePage2 extends StatefulWidget {
-  const HomePage2({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  _HomePage2State createState() => _HomePage2State();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _HomePage2State extends State<HomePage2> {
+class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
-  // static const List<Widget> _widgetOptions = <Widget>[
-  //
-  // ];
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final ThemeData theme = Theme.of(context);  //variable para utilizar colores del tema definido
 
+    //el indice en 0 muestra la HomePage y el indice en 1 muestra la ProfilePage
     Widget page;
     switch(selectedIndex){
       case 0:
-        page = const HomePage();
+        page = const SearchPage();
         break;
       case 1:
         page = const ProfilePage();
@@ -45,8 +43,7 @@ class _HomePage2State extends State<HomePage2> {
           //     children: [
           //       SafeArea(
           //         child:
-
-        bottomNavigationBar: BottomNavigationBar(
+        bottomNavigationBar: BottomNavigationBar( //barra de navegación entre HomePage y ProfilePage
                     items: const [
                       BottomNavigationBarItem(
                         icon: Icon(Icons.home),
@@ -58,8 +55,8 @@ class _HomePage2State extends State<HomePage2> {
                       ),
                     ],
                     currentIndex: selectedIndex,
-                    selectedItemColor: Colors.brown,
-                    onTap: (value) {
+                    selectedItemColor: Colors.brown, //el icono del item seleccionado se hace marrón
+                    onTap: (value) { //cuando se pulsa se actualiza el estado
                       setState(() {
                         selectedIndex = value;
                       });

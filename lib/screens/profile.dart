@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,13 +11,22 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  //int _selectedIndex = 1;
+
+  //variables para dropDownButton
+  // String dropdownvalue = 'Item 1';
+  // var items = [
+  //   'Item 1',
+  //   'Item 2',
+  //   'Item 3',
+  //   'Item 4',
+  //   'Item 5',
+  // ];
 
 
   File? _image;
-  // This is the image picker
   final _picker = ImagePicker();
-  // Implementing the image picker
+
+  //metodo del imagePicker para abrir galería
   Future<void> _openImagePicker() async {
     final XFile? pickedImage =
         await _picker.pickImage(source: ImageSource.gallery);
@@ -29,6 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  //metodo del imagePicker para abrir cámara
   Future<void> _takeImagePicker() async {
     final XFile? pickedImage =
         await _picker.pickImage(source: ImageSource.camera);
@@ -41,10 +50,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);        //theme para usar colores
+    final ThemeData theme = Theme.of(context);  //variable theme para usar colores
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
+      appBar: AppBar( //barra superior
+        title: const Text( //titulo y su formato
           'PUPPY MATCH',
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -53,19 +62,20 @@ class _ProfilePageState extends State<ProfilePage> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        leading: IconButton(
+        leading: IconButton( //icono a la izquierda (principio) del texto para cerrar sesión
           icon: const Icon(
             Icons.logout,
             semanticLabel: 'logout',
           ),
-          onPressed: () {
+          onPressed: () { //al presionar vuelve hacia LoginPage
             Navigator.pushNamed(context, '/');
           },
         ),
       ),
-      body: ListView(
+      body: ListView( //cuerpo en formato lista
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
         children: [
+          //forma distinta (medio fallido) para crear una imagen circular de perfil
           // CircleAvatar(
           //   radius: 40,
           //   //backgroundImage: AssetImage('assets/puppy_match.png'),
@@ -80,14 +90,30 @@ class _ProfilePageState extends State<ProfilePage> {
             width: 110,
             height: 90,
             decoration: const BoxDecoration(
-              shape: BoxShape.circle,
+              shape: BoxShape.circle,  //forma de imagen circular
               image: DecorationImage(
                   image: AssetImage('assets/puppy_match.png'),
-                  fit: BoxFit.contain),
+                  fit: BoxFit.contain
+              ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 20),  //espacio en blanco de separación
           dataSection,
+          // DropdownButton(
+          //   alignment: Alignment.,
+          //   value: dropdownvalue,
+          //   items: items.map((String items) {
+          //     return DropdownMenuItem(
+          //       value: items,
+          //       child: Text(items),
+          //     );
+          //   }).toList(),
+          //   onChanged: (String? newValue) {
+          //     setState(() {
+          //       dropdownvalue = newValue!;
+          //     });
+          //   },
+          // ),
           OverflowBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -97,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                   child: const Text("Abrir Galería",
                       style: TextStyle(fontWeight: FontWeight.bold))),
-              const SizedBox(width: 10),
+              const SizedBox(width: 10),  //espacio en blanco de separación
               ElevatedButton(
                   onPressed: () {
                     _takeImagePicker();
@@ -106,35 +132,35 @@ class _ProfilePageState extends State<ProfilePage> {
                       style: TextStyle(fontWeight: FontWeight.bold))),
             ],
           ),
-          const SizedBox(height: 10),
-          Container(
+          const SizedBox(height: 10),  //espacio en blanco de separación
+          Container( //contenedor para mostrar la imagen seleccionada de la galeria o cámara
             alignment: Alignment.center,
             width: double.infinity,
             height: 300,
-            child: _image != null
+            child: _image != null //si la variable donde se guarda la imagen esta vacia muestra un Text
                 ? Image.file(_image!, fit: BoxFit.cover)
-                : const Text('Please select an image'),
+                : const Text('Selecciona una imagen'),
           ),
         ],
       ),
     );
   }
 
-
+  //widget de seccion de datos
   Widget dataSection = Container(
     padding: const EdgeInsets.all(30),
     child: Row(
       children: [
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center, //alineación en el centro
             children: [
-              Container(
+              Container( //contenedor de texto (para poder poner padding)
                 padding: const EdgeInsets.only(bottom: 8),
                 child: const Text(
                   'Nombre de usuario',
                   style: TextStyle(
-                    color: Colors.black38,
+                    color: Colors.orangeAccent,
                   ),
                 ),
               ),
@@ -144,13 +170,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 20),
-              Container(
+              const SizedBox(height: 20),  //espacio en blanco de separación
+              Container( //contenedor de texto (para poder poner padding)
                 padding: const EdgeInsets.only(bottom: 8),
                 child: const Text(
                   'Descripción',
                   style: TextStyle(
-                    color: Colors.black38,
+                    color: Colors.orangeAccent,
                   ),
                 ),
               ),
@@ -161,21 +187,24 @@ class _ProfilePageState extends State<ProfilePage> {
                 'actual, en que tipo de casa residen, si tiene experiencia en '
                 'adiestramiento, en participación en protectoras, en trabajos con '
                 'animales, etc. Tendrá un máximo de caracteres.',
-                textAlign: TextAlign.justify,
-                softWrap: true,
+                textAlign: TextAlign.justify, //texto justificado
+                softWrap: true, //saltos de linea cuando se acabe el espacio,
+                // en false el texto está en linea horizontal ilimitada
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.bold, //estilo en negrita
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 20),  //espacio en blanco de separación
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  //falta implementar funcionalidad de perros favoritos
+                },
                 child: const Text(
                   'Mis Favoritos',
                   style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline,
+                    //color: Colors.black,
+                    fontWeight: FontWeight.bold, //en negrita
+                    decoration: TextDecoration.underline,  //subrayado
                   ),
                 ),
               ),

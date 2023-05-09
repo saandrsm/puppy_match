@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
 
   //controlador del estado de los TextFormFields
   final _claveLogin = GlobalKey<FormState>();
-  //contrtoladores de texto de TextFields
+  //controladores de texto de TextFields
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -38,25 +38,25 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Scaffold(
           body: Form(
-            key: _claveLogin,
+        //el cuerpo de la pantalla es un formulario
+        key: _claveLogin,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(
               24, 20, 24, 0), //left, top, right, bottom
           children: <Widget>[
-            const SizedBox(height: 50.0),
+            const SizedBox(height: 50.0), //espacio en blanco de separación
             Column(
               children: <Widget>[
                 Image.asset(
+                  //inserción del logo y definición de parámetros de imagen
                   'assets/puppy_match-2.png',
                   height: 120,
                   width: 100,
                   fit: BoxFit.fitWidth,
                 ),
-                const SizedBox(height: 16.0),
-                // const Text('SHRINE'),
               ],
             ),
-            const SizedBox(height: 70.0),
+            const SizedBox(height: 85.0), //espacio en blanco de separación
             TextFormField(
               validator: (value) {
                 if (value!.isEmpty) {
@@ -69,9 +69,10 @@ class _LoginPageState extends State<LoginPage> {
                 labelText: 'Username',
               ),
             ),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 16.0), //espacio en blanco de separación
             TextFormField(
               validator: (value) {
+                //validador de textField, si el campo está vacio da error
                 if (value!.isEmpty) {
                   return 'Campo vacío';
                 }
@@ -80,23 +81,29 @@ class _LoginPageState extends State<LoginPage> {
                 filled: false,
                 labelText: 'Password',
                 suffixIcon: IconButton(
+                  //los SUFIXIcons se encuentran al final del text
                   padding: const EdgeInsets.all(0),
-                  alignment: Alignment.center,
-                  icon: (_isVisible
-                      ? const Icon(Icons.lock)
-                      : const Icon(Icons.lock_open)),
+                  alignment: Alignment.center, //posición del botón
+                  icon:
+                      (_isVisible //en base a si la contraseña es visible o no, muestra un icono u otro
+                          ? const Icon(Icons.lock)
+                          : const Icon(Icons.lock_open)),
                   color: Colors.orangeAccent,
-                  onPressed: _toggleVisible,
+                  onPressed:
+                      _toggleVisible, //al presionar se ejecuta el método de visibilizar/invisibilizar pwd
                 ),
               ),
-              obscureText: _isVisible,
+              obscureText: _isVisible, //por defecto la contraseña está oculta
               controller: _passwordController,
             ),
-            const SizedBox(height: 10.0),
+            const SizedBox(height: 10.0), //espacio en blanco de separación
             OverflowBar(
-              alignment: MainAxisAlignment.end,
+              //barra donde se encuentran los botones de log in y cancel
+              alignment:
+                  MainAxisAlignment.end, //posicionados al final (a la derecha)
               children: <Widget>[
                 TextButton(
+                  //al presionar se borra el texto de los controladores
                   onPressed: () {
                     _usernameController.clear();
                     _passwordController.clear();
@@ -109,13 +116,15 @@ class _LoginPageState extends State<LoginPage> {
                     //     _passwordController.text.isEmpty) {
                     //   showAlertDialog(context);
                     // } else {
-                      if(_claveLogin.currentState!.validate()) {
-                        setState(() {
-                          shouldPop =
-                          !shouldPop; //en false hace que no funcione el swip back de ios
-                        });
-                        Navigator.pushNamed(context, '/home');
-                      }
+                    if (_claveLogin.currentState!.validate()) {
+                      //si se valida todo el formulario
+                      setState(() {
+                        shouldPop =
+                            !shouldPop; //en false hace que no funcione el swip back de ios
+                      });
+                      Navigator.pushNamed(
+                          context, '/home'); //pasa hacia pantalla HomePage
+                    }
 
                     //}
                   },
@@ -123,14 +132,15 @@ class _LoginPageState extends State<LoginPage> {
                 )
               ],
             ),
-            const SizedBox(height: 240.0),
+            const SizedBox(height: 240.0), //espacio en blanco de separación
             const Text(
               '¿Todavía no estás registrado?',
               textAlign: TextAlign.center,
             ),
             TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/register');
+                  Navigator.pushNamed(context,
+                      '/register'); //al pulsar pasa hacia pantalla RegisterPage
                 },
                 child: const Text('Sign up')),
           ],
@@ -140,6 +150,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
+//alertDailog en desuso para advertir de error al no estar los campos rellenos
 showAlertDialog(BuildContext context) {
   Widget okButton = TextButton(
     child: Text("OK"),
