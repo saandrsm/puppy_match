@@ -184,10 +184,12 @@ class _SearchPageState extends State<SearchPage> {
       }),
       floatingActionButton: FloatingActionButton(
         //button flotante para acceder al chat
+        backgroundColor: Colors.orangeAccent,
+        foregroundColor: Colors.black87,
         onPressed: () {
           //falta añadir funcionalidad
         },
-        child: const Icon(Icons.mark_unread_chat_alt_outlined),
+        child: const Icon(Icons.chat_outlined),
       ),
     );
   }
