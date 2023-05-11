@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:readmore/readmore.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -180,16 +181,25 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              const Text(
+              //prueba de paquete de texto ocultable (leer mas, leer menos)
+              const ReadMoreText(
                 'Aquí tiene que haber una descripción del usuario que explique '
                 'un poco por encima su entorno, situación y personalidad. '
                 'Cuántos animales ha cuidado, cuales son, como fue, cual es su situacion '
                 'actual, en que tipo de casa residen, si tiene experiencia en '
                 'adiestramiento, en participación en protectoras, en trabajos con '
-                'animales, etc. Tendrá un máximo de caracteres.',
+                'animales, etc. Tendrá un máximo de caracteres. ',
                 textAlign: TextAlign.justify, //texto justificado
-                softWrap: true, //saltos de linea cuando se acabe el espacio,
-                // en false el texto está en linea horizontal ilimitada
+                trimLines: 3,
+                //colorClickableText: Colors.red,
+                trimMode: TrimMode.Line,
+                trimCollapsedText: 'Show more',
+                trimExpandedText: 'Hide',
+                //estilo de texto que amplía
+                moreStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.blueGrey),
+                //estilo de texto que reduce
+                lessStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.blueGrey),
+                //estilo de texto general
                 style: TextStyle(
                   fontWeight: FontWeight.bold, //estilo en negrita
                 ),

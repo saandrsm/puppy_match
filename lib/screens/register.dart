@@ -45,6 +45,7 @@ class _RegisterPageState extends State<RegisterPage> {
     print(isvalid);
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,6 +128,9 @@ class _RegisterPageState extends State<RegisterPage> {
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Escribe una contraseña';
+                  //validador de comparación, si la contraseña no coincide con la anterior da error
+                } else if (value != _newPasswordController.text){
+                  return 'Las contraseñas no coinciden';
                 }
                 return null;
               },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:readmore/readmore.dart';
 
 class InfoDog extends StatefulWidget {
   //const InfoDog({super.key});
@@ -65,14 +66,22 @@ class _InfoDogState extends State<InfoDog> {
     //widget de seccion de texto
     Widget textSection = const Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 20), //left, top, right, bottom
-      child: Text(
+      child: ReadMoreText(
         'Aquí tiene que haber una descripción sobre el animal en cuestión '
         'que hable sobre sus principales características como edad, raza, '
         'carcaterísticas de su raza, enfermedades o cuidados específicos, '
         'carácter, particularidades y los detalles sobre cómo, porqué y '
         'dónde fue rescatado. También especificar que entorno y circunstancias '
-        'serían las idóneas para su familia y hogar adoptivo.',
-        softWrap: true, //saltos de linea cuando se acabe el espacio,
+        'serían las idóneas para su familia y hogar adoptivo. ',
+        trimLines: 3,
+        trimMode: TrimMode.Line,
+        trimCollapsedText: 'Show more',
+        trimExpandedText: 'Hide',
+        //estilo de texto que amplía
+        moreStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.blueGrey),
+        //estilo de texto que reduce
+        lessStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.blueGrey),
+        //softWrap: true, //saltos de linea cuando se acabe el espacio,
         // en false el texto está en linea horizontal ilimitada
       ),
     );
