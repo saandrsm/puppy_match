@@ -205,19 +205,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               const SizedBox(height: 20),  //espacio en blanco de separación
-              TextButton(
-                onPressed: () {
-                  //falta implementar funcionalidad de perros favoritos
-                },
-                child: const Text(
-                  'Mis Favoritos',
-                  style: TextStyle(
-                    //color: Colors.black,
-                    fontWeight: FontWeight.bold, //en negrita
-                    decoration: TextDecoration.underline,  //subrayado
-                  ),
-                ),
-              ),
             ],
           ),
         ),
