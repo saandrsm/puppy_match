@@ -116,33 +116,48 @@ class _ProfilePageState extends State<ProfilePage> {
           //       ? Image.file(_image!, fit: BoxFit.cover)
           //       : const Text('Selecciona una imagen'),
           // ),
-          const SizedBox(height: 5), //espacio en blanco de separación
           OverflowBar(
-            alignment: MainAxisAlignment.center,
+            alignment: MainAxisAlignment.end,
             children: <Widget>[
-              ElevatedButton(
+              const Text(
+                'Galería',
+                style: TextStyle(
+                  color: Colors.orangeAccent,
+                ),
+              ),
+              const SizedBox(width: 115),
+              IconButton(
                   onPressed: () {
                     //_openImagePicker();
                     selectedImages();
                   },
-                  child: const Text("Abrir Galería",
-                      style: TextStyle(fontWeight: FontWeight.bold))),
+                icon: const Icon(
+                  Icons.photo_library_rounded,
+                  semanticLabel: 'logout',
+                  //color: Colors.brown,
+                ),
+                  // child: const Text("Abrir Galería",
+                  //     style: TextStyle(fontWeight: FontWeight.bold))
+              ),
               const SizedBox(width: 10), //espacio en blanco de separación
-              ElevatedButton(
-                  onPressed: () {
-                    _takeImagePicker();
-                  },
-                  child: const Text("Abrir Cámara",
-                      style: TextStyle(fontWeight: FontWeight.bold))),
+              //button de abrir camara proxima implementacion en foto de perfil
+              // IconButton(
+              //     onPressed: () {
+              //       _takeImagePicker();
+              //     },
+              //   icon: const Icon(Icons.photo_camera_rounded),
+              //     // child: const Text("Abrir Cámara",
+              //     //     style: TextStyle(fontWeight: FontWeight.bold))
+              // ),
             ],
           ),
           const SizedBox(height: 20), //espacio en blanco de separación
           GridView.builder( //tabla para mostrar las imagenes seleccionadas
-              scrollDirection: Axis.vertical,
+              scrollDirection: Axis.vertical, //scroll vertical
               shrinkWrap: true,
               itemCount: imageFileList!.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+                crossAxisCount: 3, //columnas(imagenes) x fila
               ),
               itemBuilder: (BuildContext context, int index) {
                 return Image.file(File(imageFileList![index].path),
@@ -199,7 +214,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 'actual, en que tipo de casa residen, si tiene experiencia en '
                 'adiestramiento, en participación en protectoras, en trabajos con '
                 'animales, etc. Tendrá un máximo de caracteres. ',
-                textAlign: TextAlign.justify, //texto justificado
+                textAlign: TextAlign.center, //texto justificado
                 trimLines: 3,
                 //colorClickableText: Colors.red,
                 trimMode: TrimMode.Line,
@@ -220,7 +235,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   fontWeight: FontWeight.bold, //estilo en negrita
                 ),
               ),
-              const SizedBox(height: 10), //espacio en blanco de separación
             ],
           ),
         ),
