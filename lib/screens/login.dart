@@ -99,12 +99,24 @@ class _LoginPageState extends State<LoginPage> {
               controller: _passwordController,
             ),
             const SizedBox(height: 10.0), //espacio en blanco de separación
-            forgetPassword(context),
+            //forgetPassword(context),
             OverflowBar(
               //barra donde se encuentran los botones de log in y cancel
               alignment:
                   MainAxisAlignment.end, //posicionados al final (a la derecha)
               children: <Widget>[
+                TextButton(
+                  child: const Text(
+                    'Forgot Password?',
+                    style: TextStyle(
+                      color: Colors.orangeAccent,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/reset'); //al pulsar pasa hacia pantalla ResetPage
+                  },
+                ),
+                const SizedBox(width: 85),
                 TextButton(
                   //al presionar se borra el texto de los controladores
                   onPressed: () {
@@ -166,7 +178,8 @@ showAlertDialogError(BuildContext context) {
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: const Text('Error',
+    title: const Text(
+      'Error',
     style: TextStyle(
         fontWeight: FontWeight.bold,
         color: Colors.red
@@ -191,7 +204,7 @@ Widget forgetPassword(BuildContext context) {
   return Container(
     width: MediaQuery.of(context).size.width,
       height: 35,
-    alignment: Alignment.bottomRight,
+    alignment: Alignment.bottomLeft,
     child: TextButton(
         child: const Text(
           'Forgot Password?',
