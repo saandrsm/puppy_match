@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tutorial3_flutter/screens/register.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -111,22 +113,23 @@ class _LoginPageState extends State<LoginPage> {
                   child: const Text('CANCEL'),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    // if (_usernameController.text.isEmpty ||
-                    //     _passwordController.text.isEmpty) {
-                    //   showAlertDialog(context);
-                    // } else {
+                  onPressed: () async {
                     if (_claveLogin.currentState!.validate()) {
                       //si se valida todo el formulario
-                      setState(() {
-                        shouldPop =
-                            !shouldPop; //en false hace que no funcione el swip back de ios
+                      FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: _usernameController.text,
+                          password: _passwordController.text
+                      ).then((value) {
+                        setState(() {
+                          shouldPop =
+                          !shouldPop; //en false hace que no funcione el swip back de ios
+                        });
+                        Navigator.pushNamed(
+                            context, '/home'); //pasa hacia pantalla HomePage
+                      }).onError((error, stackTrace) {
+                        print('Error ${error.toString()}');
                       });
-                      Navigator.pushNamed(
-                          context, '/home'); //pasa hacia pantalla HomePage
                     }
-
-                    //}
                   },
                   child: const Text('LOG IN'),
                 )

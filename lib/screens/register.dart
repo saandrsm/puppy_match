@@ -279,22 +279,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   onPressed: () async {
                     if (_claveSingup.currentState!.validate()) {
                       //si se valida todo el formulario
-                      // try {
-                      //   final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                      //     email: _mailController.text,
-                      //     password: _confPasswordController.text,
-                      //   );
-                      // } on FirebaseAuthException catch (e) {
-                      //   if (e.code == 'weak-password') {
-                      //     print('The password provided is too weak.');
-                      //   } else if (e.code == 'email-already-in-use') {
-                      //     print('The account already exists for that email.');
-                      //   }
-                      // } catch (e) {
-                      //   print(e);
-                      // }
-                      Navigator.pushNamed(
-                          context, '/home'); //pasa hacia pantalla HomePage
+                      FirebaseAuth.instance.createUserWithEmailAndPassword(
+                          email: _mailController.text,
+                          password: _confPasswordController.text
+                      ).then((value) {
+                        print('Created new account');
+                        Navigator.pushNamed(
+                        context, '/home'); //pasa hacia pantalla HomePage
+                      }).onError((error, stackTrace) {
+                        print('Error ${error.toString()}');
+                      });
                     }
                   },
                   child: const Text('SIGN UP'),

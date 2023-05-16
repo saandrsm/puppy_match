@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -165,8 +166,11 @@ class _SearchPageState extends State<SearchPage> {
             semanticLabel: 'logout',
           ),
           onPressed: () {
-            //al presionar vuelve hacia LoginPage
-            Navigator.pushNamed(context, '/');
+            FirebaseAuth.instance.signOut().then((value) {
+              //al presionar vuelve hacia LoginPage
+              print('Signed out');
+              Navigator.pushNamed(context, '/');
+            });
           },
         ),
       ),

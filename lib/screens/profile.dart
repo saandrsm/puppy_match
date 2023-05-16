@@ -22,7 +22,6 @@ class _ProfilePageState extends State<ProfilePage> {
   // ];
 
   final ImagePicker imagePicker = ImagePicker();
-
   List<XFile>? imageFileList = [];
 
   void selectedImages() async {

@@ -8,8 +8,8 @@ import 'login.dart';
 import 'post.dart';
 
 
-class ShrineApp extends StatelessWidget {
-  const ShrineApp({Key? key}) : super(key: key);
+class PuppyMatch extends StatelessWidget {
+  const PuppyMatch({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
