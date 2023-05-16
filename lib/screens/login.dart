@@ -99,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
               controller: _passwordController,
             ),
             const SizedBox(height: 10.0), //espacio en blanco de separación
+            forgetPassword(context),
             OverflowBar(
               //barra donde se encuentran los botones de log in y cancel
               alignment:
@@ -121,6 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                           password: _passwordController.text
                       ).then((value) {
                         setState(() {
+                          print('Login');
                           shouldPop =
                           !shouldPop; //en false hace que no funcione el swip back de ios
                         });
@@ -128,6 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                             context, '/home'); //pasa hacia pantalla HomePage
                       }).onError((error, stackTrace) {
                         print('Error ${error.toString()}');
+                        showAlertDialogError(context);
                       });
                     }
                   },
@@ -142,8 +145,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context,
-                      '/register'); //al pulsar pasa hacia pantalla RegisterPage
+                  Navigator.pushNamed(context, '/register'); //al pulsar pasa hacia pantalla RegisterPage
                 },
                 child: const Text('Sign up')),
           ],
@@ -153,8 +155,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-//alertDailog en desuso para advertir de error al no estar los campos rellenos
-showAlertDialog(BuildContext context) {
+//alertDailog en desuso para advertir de error
+showAlertDialogError(BuildContext context) {
   Widget okButton = TextButton(
     child: Text("OK"),
     onPressed: () {
@@ -164,8 +166,13 @@ showAlertDialog(BuildContext context) {
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: Text('Error'),
-    content: Text('Los campos deben estar completos.'),
+    title: const Text('Error',
+    style: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.red
+      ),
+    ),
+    content: const Text('Usuario o contraseña incorrectos.'),
     actions: [
       okButton,
     ],
@@ -177,6 +184,25 @@ showAlertDialog(BuildContext context) {
     builder: (BuildContext context) {
       return alert;
     },
+  );
+}
+
+Widget forgetPassword(BuildContext context) {
+  return Container(
+    width: MediaQuery.of(context).size.width,
+      height: 35,
+    alignment: Alignment.bottomRight,
+    child: TextButton(
+        child: const Text(
+          'Forgot Password?',
+          style: TextStyle(
+              color: Colors.orangeAccent,
+          ),
+        ),
+      onPressed: () {
+        Navigator.pushNamed(context, '/reset'); //al pulsar pasa hacia pantalla ResetPage
+      },
+    )
   );
 }
 

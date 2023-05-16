@@ -42,7 +42,8 @@ class _ApiState extends State<Api> {
             semanticLabel: 'back',
           ),
           onPressed: (){
-            Navigator.pushNamed(context, '/home'); //pasa hacia pantalla HomePage
+            //vuelve hacia pantalla anterior
+            Navigator.of(context).pop();
           },
         ),
       ),

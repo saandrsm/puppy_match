@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tutorial3_flutter/screens/infoDog.dart';
 import 'package:tutorial3_flutter/screens/profile.dart';
 import 'package:tutorial3_flutter/screens/register.dart';
+import 'package:tutorial3_flutter/screens/resetPassword.dart';
 
 import 'home.dart';
 import 'login.dart';
@@ -14,7 +15,7 @@ class PuppyMatch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Shrine',
+      title: 'PuppyMatch',
       initialRoute: '/', //ruta de la pantalla donde comienza a cargar la app
       routes: {        //rutas de otras pantallas a las que dirigirnos
         '/': (context) => const LoginPage(),
@@ -23,6 +24,7 @@ class PuppyMatch extends StatelessWidget {
         '/register': (context) => const RegisterPage(),
         '/profile': (context) => const ProfilePage(),
         '/info': (context) => const InfoDog(),
+        '/reset': (context) => const ResetPage()
       },
       theme: ThemeData(   //definición del tema claro
         useMaterial3: true,
