@@ -116,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.pushNamed(context, '/reset'); //al pulsar pasa hacia pantalla ResetPage
                   },
                 ),
-                const SizedBox(width: 85),
+                const SizedBox(width: 80),
                 TextButton(
                   //al presionar se borra el texto de los controladores
                   onPressed: () {
@@ -125,6 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: const Text('CANCEL'),
                 ),
+                const SizedBox(width: 5.0),
                 ElevatedButton(
                   onPressed: () async {
                     if (_claveLogin.currentState!.validate()) {

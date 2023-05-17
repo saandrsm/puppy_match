@@ -17,12 +17,12 @@ class _RegisterPageState extends State<RegisterPage> {
   //controlador del estado de los TextFormFields
   final _claveSingup = GlobalKey<FormState>();
   //controladores de texto de TextFields
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _mailController = TextEditingController();
+  final TextEditingController _confMailController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _confPasswordController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _mailController = TextEditingController();
 
   String dropdownValue =
       'Dog'; //item por defecto en lista de DropDownButton de mascotas
@@ -84,17 +84,31 @@ class _RegisterPageState extends State<RegisterPage> {
             const SizedBox(height: 40.0), //espacio en blanco de separación
             TextFormField(
               validator: (value) {
-                //validador de textField, si el campo está vacio da error
                 if (value!.isEmpty) {
-                  return 'Escribe un usuario';
+                  return 'Escribe tu correo electrónico';
                 }
                 return null;
               },
-              maxLength: 13, //máximo de 13 carcateres
-              controller: _usernameController,
+              controller: _mailController,
               decoration: const InputDecoration(
                 filled: false,
-                labelText: 'Nombre de usuario',
+                labelText: 'Correo electrónico',
+              ),
+            ),
+            const SizedBox(height: 16.0), //espacio en blanco de separación
+            TextFormField(
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Escribe tu correo electrónico';
+                } else if (value != _mailController.text){
+                  return 'Los correos electrónicos no coinciden';
+                }
+                return null;
+              },
+              controller: _confMailController,
+              decoration: const InputDecoration(
+                filled: false,
+                labelText: 'Confirmar correo electrónico',
               ),
             ),
             const SizedBox(height: 16.0), //espacio en blanco de separación
@@ -123,7 +137,7 @@ class _RegisterPageState extends State<RegisterPage> {
               obscureText: _isVisible, //por defecto la contraseña está oculta
               controller: _newPasswordController,
             ),
-            const SizedBox(height: 16.0), //espacio en blanco de separación
+            const SizedBox(height: 10.0), //espacio en blanco de separación
             TextFormField(
               validator: (value) {
                 if (value!.isEmpty) {
@@ -151,7 +165,6 @@ class _RegisterPageState extends State<RegisterPage> {
               obscureText: _isVisible,
               controller: _confPasswordController,
             ),
-            const SizedBox(height: 16.0), //espacio en blanco de separación
             TextFormField(
               validator: (value) {
                 if (value!.isEmpty) {
@@ -192,26 +205,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   setState(() {
                     //texto se rellena en el formato establecido
                     _dateController.text =
-                        DateFormat('yyyy-MM-dd').format(pickedDate);
+                        DateFormat('dd-MM-yyyy').format(pickedDate);
                   });
                 }
               },
             ),
-            const SizedBox(height: 16.0), //espacio en blanco de separación
-            TextFormField(
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Escribe tu correo electrónico';
-                }
-                return null;
-              },
-              controller: _mailController,
-              decoration: const InputDecoration(
-                filled: false,
-                labelText: 'Correo electrónico',
-              ),
-            ),
-            const SizedBox(height: 20.0), //espacio en blanco de separación
+            const SizedBox(height: 25.0), //espacio en blanco de separación
             Row(
               children: [
                 const Text(
@@ -257,7 +256,7 @@ class _RegisterPageState extends State<RegisterPage> {
             //   style: TextStyle(fontSize: 13, fontWeight: FontWeight.normal),
             // ),
 
-            const SizedBox(height: 10.0), //espacio en blanco de separación
+            const SizedBox(height: 15.0), //espacio en blanco de separación
             OverflowBar(
               //barra donde se encuentran los botones de sing up y cancel
               alignment:
@@ -266,15 +265,16 @@ class _RegisterPageState extends State<RegisterPage> {
                 TextButton(
                   onPressed: () {
                     //al presionar se borra el texto de los controladores
-                    _usernameController.clear();
+                    _mailController.clear();
+                    _confMailController.clear();
                     _nameController.clear();
                     _newPasswordController.clear();
                     _confPasswordController.clear();
                     _dateController.clear();
-                    _mailController.clear();
                   },
                   child: const Text('CANCEL'),
                 ),
+                const SizedBox(width: 5.0),
                 ElevatedButton(
                   onPressed: () async {
                     if (_claveSingup.currentState!.validate()) {
