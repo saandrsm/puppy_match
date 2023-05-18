@@ -136,8 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                       ).then((value) {
                         setState(() {
                           print('Login');
-                          shouldPop =
-                          !shouldPop; //en false hace que no funcione el swip back de ios
+                          shouldPop = !shouldPop; //en false hace que no funcione el swip back de ios
                         });
                         Navigator.pushNamed(
                             context, '/home'); //pasa hacia pantalla HomePage
@@ -168,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-//alertDailog en desuso para advertir de error
+//alertDailog para advertir de error
 showAlertDialogError(BuildContext context) {
   Widget okButton = TextButton(
     child: Text("OK"),

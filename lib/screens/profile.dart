@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:readmore/readmore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -64,6 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         //barra superior
+        centerTitle: true,
         title: const Text(
           //titulo y su formato
           'PUPPY MATCH',
@@ -116,27 +118,39 @@ class _ProfilePageState extends State<ProfilePage> {
           //       : const Text('Selecciona una imagen'),
           // ),
           OverflowBar(
-            alignment: MainAxisAlignment.end,
+            alignment: MainAxisAlignment.center,
             children: <Widget>[
+              IconButton(
+                onPressed: () {
+                  showAlertDialogInfo(context);
+                },
+                icon: const Icon(
+                  Icons.info_outline,
+                  semanticLabel: 'info',
+                  //color: Colors.brown,
+                ),
+
+              ),
               const Text(
                 'Galería',
                 style: TextStyle(
                   color: Colors.orangeAccent,
+                  fontSize: 16,
                 ),
               ),
-              const SizedBox(width: 115),
+              //const SizedBox(width: 115),
               IconButton(
-                  onPressed: () {
-                    //_openImagePicker();
-                    selectedImages();
-                  },
+                onPressed: () {
+                  //_openImagePicker();
+                  selectedImages();
+                },
                 icon: const Icon(
                   Icons.photo_library_rounded,
-                  semanticLabel: 'logout',
+                  semanticLabel: 'gallery',
                   //color: Colors.brown,
                 ),
-                  // child: const Text("Abrir Galería",
-                  //     style: TextStyle(fontWeight: FontWeight.bold))
+                // child: const Text("Abrir Galería",
+                //     style: TextStyle(fontWeight: FontWeight.bold))
               ),
               const SizedBox(width: 10), //espacio en blanco de separación
               //button de abrir camara proxima implementacion en foto de perfil
@@ -151,18 +165,37 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
           const SizedBox(height: 20), //espacio en blanco de separación
-          GridView.builder( //tabla para mostrar las imagenes seleccionadas
-              scrollDirection: Axis.vertical, //scroll vertical
-              shrinkWrap: true,
-              itemCount: imageFileList!.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3, //columnas(imagenes) x fila
-              ),
-              itemBuilder: (BuildContext context, int index) {
-                return Image.file(File(imageFileList![index].path),
-                    fit: BoxFit.cover);
-              }
+          GridView.builder(
+            //tabla para mostrar las imagenes seleccionadas
+            scrollDirection: Axis.vertical, //scroll vertical
+            shrinkWrap: true,
+            itemCount: imageFileList!.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, //columnas(imagenes) x fila
             ),
+            itemBuilder: (BuildContext context, int index) {
+              final item = imageFileList![index];
+              return Dismissible(
+                //widgets eliminables
+                //la llave identifica los widgets, tiene que ser un String
+                key: Key(item.path),
+                onDismissed: (direction) {
+                  //cuando se deslice en cualquier dirección
+                  setState(() {
+                    //se elimina ese item de la lista
+                    imageFileList?.removeAt(index);
+                  });
+
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Imagen eliminada'), //texto del snackbar
+                    duration: Duration(seconds: 1), //duracion del snackbar
+                  ));
+                },
+                //background: Container(color: Colors.red),
+                child: Image.file(File(imageFileList![index].path),
+                    fit: BoxFit.fill),
+              );
+            }),
         ],
       ),
     );
@@ -185,6 +218,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   'Nombre de usuario',
                   style: TextStyle(
                     color: Colors.orangeAccent,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -202,6 +236,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   'Descripción',
                   style: TextStyle(
                     color: Colors.orangeAccent,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -239,5 +274,43 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ],
     ),
+  );
+}
+
+//alertDailog de información
+showAlertDialogInfo(BuildContext context) {
+  Widget okButton = TextButton(
+    child: const Text("Entendido"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title:
+        const Text(
+          'Información',
+          style: TextStyle(
+              //color: Colors.orangeAccent
+          ),
+        ),
+    content: const Text(
+        'Puedes deslizar hacia los lados para eliminar las imágenes de tu perfil.',
+      style: TextStyle(
+        fontSize: 16
+      ),
+      textAlign: TextAlign.start,
+    ),
+    actions: [
+      okButton,
+    ],
+  );
+// show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
   );
 }

@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
+  bool shouldPop = true; //vueltra atrás activada
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,13 @@ class _HomePageState extends State<HomePage> {
     }
 
 
-    return Scaffold(
+    return WillPopScope(
+        //devuelve un Future
+        onWillPop: () async {
+      //volver a pantalla anterior
+      return shouldPop;
+    },
+    child: Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
           return page;
@@ -62,7 +69,7 @@ class _HomePageState extends State<HomePage> {
                       });
                     },
                   ),
-                );
+                ),
               //],
             //);
           // } else {
@@ -92,6 +99,6 @@ class _HomePageState extends State<HomePage> {
           //     ],
           //   );
           // }
-
+    );
   }
 }

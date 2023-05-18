@@ -51,6 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(
         //barra superior
+        centerTitle: true,
         title: const Text(
           'PUPPY MATCH',
           textAlign: TextAlign.center,
@@ -61,7 +62,7 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ),
         leading: IconButton(
-          //los LEADINGIcon se situan al principio de la línea (a la izquierda del texto)
+          //los LeadingIcon se situan al principio de la línea (a la izquierda del texto)
           icon: const Icon(
             Icons.arrow_back_ios,
             semanticLabel: 'back',
@@ -100,6 +101,7 @@ class _RegisterPageState extends State<RegisterPage> {
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Escribe tu correo electrónico';
+                  //validador de comparación, si el correo no coincide con el anterior da error
                 } else if (value != _mailController.text){
                   return 'Los correos electrónicos no coinciden';
                 }
@@ -222,13 +224,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(width: 90), //espacio en blanco de separación
                 DropdownButton(
                   value: dropdownValue, //valor inicial
+                  //lista de items del DropdownButton
                   items: <String>[
                     'Nothing',
                     'Dog',
                     'Cat',
                     'Hamster',
                     'Other'
-                  ] //lista de items del DropdownButton
+                  ]
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       //devuelve la lista

@@ -20,8 +20,9 @@ dependencies:
   calendar_date_picker2: ^0.5.2
   image_picker: ^0.8.7+4
   email_validator: ^2.1.17
-  firebase_auth: ^4.4.2
+  firebase_auth: ^4.6.1
   firebase_core: ^2.12.0
+  firebase_storage: ^11.2.1
   readmore: ^2.1.0
 
 
@@ -37,7 +38,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/diamond.png
     - assets/logo_doggy.png
     - assets/puppy_match.png
     - assets/puppy_match-2.png
