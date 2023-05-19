@@ -147,6 +147,8 @@ class _LoginPageState extends State<LoginPage> {
                         print('Error ${error.toString()}');
                         showAlertDialogError(context);
                       });
+                      _usernameController.clear();
+                      _passwordController.clear();
                     }
                   },
                   child: const Text('LOG IN'),
