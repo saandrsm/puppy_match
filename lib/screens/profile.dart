@@ -34,12 +34,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   File? _image;
-  final _picker = ImagePicker();
+  final _pickerPerfil = ImagePicker();
 
   //metodo del imagePicker para abrir galería
   Future<void> _openImagePicker() async {
     final XFile? pickedImage =
-        await _picker.pickImage(source: ImageSource.gallery);
+        await _pickerPerfil.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);
@@ -50,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
   //metodo del imagePicker para abrir cámara
   Future<void> _takeImagePicker() async {
     final XFile? pickedImage =
-        await _picker.pickImage(source: ImageSource.camera);
+        await _pickerPerfil.pickImage(source: ImageSource.camera);
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);
@@ -92,14 +92,18 @@ class _ProfilePageState extends State<ProfilePage> {
         //cuerpo en formato lista
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
         children: [
-          Container(
-            width: 110,
-            height: 90,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle, //forma de imagen circular
-              image: DecorationImage(
-                  image: AssetImage('assets/puppy_match.png'),
-                  fit: BoxFit.contain),
+          //detecta el gesto especificado y realiza una acción
+          GestureDetector( //al presionar durante unos segundos se abre la galería
+            onLongPress: _openImagePicker,
+            child: Container(
+              width: 110,
+              height: 90,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle, //forma de imagen circular
+                image: DecorationImage(
+                    image: AssetImage('assets/puppy_match.png'),
+                    fit: BoxFit.contain),
+              ),
             ),
           ),
           const SizedBox(height: 20), //espacio en blanco de separación
@@ -117,8 +121,8 @@ class _ProfilePageState extends State<ProfilePage> {
           //       ? Image.file(_image!, fit: BoxFit.cover)
           //       : const Text('Selecciona una imagen'),
           // ),
-          OverflowBar(
-            alignment: MainAxisAlignment.center,
+          Row(
+            //alignment: MainAxisAlignment.center,
             children: <Widget>[
               IconButton(
                 onPressed: () {
@@ -131,6 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
 
               ),
+              const Expanded(child: SizedBox(width: 5)),
               const Text(
                 'Galería',
                 style: TextStyle(
@@ -138,7 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   fontSize: 16,
                 ),
               ),
-              //const SizedBox(width: 115),
+              const Expanded(child: SizedBox(width: 5)),
               IconButton(
                 onPressed: () {
                   //_openImagePicker();
@@ -171,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage> {
             shrinkWrap: true,
             itemCount: imageFileList!.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, //columnas(imagenes) x fila
+              crossAxisCount: 1, //columnas(imagenes) x fila
             ),
             itemBuilder: (BuildContext context, int index) {
               final item = imageFileList![index];
@@ -193,7 +198,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
                 //background: Container(color: Colors.red),
                 child: Image.file(File(imageFileList![index].path),
-                    fit: BoxFit.fill),
+                         fit: BoxFit.fill),
+                // child: imageFileList!= null
+                //     ? Image.file(File(imageFileList![index].path), fit: BoxFit.fill)
+                //     : const Text('Selecciona una imagen'),
               );
             }),
         ],
@@ -313,4 +321,54 @@ showAlertDialogInfo(BuildContext context) {
       return alert;
     },
   );
+}
+
+//alertDailog para cambiar imagen de perfil
+showAlertDialogPhoto(BuildContext context) {
+  Widget cancelButton = TextButton(
+    child: const Text("Cancel"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+
+  Widget openCamera = TextButton(
+    child: const Text("Abrir Cámara"),
+    onPressed: () {
+
+    },
+  );
+
+  Widget openGallery = TextButton(
+    child: const Text("Abrir Galería"),
+    onPressed: () {
+
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: const Text('Perfil'),
+    content: const Text(
+        'Selecciona una imagen de pérfil desde'
+        ' la cámara o desde la galería'),
+    actions: [
+      openCamera,
+      openGallery,
+      cancelButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+
+void _onTap() {
+  print('Hola');
 }

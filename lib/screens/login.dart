@@ -32,6 +32,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Size screenSize = MediaQuery.of(context).size;
+    // double screenWidth = MediaQuery.of(context).size.width;
+    // double screenHeight = MediaQuery.of(context).size.height;
+    Orientation orientation = MediaQuery.of(context).orientation;
     return WillPopScope(
       //devuelve un Future
       onWillPop: () async {
@@ -100,11 +104,10 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 10.0), //espacio en blanco de separación
             //forgetPassword(context),
-            OverflowBar(
+            Row(
               //barra donde se encuentran los botones de log in y cancel
-              alignment:
-                  MainAxisAlignment.end, //posicionados al final (a la derecha)
-              children: <Widget>[
+              //alignment: MainAxisAlignment.end, //posicionados al final (a la derecha)
+              children: [
                 TextButton(
                   child: const Text(
                     'Forgot Password?',
@@ -116,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.pushNamed(context, '/reset'); //al pulsar pasa hacia pantalla ResetPage
                   },
                 ),
-                const SizedBox(width: 80),
+                const Expanded(child: SizedBox(width: 50)),
                 TextButton(
                   //al presionar se borra el texto de los controladores
                   onPressed: () {
@@ -150,7 +153,11 @@ class _LoginPageState extends State<LoginPage> {
                 )
               ],
             ),
-            const SizedBox(height: 240.0), //espacio en blanco de separación
+            const SizedBox(height: 200.0), //espacio en blanco de separación
+            // Text(
+            //   '$screenWidth, $screenHeight',
+            //   textAlign: TextAlign.center,
+            // ),
             const Text(
               '¿Todavía no estás registrado?',
               textAlign: TextAlign.center,

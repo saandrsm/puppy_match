@@ -82,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
           shrinkWrap: true, //esto aun no se que es
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
-            const SizedBox(height: 40.0), //espacio en blanco de separación
+            const SizedBox(height: 20.0), //espacio en blanco de separación
             TextFormField(
               validator: (value) {
                 if (value!.isEmpty) {
@@ -221,7 +221,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     fontSize: 15,
                   ),
                 ),
-                const SizedBox(width: 90), //espacio en blanco de separación
+                const Expanded(child: SizedBox(width: 110)), //espacio en blanco de separación
                 DropdownButton(
                   value: dropdownValue, //valor inicial
                   //lista de items del DropdownButton

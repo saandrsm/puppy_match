@@ -34,7 +34,7 @@ class _SearchPageState extends State<SearchPage> {
             Container(
               //contenedor para la imagen de la Card
               width: 150,
-              height: 130,
+              height: 140,
               decoration: const BoxDecoration(
                 shape: BoxShape.rectangle, //forma de la imagen
                 image: DecorationImage(
@@ -42,43 +42,30 @@ class _SearchPageState extends State<SearchPage> {
                     fit: BoxFit.contain),
               ),
             ),
-            Expanded(
-              //el expanded llena el espacio disponible
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    TextButton(
-                      style: TextButton.styleFrom(
-                          //estilo del texto del button
-                          textStyle: const TextStyle(
-                            fontSize: 22,
-                            fontStyle: FontStyle
-                                .normal, //no tengo claro para que sirve esto
-                            fontWeight: FontWeight.bold,
-                          ),
-                          foregroundColor: theme.colorScheme
-                              .secondary //usar esquema determinado para color de fuente
-                          ),
-                      onPressed: () {
-                        //al presional pasa hacia pantalla InfoPage
-                        Navigator.pushNamed(context, '/info');
-                      },
-                      child: Text(product
-                          .name), //el texto es el getter del nombre del producto
+             TextButton(
+                style: TextButton.styleFrom(
+                    textStyle: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
                     ),
-                    Text(
-                        product
-                            .age, //el texto es el getter de la edad del producto
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        )),
-                  ],
-                ),
+                    foregroundColor: theme.colorScheme
+                        .secondary //usar esquema determinado para color de fuente
+                    ),
+                onPressed: () {
+                  //al presional pasa hacia pantalla InfoPage
+                  Navigator.pushNamed(context, '/info');
+                },
+                child: Text(product
+                    .name), //el texto es el getter del nombre del producto
               ),
-            ),
+
+            // Text(
+            //       product.age, //el texto es el getter de la edad del producto
+            //       style: const TextStyle(
+            //         fontSize: 16,
+            //         fontWeight: FontWeight.w500,
+            //       )
+            //   ),
           ],
         ),
       );

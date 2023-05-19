@@ -89,6 +89,7 @@ class _InfoDogState extends State<InfoDog> {
     return Scaffold(
       appBar: AppBar(
         //barra superior
+        centerTitle: true,
         title: const Text(
           //titulo y su diseño
           'Información',
