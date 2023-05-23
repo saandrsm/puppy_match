@@ -116,6 +116,8 @@ class _RegisterPageState extends State<RegisterPage> {
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Escribe una contraseña';
+                } else if (value.length < 6) {
+                  return 'La contraseña debe tener al menos 6 caracteres.';
                 }
                 return null;
               },
@@ -145,6 +147,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   //validador de comparación, si la contraseña no coincide con la anterior da error
                 } else if (value != _newPasswordController.text){
                   return 'Las contraseñas no coinciden';
+                } else if (value.length < 6) {
+                  return 'La contraseña debe tener al menos 6 caracteres.';
                 }
                 return null;
               },
