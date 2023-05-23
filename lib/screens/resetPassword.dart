@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tutorial3_flutter/screens/register.dart';
+import 'package:email_validator/email_validator.dart';
 
 class ResetPage extends StatefulWidget {
   const ResetPage({Key? key}) : super(key: key);
@@ -16,11 +17,18 @@ class _ResetPageState extends State<ResetPage> {
   //controladores de texto de TextFields
   final TextEditingController _mail = TextEditingController();
 
+  //metodo para validar email
+  //  mailValid(String email) {
+  //   bool isvalid = EmailValidator.validate(email);
+  //   print(isvalid);
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           //barra superior
+          centerTitle: true,
           title: const Text(
             'PUPPY MATCH',
             textAlign: TextAlign.center,
@@ -55,6 +63,9 @@ class _ResetPageState extends State<ResetPage> {
                   if (value!.isEmpty) {
                     return 'Campo vacío';
                   }
+                  // else if (mailValid(value) == false) {
+                  //   return 'Correo electrónico inválido';
+                  // }
                 },
                 controller: _mail,
                 decoration: const InputDecoration(
@@ -72,7 +83,10 @@ class _ResetPageState extends State<ResetPage> {
                         if (_claveReset.currentState!.validate()) {
                           FirebaseAuth.instance.sendPasswordResetEmail(email: _mail.text).then((value) {
                             Navigator.popAndPushNamed(context, "/");
-                          });
+                          }).onError((error, stackTrace) {
+                            print('Error ${error.toString()}');
+                            showAlertDialogError(context);
+                          });;
                         }
                       },
                       child: const Text('RESET PASSWORD'),
@@ -84,3 +98,42 @@ class _ResetPageState extends State<ResetPage> {
         ));
   }
 }
+
+//alertDailog para advertir de error
+showAlertDialogError(BuildContext context) {
+  Widget okButton = TextButton(
+    child: const Text("OK"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: const Text(
+      'Error',
+      style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.red
+      ),
+    ),
+    content: const Text(
+        'Correo electrónico inválido.'
+        '\n'
+        'Escribe un correo válido para poder '
+        'ponernos en contacto contigo. ',
+      style: TextStyle(fontSize: 16),
+    ),
+    actions: [
+      okButton,
+    ],
+  );
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+

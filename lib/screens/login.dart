@@ -51,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
                         padding: const EdgeInsets.fromLTRB(
                             24, 20, 24, 0), //left, top, right, bottom
                         children: <Widget>[
-                          const SizedBox(height: 30.0),
+                          const SizedBox(height: 35.0),
                           //espacio en blanco de separación
                           Column(
                             children: <Widget>[

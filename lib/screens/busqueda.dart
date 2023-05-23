@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '/model/product.dart';
-import '/model/products_repository.dart';
+import '/model/perro.dart';
+import '/model/perros_repository.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -28,31 +28,34 @@ class _SearchPageState extends State<SearchPage> {
     return products.map((product) {
       return Card(
         //clipBehavior: Clip.antiAlias, //esto aún no se que es
-        elevation: 3,
+        elevation: 5,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center, //alineado en el centro
+            crossAxisAlignment:
+                CrossAxisAlignment.center, //alineado en el centro
             children: <Widget>[
               const Image(
-                  image: AssetImage('assets/golden-retriever.jpg'),
+                image: AssetImage('assets/golden-retriever.jpg'),
               ),
-             TextButton(
-                style: TextButton.styleFrom(
-                    textStyle: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    foregroundColor: theme.colorScheme
-                        .secondary //usar esquema determinado para color de fuente
-                    ),
-                onPressed: () {
-                  //al presional pasa hacia pantalla InfoPage
-                  Navigator.pushNamed(context, '/info');
-                },
-                child: Text(product
-                    .name), //el texto es el getter del nombre del producto
+              Expanded(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      foregroundColor: theme.colorScheme
+                          .secondary //usar esquema determinado para color de fuente
+                      ),
+                  onPressed: () {
+                    //al presional pasa hacia pantalla InfoPage
+                    Navigator.pushNamed(context, '/info');
+                  },
+                  child: Text(product
+                      .name), //el texto es el getter del nombre del producto
+                ),
               ),
             ],
           ),
@@ -174,3 +177,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
+
+// void _onTap() {
+//   print('Hola');
+// }

@@ -24,8 +24,13 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _confPasswordController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
 
-  String dropdownValue =
-      'Dog'; //item por defecto en lista de DropDownButton de mascotas
+  //String dropdownValue = 'Dog'; //item por defecto en lista de DropDownButton de mascotas
+
+  //metodo para validar email
+  // void mailValid(String email) {
+  //   bool isvalid = EmailValidator.validate(email);
+  //   print(isvalid);
+  // }
 
   //metodo para visibilizar e invisibilizar texto (contraseñas)
   bool _isVisible = true;
@@ -38,13 +43,6 @@ class _RegisterPageState extends State<RegisterPage> {
       }
     });
   }
-
-  //metodo para validar email
-  void Validate(String email) {
-    bool isvalid = EmailValidator.validate(email);
-    print(isvalid);
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +80,7 @@ class _RegisterPageState extends State<RegisterPage> {
           shrinkWrap: true, //esto aun no se que es
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
-            const SizedBox(height: 20.0), //espacio en blanco de separación
+            const SizedBox(height: 30.0), //espacio en blanco de separación
             TextFormField(
               validator: (value) {
                 if (value!.isEmpty) {
@@ -139,7 +137,7 @@ class _RegisterPageState extends State<RegisterPage> {
               obscureText: _isVisible, //por defecto la contraseña está oculta
               controller: _newPasswordController,
             ),
-            const SizedBox(height: 10.0), //espacio en blanco de separación
+            const SizedBox(height: 6.0), //espacio en blanco de separación
             TextFormField(
               validator: (value) {
                 if (value!.isEmpty) {
@@ -213,45 +211,44 @@ class _RegisterPageState extends State<RegisterPage> {
               },
             ),
             const SizedBox(height: 25.0), //espacio en blanco de separación
-            Row(
-              children: [
-                const Text(
-                  '¿Anteriores mascotas?',
-                  style: TextStyle(
-                    fontSize: 15,
-                  ),
-                ),
-                const Expanded(child: SizedBox(width: 110)), //espacio en blanco de separación
-                DropdownButton(
-                  value: dropdownValue, //valor inicial
-                  //lista de items del DropdownButton
-                  items: <String>[
-                    'Nothing',
-                    'Dog',
-                    'Cat',
-                    'Hamster',
-                    'Other'
-                  ]
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      //devuelve la lista
-                      value: value,
-                      child: Text(
-                        value,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      //al cambiar, pone el nuevo valor como valor determinado
-                      dropdownValue = newValue!;
-                    });
-                  },
-                ),
-              ],
-            ),
-
+            // Row(
+            //   children: [
+            //     const Text(
+            //       '¿Anteriores mascotas?',
+            //       style: TextStyle(
+            //         fontSize: 15,
+            //       ),
+            //     ),
+            //     const Expanded(child: SizedBox(width: 110)), //espacio en blanco de separación
+            //     DropdownButton(
+            //       value: dropdownValue, //valor inicial
+            //       //lista de items del DropdownButton
+            //       items: <String>[
+            //         'Nothing',
+            //         'Dog',
+            //         'Cat',
+            //         'Hamster',
+            //         'Other'
+            //       ]
+            //           .map<DropdownMenuItem<String>>((String value) {
+            //         return DropdownMenuItem<String>(
+            //           //devuelve la lista
+            //           value: value,
+            //           child: Text(
+            //             value,
+            //             style: const TextStyle(fontSize: 16),
+            //           ),
+            //         );
+            //       }).toList(),
+            //       onChanged: (String? newValue) {
+            //         setState(() {
+            //           //al cambiar, pone el nuevo valor como valor determinado
+            //           dropdownValue = newValue!;
+            //         });
+            //       },
+            //     ),
+            //   ],
+            // ),
             //prueba para utilizar el valor seleccionado en el DropdownButton
             // const SizedBox(height: 20.0),
             // Text(
@@ -259,7 +256,7 @@ class _RegisterPageState extends State<RegisterPage> {
             //   style: TextStyle(fontSize: 13, fontWeight: FontWeight.normal),
             // ),
 
-            const SizedBox(height: 15.0), //espacio en blanco de separación
+            const SizedBox(height: 5.0), //espacio en blanco de separación
             OverflowBar(
               //barra donde se encuentran los botones de sing up y cancel
               alignment:
@@ -291,6 +288,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         context, '/home'); //pasa hacia pantalla HomePage
                       }).onError((error, stackTrace) {
                         print('Error ${error.toString()}');
+                        showAlertDialogError(context);
                       });
                     }
                   },
@@ -304,3 +302,41 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 }
+
+//alertDailog para advertir de error
+showAlertDialogError(BuildContext context) {
+  Widget okButton = TextButton(
+    child: const Text("OK"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: const Text(
+      'Error',
+      style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.red
+      ),
+    ),
+    content: const Text(
+      'Correo electrónico inválido.'
+      '\n'
+      'Escribe un correo válido para poder '
+      'registrarte. ',
+      style: TextStyle(fontSize: 16),
+    ),
+    actions: [
+      okButton,
+    ],
+  );
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+

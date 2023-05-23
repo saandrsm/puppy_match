@@ -206,6 +206,15 @@ class _ProfilePageState extends State<ProfilePage> {
             }),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        //button flotante para acceder al chat
+        backgroundColor: Colors.orangeAccent,
+        foregroundColor: Colors.black87,
+        onPressed: () {
+          //falta añadir funcionalidad
+        },
+        child: const Icon(Icons.chat_outlined),
+      ),
     );
   }
 
@@ -368,7 +377,3 @@ showAlertDialogPhoto(BuildContext context) {
   );
 }
 
-
-void _onTap() {
-  print('Hola');
-}
