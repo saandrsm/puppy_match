@@ -27,21 +27,17 @@ class _SearchPageState extends State<SearchPage> {
 
     return products.map((product) {
       return Card(
-        clipBehavior: Clip.antiAlias, //esto aún no se que es
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center, //alineado en el centro
-          children: <Widget>[
-            Container(
-              //contenedor para la imagen de la Card
-              width: 150,
-              height: 140,
-              decoration: const BoxDecoration(
-                shape: BoxShape.rectangle, //forma de la imagen
-                image: DecorationImage(
-                    image: AssetImage('assets/golden-retriever.jpg'),
-                    fit: BoxFit.contain),
+        //clipBehavior: Clip.antiAlias, //esto aún no se que es
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center, //alineado en el centro
+            children: <Widget>[
+              const Image(
+                  image: AssetImage('assets/golden-retriever.jpg'),
               ),
-            ),
              TextButton(
                 style: TextButton.styleFrom(
                     textStyle: const TextStyle(
@@ -58,15 +54,8 @@ class _SearchPageState extends State<SearchPage> {
                 child: Text(product
                     .name), //el texto es el getter del nombre del producto
               ),
-
-            // Text(
-            //       product.age, //el texto es el getter de la edad del producto
-            //       style: const TextStyle(
-            //         fontSize: 16,
-            //         fontWeight: FontWeight.w500,
-            //       )
-            //   ),
-          ],
+            ],
+          ),
         ),
       );
     }).toList();

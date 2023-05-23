@@ -112,7 +112,7 @@ class _InfoDogState extends State<InfoDog> {
             height: 240,
             fit: BoxFit.contain,
           ),
-          const SizedBox(height: 10), //espacio en blanco de separación
+          const SizedBox(height: 5), //espacio en blanco de separación
           titleSection,
           textSection,
           const SizedBox(height: 5), //espacio en blanco de separación
