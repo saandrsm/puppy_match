@@ -43,7 +43,7 @@ class _SearchPageState extends State<SearchPage> {
                   //   image: AssetImage('assets/golden-retriever.jpg'),
                   // ),
                   SizedBox(
-                    height: 150,
+                    height: 135,
                     width: 300,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
