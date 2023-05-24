@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
+import 'llamadasApi.dart';
 import '/model/perro.dart';
 import '/model/perros_repository.dart';
 
@@ -32,32 +32,50 @@ class _SearchPageState extends State<SearchPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: Column(
-            crossAxisAlignment:
+          child: FutureBuilder<Dogdata>(
+            future: getImageRandom(),
+            builder: (BuildContext context, AsyncSnapshot<Dogdata> snapshot) {
+             return Column(
+                crossAxisAlignment:
                 CrossAxisAlignment.center, //alineado en el centro
-            children: <Widget>[
-              const Image(
-                image: AssetImage('assets/golden-retriever.jpg'),
-              ),
-              Expanded(
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                      textStyle: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+                children: <Widget>[
+                  // const Image(
+                  //   image: AssetImage('assets/golden-retriever.jpg'),
+                  // ),
+                  SizedBox(
+                    height: 150,
+                    width: 300,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                      child: Image.network(
+                        snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                        // width: 330,
+                        // height: 150,
+                        fit: BoxFit.fill,
                       ),
-                      foregroundColor: theme.colorScheme
-                          .secondary //usar esquema determinado para color de fuente
+                    ),
+                  ),
+                  Expanded(
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                          textStyle: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          foregroundColor: theme.colorScheme
+                              .secondary //usar esquema determinado para color de fuente
                       ),
-                  onPressed: () {
-                    //al presional pasa hacia pantalla InfoPage
-                    Navigator.pushNamed(context, '/info');
-                  },
-                  child: Text(product
-                      .name), //el texto es el getter del nombre del producto
-                ),
-              ),
-            ],
+                      onPressed: () {
+                        //al presional pasa hacia pantalla InfoPage
+                        Navigator.pushNamed(context, '/info');
+                      },
+                      child: Text(product
+                          .name), //el texto es el getter del nombre del producto
+                    ),
+                  ),
+                ],
+              );
+            }
           ),
         ),
       );

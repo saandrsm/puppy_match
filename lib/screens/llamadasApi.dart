@@ -15,7 +15,9 @@ class _ApiState extends State<Api> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( //barra superior
+      appBar: AppBar(
+        centerTitle: true,
+        //barra superior
         title: const Text('IMAGEN RANDOM'),
         leading: IconButton( //los LEADINGIcon se situan al principio de la línea (a la izquierda del texto)
           icon: const Icon(
@@ -86,7 +88,7 @@ Future<List<Dogdata>> getImagesBreed() async {
 }
 
 Future <Dogdata> getImageRandom() async {
-  final response2 = await http.get(Uri.parse('https://dog.ceo/api/breeds/image/random'));
+  final response2 = await http.get(Uri.parse('https://dog.ceo/api/breeds/image/random?size=full'));
 
   if (response2.statusCode == 200) {
 
