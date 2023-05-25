@@ -11,7 +11,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
-  bool shouldPop = true; //vueltra atrás activada
+  bool shouldPop = true; //vueltra atrás desactivada
 
   @override
   Widget build(BuildContext context) {

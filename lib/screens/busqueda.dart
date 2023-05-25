@@ -42,9 +42,9 @@ class _SearchPageState extends State<SearchPage> {
                   // const Image(
                   //   image: AssetImage('assets/golden-retriever.jpg'),
                   // ),
-                  SizedBox(
-                    height: 135,
-                    width: 300,
+                  Expanded(
+                    // height: 135,
+                    // width: 300,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                       child: Image.network(
@@ -55,8 +55,7 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: TextButton(
+                   TextButton(
                       style: TextButton.styleFrom(
                           textStyle: const TextStyle(
                             fontSize: 22,
@@ -72,7 +71,6 @@ class _SearchPageState extends State<SearchPage> {
                       child: Text(product
                           .name), //el texto es el getter del nombre del producto
                     ),
-                  ),
                 ],
               );
             }
@@ -84,8 +82,8 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget customSearchBar = const Text('Welcome'); //variable de widget de texto
   Icon customIcon = const Icon(Icons.search); //variable de icono
-  List<Product> products =
-      ProductsRepository.loadProducts(Breed.all); //lista de todos los productos
+
+  List<Product> products = ProductsRepository.loadProducts(Breed.all); //lista de todos los productos
   //controlador de texto de TextField
   final TextEditingController _searchController = TextEditingController();
 
@@ -148,11 +146,41 @@ class _SearchPageState extends State<SearchPage> {
           //button provisional para accedes a la pantalla que hace llamada a una api
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/api');
+              //Navigator.pushNamed(context, '/api');
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return Wrap(
+                      //mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                          leading: const Icon(Icons.favorite),
+                          title: const Text('Favoritos'),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.female),
+                          title: const Text('Hembras'),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.male),
+                          title: const Text('Machos'),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    );
+                  });
             },
             icon: const Icon(
-              Icons.pets,
-              semanticLabel: 'api',
+              Icons.filter_list,
+              semanticLabel: 'filter',
             ),
           ),
         ],
@@ -179,8 +207,7 @@ class _SearchPageState extends State<SearchPage> {
             crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
             padding: const EdgeInsets.all(16.0),
             childAspectRatio: 8.0 / 9.0, //esto no se muy bien que es
-            children: _buildGridCards(
-                context) //llama al metodo para generar las Cards
+            children: _buildGridCards(context) //llama al metodo para generar las Cards
             );
       }),
       floatingActionButton: FloatingActionButton(
