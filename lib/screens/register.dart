@@ -3,6 +3,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:tutorial3_flutter/services/auth.dart';
 import 'login.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 
@@ -23,6 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _confPasswordController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
+  AuthService authService = AuthService();
 
   //String dropdownValue = 'Dog'; //item por defecto en lista de DropDownButton de mascotas
 
@@ -283,10 +285,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   onPressed: () async {
                     if (_claveSingup.currentState!.validate()) {
                       //si se valida todo el formulario
-                      FirebaseAuth.instance.createUserWithEmailAndPassword(
-                          email: _mailController.text,
-                          password: _confPasswordController.text
-                      ).then((value) {
+                      authService.registerUserWithEmailandPassword(_nameController.text, _mailController.text, _confPasswordController.text)
+                      .then((value) {
                         print('Created new account');
                         Navigator.pushNamed(
                         context, '/home'); //pasa hacia pantalla HomePage
