@@ -13,8 +13,10 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool isEditing = false;
-  TextEditingController textEditingController = TextEditingController();
-  String initialText =
+  TextEditingController textEditingController1 = TextEditingController();
+  TextEditingController textEditingController2 = TextEditingController();
+  String initialText1 = 'Nombre provisional';
+  String initialText2 =
       'Aquí tiene que haber una descripción del usuario que explique '
       'un poco por encima su entorno, situación y personalidad. '
       'Cuántos animales ha cuidado, cuales son, como fue, cual es su situacion '
@@ -23,21 +25,24 @@ class _ProfilePageState extends State<ProfilePage> {
       'animales, etc. Tendrá un máximo de caracteres. ';
 
   void dispose() {
-    textEditingController.dispose();
+    textEditingController1.dispose();
+    textEditingController2.dispose();
     super.dispose();
   }
 
   void startEditing() {
     setState(() {
       isEditing = true;
-      textEditingController.text = initialText;
+      textEditingController1.text = initialText1;
+      textEditingController2.text = initialText2;
     });
   }
 
   void saveText() {
     setState(() {
       isEditing = false;
-      initialText = textEditingController.text;
+      initialText1 = textEditingController1.text;
+      initialText2 = textEditingController2.text;
     });
   }
 
@@ -107,9 +112,18 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         ),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.edit),
+          isEditing
+            ? IconButton(
+              onPressed: () {
+                saveText();
+              },
+              icon: const Icon(Icons.save),
+            )
+              : IconButton(
+                onPressed: () {
+                  startEditing();
+                },
+                icon: const Icon(Icons.edit),
           ),
         ],
       ),
@@ -127,12 +141,12 @@ class _ProfilePageState extends State<ProfilePage> {
               decoration: const BoxDecoration(
                 shape: BoxShape.circle, //forma de imagen circular
                 image: DecorationImage(
-                    image: AssetImage('assets/puppy_match.png'),
+                    image: AssetImage('assets/icono_perfil.png'),
                     fit: BoxFit.contain),
               ),
             ),
           ),
-          const SizedBox(height: 20), //espacio en blanco de separación
+          const SizedBox(height: 10), //espacio en blanco de separación
           //dataSection,
           Container(
             padding: const EdgeInsets.all(30),
@@ -147,16 +161,24 @@ class _ProfilePageState extends State<ProfilePage> {
                         //contenedor de texto (para poder poner padding)
                         padding: const EdgeInsets.only(bottom: 8),
                         child: const Text(
-                          'Nombre de usuario',
+                          'Nombre completo',
                           style: TextStyle(
                             color: Colors.orangeAccent,
                             fontSize: 16,
                           ),
                         ),
                       ),
-                      const Text(
-                        '@username',
-                        style: TextStyle(
+                       isEditing
+                       ? TextField(
+                         controller: textEditingController1,
+                         textCapitalization: TextCapitalization.sentences,
+                         decoration: const InputDecoration(
+                           border: OutlineInputBorder(),
+                         ),
+                       )
+                       : Text(
+                        initialText1,
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -175,18 +197,20 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       //prueba de paquete de texto ocultable (leer mas, leer menos)
                       Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.all(5.0),
                         child: isEditing
                             ? TextField(
-                                controller: textEditingController,
+                                controller: textEditingController2,
+                                textCapitalization: TextCapitalization.sentences,
+                                textAlign: TextAlign.start,
+                                maxLength: 400,
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                 ),
+                                maxLines: 10,
                               )
-                            : GestureDetector(
-                                onTap: startEditing,
-                                child: ReadMoreText(
-                                  initialText,
+                            : ReadMoreText(
+                                  initialText2,
                                   textAlign: TextAlign.center,
                                   //texto justificado
                                   trimLines: 3,
@@ -210,7 +234,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                         FontWeight.bold, //estilo en negrita
                                   ),
                                 ),
-                              ),
                       ),
                     ],
                   ),
@@ -308,21 +331,21 @@ class _ProfilePageState extends State<ProfilePage> {
               }),
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   //button flotante para acceder al chat
-      //   backgroundColor: Colors.orangeAccent,
-      //   foregroundColor: Colors.black87,
-      //   onPressed: () {
-      //     //falta añadir funcionalidad
-      //   },
-      //   child: const Icon(Icons.chat_outlined),
-      // ),
-      floatingActionButton: isEditing
-          ? FloatingActionButton(
-              onPressed: saveText,
-              child: const Icon(Icons.save),
-            )
-          : null,
+      floatingActionButton: FloatingActionButton(
+        //button flotante para acceder al chat
+        backgroundColor: Colors.orangeAccent,
+        foregroundColor: Colors.black87,
+        onPressed: () {
+          //falta añadir funcionalidad
+        },
+        child: const Icon(Icons.chat_outlined),
+      ),
+      // floatingActionButton: isEditing
+      //     ? FloatingActionButton(
+      //         onPressed: saveText,
+      //         child: const Icon(Icons.save),
+      //       )
+      //     : null,
     );
   }
 
