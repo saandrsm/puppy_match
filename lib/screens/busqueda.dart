@@ -188,6 +188,7 @@ class _SearchPageState extends State<SearchPage> {
         backgroundColor: Colors.orangeAccent,
         foregroundColor: Colors.black87,
         onPressed: () {
+          Navigator.pushNamed(context, '/conversations');
           //falta añadir funcionalidad
         },
         child: const Icon(Icons.chat_outlined),
