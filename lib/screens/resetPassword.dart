@@ -7,7 +7,7 @@ class ResetPage extends StatefulWidget {
   const ResetPage({Key? key}) : super(key: key);
 
   @override
-  _ResetPageState createState() => _ResetPageState();
+  State<ResetPage> createState() => _ResetPageState();
 }
 
 class _ResetPageState extends State<ResetPage> {

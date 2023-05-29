@@ -8,7 +8,7 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
@@ -84,8 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme =
-        Theme.of(context); //variable theme para usar colores
+    final ThemeData theme = Theme.of(context); //variable theme para usar colores
     return Scaffold(
       appBar: AppBar(
         //barra superior

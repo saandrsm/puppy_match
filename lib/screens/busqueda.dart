@@ -9,7 +9,7 @@ class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
 
   @override
-  _SearchPageState createState() => _SearchPageState();
+  State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
@@ -215,6 +215,7 @@ class _SearchPageState extends State<SearchPage> {
         backgroundColor: Colors.orangeAccent,
         foregroundColor: Colors.black87,
         onPressed: () {
+          Navigator.pushNamed(context, '/registerDog'); //pasa hacia pantalla HomePage
           //falta añadir funcionalidad
         },
         child: const Icon(Icons.chat_outlined),

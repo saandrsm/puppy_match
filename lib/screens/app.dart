@@ -4,6 +4,7 @@ import 'package:tutorial3_flutter/screens/profile.dart';
 import 'package:tutorial3_flutter/screens/register.dart';
 import 'package:tutorial3_flutter/screens/resetPassword.dart';
 
+import 'dogRegister.dart';
 import 'home.dart';
 import 'login.dart';
 import 'llamadasApi.dart';
@@ -24,7 +25,8 @@ class PuppyMatch extends StatelessWidget {
         '/register': (context) => const RegisterPage(),
         '/profile': (context) => const ProfilePage(),
         '/info': (context) => const InfoDog(),
-        '/reset': (context) => const ResetPage()
+        '/reset': (context) => const ResetPage(),
+        '/registerDog': (context) => const DogRegisterPage()
       },
       theme: ThemeData(   //definición del tema claro
         useMaterial3: true,
