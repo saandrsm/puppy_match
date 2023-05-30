@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-
+import 'llamadasApi.dart';
 
 class DogRegisterPage extends StatefulWidget {
   const DogRegisterPage({Key? key}) : super(key: key);
@@ -20,8 +19,8 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  String dropdownValue = 'Raza 1'; //item por defecto en lista de DropDownButton de mascotas
-  Sex sexView = Sex.female;
+  String dropdownValue = 'Labrador Retriever'; //item por defecto en lista de DropDownButton de mascotas
+  Sex sexView = Sex.female; //button segmented seleccionado por defecto
 
   File? _image;
   final _pickerPerfil = ImagePicker();
@@ -83,43 +82,42 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
               ),
             ),
             const SizedBox(height: 20),
-            Row(
+            const Row(
               children: [
-                const Text(
+                Text(
                   'Raza',
                   style: TextStyle(
                     fontSize: 15,
                   ),
                 ),
-                const Expanded(child: SizedBox(width: 60)), //espacio en blanco de separación
-                DropdownButton(
-                  value: dropdownValue, //valor inicial
-                  //lista de items del DropdownButton
-                  items: <String>[
-                    'Raza 1',
-                    'Raza 2',
-                    'Raza 3',
-                    'Raza 4',
-                    'Otro'
-                  ]
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      //devuelve la lista
-                      value: value,
-                      child: Text(
-                        value,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      //al cambiar, pone el nuevo valor como valor determinado
-                      dropdownValue = newValue!;
-                    });
-                  },
-                ),
+                Expanded(child: SizedBox(width: 60)), //espacio en blanco de separación
               ],
+            ),
+            FutureBuilder<List<String>>(
+              future: fetchDogBreeds(),
+              builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return const Text('Error al obtener las razas de perro');
+                } else {
+                  List<String> razasPerro = snapshot.data!;
+                  return DropdownButtonFormField<String>(
+                    value: dropdownValue,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        dropdownValue = newValue!;
+                      });
+                    },
+                    items: razasPerro.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  );
+                }
+              },
             ),
             const SizedBox(height: 20),
             Row(
@@ -153,7 +151,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                 )
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 5),
             TextFormField(
               validator: (value) {
                 if (value!.isEmpty) {
@@ -177,13 +175,13 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                 return null;
               },
               controller: _descriptionController,
-              textCapitalization: TextCapitalization.sentences,
+              textCapitalization: TextCapitalization.sentences, //mayuscula despues de cada punto
               textAlign: TextAlign.start,
               maxLength: 400,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Descripción',
-                alignLabelWithHint: true,
+                alignLabelWithHint: true, //coloca el label al principio
               ),
               maxLines: 10,
             ),
@@ -199,13 +197,19 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                 const Expanded(child: SizedBox(width: 5)),
                 IconButton(
                   onPressed: () {
-                      //_image = null;
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Imagen eliminada'), //texto del snackbar
+                      duration: Duration(seconds: 1), //duracion del snackbar
+                    ));
+                    setState(() {
+                      _image = null; //vacia la variable donde se guarda la imagen
+                    });
                   },
                   icon: const Icon(Icons.delete_outline_outlined))
               ],
             ),
             const SizedBox(height: 15),
-            _image != null
+            _image != null //si no hay imagen seleccionada, no muestra el container
               ? Column(
                 children: [
                   Container(
@@ -218,7 +222,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                 ],
               )
               : const SizedBox(height: 15),
-            const SizedBox(width: 5.0),
+            //const SizedBox(width: 5.0),
             FilledButton.tonal(
               onPressed: () async {
                 if (_claveSingupDog.currentState!.validate()) {
