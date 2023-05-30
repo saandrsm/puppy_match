@@ -103,6 +103,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                 } else {
                   List<String> razasPerro = snapshot.data!;
                   return DropdownButtonFormField<String>(
+                    isExpanded: true,
                     value: dropdownValue,
                     onChanged: (String? newValue) {
                       setState(() {

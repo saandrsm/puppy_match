@@ -22,8 +22,7 @@ class _SearchPageState extends State<SearchPage> {
       return const <Card>[];
     }
 
-    final ThemeData theme =
-        Theme.of(context); //variable theme para usar colores
+    final ThemeData theme = Theme.of(context); //variable theme para usar colores
 
     return products.map((product) {
       return Card(
@@ -87,7 +86,7 @@ class _SearchPageState extends State<SearchPage> {
   //controlador de texto de TextField
   final TextEditingController _searchController = TextEditingController();
 
-  //int _selectedIndex = 0;
+  bool isShelter = true; //variable que define el tipo de usuario
 
   @override
   Widget build(BuildContext context) {
@@ -134,15 +133,6 @@ class _SearchPageState extends State<SearchPage> {
             },
             icon: customIcon,
           ),
-          // IconButton(
-          //     onPressed: (){
-          //       print('Filter button');
-          //     },
-          //     icon: const Icon(
-          //       Icons.tune,
-          //       semanticLabel: 'filter',
-          //     ),
-          // ),
           //button provisional para accedes a la pantalla que hace llamada a una api
           IconButton(
             onPressed: () {
@@ -154,6 +144,15 @@ class _SearchPageState extends State<SearchPage> {
                       //mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         ListTile(
+                          leading: const Icon(Icons.pets),
+                          title: const Text('Todos'),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        isShelter
+                        ? const SizedBox(height: 0)
+                        : ListTile(
                           leading: const Icon(Icons.favorite),
                           title: const Text('Favoritos'),
                           onTap: () {
@@ -215,7 +214,7 @@ class _SearchPageState extends State<SearchPage> {
         backgroundColor: Colors.orangeAccent,
         foregroundColor: Colors.black87,
         onPressed: () {
-          Navigator.pushNamed(context, '/registerDog'); //pasa hacia pantalla HomePage
+          Navigator.pushNamed(context, '/registerDog'); //pasa hacia pantalla Chat
           //falta añadir funcionalidad
         },
         child: const Icon(Icons.chat_outlined),

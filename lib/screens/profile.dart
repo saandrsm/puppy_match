@@ -24,6 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
       'adiestramiento, en participación en protectoras, en trabajos con '
       'animales, etc. Tendrá un máximo de caracteres. ';
 
+  @override
   void dispose() {
     textEditingController1.dispose();
     textEditingController2.dispose();
@@ -45,6 +46,8 @@ class _ProfilePageState extends State<ProfilePage> {
       initialText2 = textEditingController2.text;
     });
   }
+
+  bool isShelter = true; //variable que define el tipo de usuario
 
   final ImagePicker imagePicker = ImagePicker();
   List<XFile>? imageFileList = [];
@@ -240,7 +243,19 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
           ),
-          Row(
+          isShelter
+          ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FilledButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/registerDog'); //pasa hacia pantalla dogRegister
+                },
+                child: const Text('AÑADIR PERRO'),
+              ),
+            ],
+          )
+          : Row(
             //alignment: MainAxisAlignment.center,
             children: <Widget>[
               IconButton(
