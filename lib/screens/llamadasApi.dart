@@ -67,7 +67,7 @@ class _ApiState extends State<Api> {
   }
 }
 
-//se convierte en un objeto dart
+//llamada para obtener todas las imagenes de una raza en concreto
 Future<List<Dogdata>> getImagesBreed() async {
   //get
   final response1 = await http.get(Uri.parse('https://dog.ceo/api/breed/leonberg/images?&limit=5'));
@@ -87,6 +87,7 @@ Future<List<Dogdata>> getImagesBreed() async {
   }
 }
 
+//llamada para obtener una foto aleatoria de un perro de cualquier raza
 Future <Dogdata> getImageRandom() async {
   final response2 = await http.get(Uri.parse('https://dog.ceo/api/breeds/image/random?size=full'));
 
@@ -98,6 +99,26 @@ Future <Dogdata> getImageRandom() async {
     // Si el servidor no recibe una respuesta 200 OK,
     // lanza una excepcion
     throw Exception('Failed to load album');
+  }
+}
+
+//llamada para obtener una lista de los nombres de todas las razas de perro
+Future<List<String>> fetchDogBreeds() async {
+  final response = await http.get(Uri.parse('https://api.thedogapi.com/v1/breeds'));
+
+  if (response.statusCode == 200) {
+
+    final List<dynamic> breedsData = jsonDecode(response.body);
+    List<String> breedsList = [];
+
+    for (var breed in breedsData) {
+      String name = breed['name'];
+      breedsList.add(name);
+    }
+
+    return breedsList;
+  } else {
+    throw Exception('Failed to fetch dog breeds');
   }
 }
 

@@ -6,7 +6,7 @@ class InfoDog extends StatefulWidget {
   const InfoDog({Key? key}) : super(key: key);
 
   @override
-  _InfoDogState createState() => _InfoDogState();
+  State<InfoDog> createState() => _InfoDogState();
 }
 
 class _InfoDogState extends State<InfoDog> {
