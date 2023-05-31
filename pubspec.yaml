@@ -23,8 +23,10 @@ dependencies:
   firebase_auth: ^4.6.1
   firebase_core: ^2.12.0
   firebase_storage: ^11.2.1
+  cloud_firestore: ^4.7.1
   readmore: ^2.1.0
   provider: ^6.0.5
+  shared_preferences: ^2.1.1
 
 
 dev_dependencies:
@@ -43,5 +45,7 @@ flutter:
     - assets/puppy_match.png
     - assets/puppy_match-2.png
     - assets/golden-retriever.jpg
+    - assets/pup.jpg
     - assets/icono_perfil.png
+
 

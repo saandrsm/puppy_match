@@ -215,6 +215,7 @@ class _SearchPageState extends State<SearchPage> {
         foregroundColor: Colors.black87,
         onPressed: () {
           Navigator.pushNamed(context, '/registerDog'); //pasa hacia pantalla Chat
+
           //falta añadir funcionalidad
         },
         child: const Icon(Icons.chat_outlined),
