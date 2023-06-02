@@ -116,8 +116,8 @@ class ChatListItem extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 48,
-              height: 48,
+              width: 62,
+              height: 62,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
