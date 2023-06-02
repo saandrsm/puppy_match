@@ -17,7 +17,7 @@ class ChatScreen extends StatelessWidget {
               radius: 16.0,
               backgroundImage: AssetImage(chat.avatar),
             ),
-            SizedBox(width: 8.0),
+            const SizedBox(width: 8.0),
             Text(chat.name),
           ],
         ),
@@ -30,7 +30,7 @@ class ChatScreen extends StatelessWidget {
           children: [
             Expanded(
               child: ListView.builder(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 itemCount: chat.messages.length,
                 reverse: true,
                 itemBuilder: (context, index) {
@@ -40,8 +40,8 @@ class ChatScreen extends StatelessWidget {
                   return Align(
                     alignment: isSentMessage ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                      margin: EdgeInsets.symmetric(vertical: 4.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                      margin: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
                       decoration: BoxDecoration(
                         color: isSentMessage ? Colors.blue : Colors.grey.shade300,
                         borderRadius: BorderRadius.circular(12.0),
@@ -50,6 +50,7 @@ class ChatScreen extends StatelessWidget {
                         message.text,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: isSentMessage ? Colors.white : Colors.black,
+                          fontSize: 16,
                         ),
                       ),
                     ),
@@ -58,30 +59,37 @@ class ChatScreen extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(13.0),
               child: Row(
                 children: [
-                  Expanded(
-                    child: TextField(
+                   Expanded(
+                    child: TextFormField(
                       decoration: InputDecoration(
                         hintText: 'Write a message...',
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(40)
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 8.0),
+                  const SizedBox(width: 4.0),
                   IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.attach_file),
+                    onPressed: () {
+
+                    },
+                    icon: const Icon(Icons.attach_file),
                   ),
-                  SizedBox(width: 8.0),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Icon(Icons.send),
+                  //const SizedBox(width: 0.0),
+                  IconButton(
+                    onPressed: () {
+
+                    },
+                    icon: const Icon(Icons.send),
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: 10),
           ],
         ),
       ),

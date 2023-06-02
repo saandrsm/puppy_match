@@ -21,8 +21,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
         lastMessage: "Yes, I'm interested",
         lastMessageTime: '10:30 AM',
         messages: [
-          const Message(sender: 'Usuario 1', text: "Yes, I'm interested"),
-          const Message(sender: 'Usuario 2', text: 'Hola, estoy bien. ¿Y tú?'),
+          Message(sender: 'Usuario 1', text: "Yes, I'm interested"),
+          Message(sender: 'Usuario 2', text: 'Hola, estoy bien. ¿Y tú?'),
         ],
       ),
       const Chat(
@@ -31,8 +31,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
         lastMessage: "Hello user, I'm a shelter",
         lastMessageTime: '11:45 AM',
         messages: [
-          const Message(sender: 'Usuario 2', text: "Hello user, I'm a shelter"),
-          const Message(sender: 'Usuario 1', text: "Hello I'm a user"),
+          Message(sender: 'Usuario 2', text: "Hello user, I'm a shelter"),
+          Message(sender: 'Usuario 1', text: "Hello I'm a user"),
         ],
       ),
       const Chat(
@@ -41,8 +41,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
         lastMessage: "Can you come by at 7 o'clock?",
         lastMessageTime: 'Yesterday',
         messages: [
-          const Message(sender: 'Usuario 3', text: "Can you come by at 7 o'clock?"),
-          const Message(sender: 'Usuario 1', text: 'Estoy trabajando en un proyecto.'),
+          Message(sender: 'Usuario 3', text: "Can you come by at 7 o'clock?"),
+          Message(sender: 'Usuario 1', text: 'Estoy trabajando en un proyecto.'),
         ],
       ),
     ];
@@ -56,7 +56,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
           ),
         ],
       ),
@@ -83,25 +83,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
           },
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar( //barra de navegación entre HomePage y ProfilePage
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: selectedIndex,
-        selectedItemColor: Colors.brown, //el icono del item seleccionado se hace marrón
-        onTap: (value) { //cuando se pulsa se actualiza el estado
-          setState(() {
-            selectedIndex = value;
-          });
-        },
-      ),
     );
   }
 }
@@ -122,7 +103,7 @@ class ChatListItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
           border: Border(
@@ -145,7 +126,7 @@ class ChatListItem extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,19 +135,24 @@ class ChatListItem extends StatelessWidget {
                     chat.name,
                     style: theme.textTheme.titleLarge,
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     chat.lastMessage,
                     style: theme.textTheme.bodyMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: 4),
-                  Text(
-                    chat.lastMessageTime,
-                    style: theme.textTheme.bodyMedium!.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
-                    ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        chat.lastMessageTime,
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

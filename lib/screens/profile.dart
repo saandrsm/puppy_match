@@ -47,7 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-  bool isShelter = true; //variable que define el tipo de usuario
+  bool isShelter = false; //variable que define el tipo de usuario
 
   final ImagePicker imagePicker = ImagePicker();
   List<XFile>? imageFileList = [];
@@ -162,9 +162,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       Container(
                         //contenedor de texto (para poder poner padding)
                         padding: const EdgeInsets.only(bottom: 8),
-                        child: const Text(
-                          'Nombre completo',
-                          style: TextStyle(
+                        child: Text(
+                          isShelter ? 'Protectora' : 'Nombre',
+                          style: const TextStyle(
                             color: Colors.orangeAccent,
                             fontSize: 16,
                           ),
