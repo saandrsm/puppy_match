@@ -28,6 +28,8 @@ dependencies:
   provider: ^6.0.5
   shared_preferences: ^2.1.1
   flutter_launcher_icons: ^0.13.1
+  animated_splash_screen: ^1.3.0
+  page_transition: ^2.0.9
 
 
 dev_dependencies:
@@ -43,6 +45,10 @@ flutter_icons:
 
 
 flutter:
+  fonts:
+    - family: Kinder
+      fonts:
+        - asset: fonts/kindergarten.ttf
 
   uses-material-design: true
 

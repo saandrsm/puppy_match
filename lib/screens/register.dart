@@ -70,7 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
           onPressed: () {
             //al pulsar vuelve hacia pantalla LoginPage
             //Navigator.pushNamed(context, '/');
-            Navigator.popAndPushNamed(context, "/");
+            Navigator.popAndPushNamed(context, "/login");
           },
         ),
       ),
