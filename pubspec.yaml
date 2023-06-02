@@ -1,5 +1,5 @@
-name: tutorial3_flutter
-description: Tercer tutorial con flutter.
+name: PuppyMatch
+description: Primera aplicación con flutter.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 

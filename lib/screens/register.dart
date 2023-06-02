@@ -3,7 +3,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:tutorial3_flutter/services/auth.dart';
+import 'package:PuppyMatch/services/auth.dart';
 import 'login.dart';
 
 

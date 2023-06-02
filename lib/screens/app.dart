@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tutorial3_flutter/screens/infoDog.dart';
-import 'package:tutorial3_flutter/screens/profile.dart';
-import 'package:tutorial3_flutter/screens/register.dart';
-import 'package:tutorial3_flutter/screens/resetPassword.dart';
-import 'package:tutorial3_flutter/screens/chatListScreen.dart';
+import 'package:PuppyMatch/screens/infoDog.dart';
+import 'package:PuppyMatch/screens/profile.dart';
+import 'package:PuppyMatch/screens/register.dart';
+import 'package:PuppyMatch/screens/resetPassword.dart';
+import 'package:PuppyMatch/screens/chatListScreen.dart';
 
 import 'dogRegister.dart';
 import 'home.dart';
