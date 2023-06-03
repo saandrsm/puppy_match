@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tutorial3_flutter/screens/register.dart';
+import 'package:PuppyMatch/screens/register.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -48,8 +48,7 @@ class _LoginPageState extends State<LoginPage> {
                       //el cuerpo de la pantalla es un formulario
                       key: _claveLogin,
                       child: ListView(
-                        padding: const EdgeInsets.fromLTRB(
-                            24, 20, 24, 0), //left, top, right, bottom
+                        padding: const EdgeInsets.fromLTRB(24, 20, 24, 0), //left, top, right, bottom
                         children: <Widget>[
                           const SizedBox(height: 35.0),
                           //espacio en blanco de separación

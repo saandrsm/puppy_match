@@ -86,7 +86,7 @@ class _SearchPageState extends State<SearchPage> {
   //controlador de texto de TextField
   final TextEditingController _searchController = TextEditingController();
 
-  bool isShelter = true; //variable que define el tipo de usuario
+  bool isShelter = false; //variable que define el tipo de usuario
 
   @override
   Widget build(BuildContext context) {

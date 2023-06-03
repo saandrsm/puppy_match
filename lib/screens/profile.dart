@@ -16,13 +16,19 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController textEditingController1 = TextEditingController();
   TextEditingController textEditingController2 = TextEditingController();
   String initialText1 = 'Nombre provisional';
-  String initialText2 =
+  String initialUser =
       'Aquí tiene que haber una descripción del usuario que explique '
       'un poco por encima su entorno, situación y personalidad. '
       'Cuántos animales ha cuidado, cuales son, como fue, cual es su situacion '
       'actual, en que tipo de casa residen, si tiene experiencia en '
       'adiestramiento, en participación en protectoras, en trabajos con '
       'animales, etc. Tendrá un máximo de caracteres. ';
+  String initialShelter =
+      'Aquí tiene que haber una descripción de la protectora que explique '
+      'dónde se encuentra y cuál es su situación. Cuántos animales hay en, '
+      'la protectora, cuáles son, en que estado se encuentran, en que tipo'
+      'de animales se especializan, qué ayuda necesitan, económica o de '
+      'voluntariado, con qué servicios cuentan, etc. ';
 
   @override
   void dispose() {
@@ -35,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       isEditing = true;
       textEditingController1.text = initialText1;
-      textEditingController2.text = initialText2;
+      textEditingController2.text = initialUser;
     });
   }
 
@@ -43,18 +49,18 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       isEditing = false;
       initialText1 = textEditingController1.text;
-      initialText2 = textEditingController2.text;
+      initialUser = textEditingController2.text;
     });
   }
 
-  bool isShelter = true; //variable que define el tipo de usuario
+  bool isShelter = false; //variable que define el tipo de usuario
 
   final ImagePicker imagePicker = ImagePicker();
   List<XFile>? imageFileList = [];
 
   void selectedImages() async {
     final List<XFile> selectedImages = await imagePicker.pickMultiImage();
-    if (selectedImages!.isNotEmpty) {
+    if (selectedImages.isNotEmpty) {
       imageFileList!.addAll(selectedImages);
     }
     setState(() {});
@@ -149,7 +155,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           const SizedBox(height: 10), //espacio en blanco de separación
-          //dataSection,
           Container(
             padding: const EdgeInsets.all(30),
             child: Row(
@@ -162,9 +167,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       Container(
                         //contenedor de texto (para poder poner padding)
                         padding: const EdgeInsets.only(bottom: 8),
-                        child: const Text(
-                          'Nombre completo',
-                          style: TextStyle(
+                        child: Text(
+                          isShelter ? 'Protectora' : 'Nombre',
+                          style: const TextStyle(
                             color: Colors.orangeAccent,
                             fontSize: 16,
                           ),
@@ -212,30 +217,30 @@ class _ProfilePageState extends State<ProfilePage> {
                                 maxLines: 10,
                               )
                             : ReadMoreText(
-                                  initialText2,
-                                  textAlign: TextAlign.center,
-                                  //texto justificado
-                                  trimLines: 3,
-                                  //colorClickableText: Colors.red,
-                                  trimMode: TrimMode.Line,
-                                  trimCollapsedText: 'Show more',
-                                  trimExpandedText: 'Hide',
-                                  //estilo de texto que amplía
-                                  moreStyle: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.blueGrey),
-                                  //estilo de texto que reduce
-                                  lessStyle: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.blueGrey),
-                                  //estilo de texto general
-                                  style: const TextStyle(
-                                    fontWeight:
-                                        FontWeight.bold, //estilo en negrita
-                                  ),
+                                isShelter ? initialShelter : initialUser,
+                                textAlign: TextAlign.center,
+                                //texto justificado
+                                trimLines: 3,
+                                //colorClickableText: Colors.red,
+                                trimMode: TrimMode.Line,
+                                trimCollapsedText: 'Show more',
+                                trimExpandedText: 'Hide',
+                                //estilo de texto que amplía
+                                moreStyle: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.blueGrey),
+                                //estilo de texto que reduce
+                                lessStyle: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.blueGrey),
+                                //estilo de texto general
+                                style: const TextStyle(
+                                  fontWeight:
+                                      FontWeight.bold, //estilo en negrita
                                 ),
+                              ),
                       ),
                     ],
                   ),

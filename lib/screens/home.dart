@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tutorial3_flutter/screens/busqueda.dart';
-import 'package:tutorial3_flutter/screens/profile.dart';
+import 'package:PuppyMatch/screens/busqueda.dart';
+import 'package:PuppyMatch/screens/profile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

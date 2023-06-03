@@ -2,9 +2,9 @@
     package="com.example.tutorial3_flutter">
    <application
         android:requestLegacyExternalStorage = "true"
-        android:label="tutorial3_flutter"
+        android:label="Puppy Match"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
