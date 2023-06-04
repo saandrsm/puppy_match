@@ -12,7 +12,7 @@ class AuthService {
           email: email, password: password)).user!;
       if (user != null) {
         //llamar a la función para que guarde el usuario en la base de datos
-        DatabaseService(uid: user.uid).saveUserData(fullname, email);
+        DatabaseService(uid: user.uid).registerUserData(fullname, email);
         return true;
       }
     } on FirebaseAuthException catch (e) {

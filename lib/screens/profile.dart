@@ -2,7 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:readmore/readmore.dart';
+import 'package:PuppyMatch/services/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:PuppyMatch/services/database.dart';
+import 'package:PuppyMatch/model/userData.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -12,76 +17,138 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  late String? userId;
   bool isEditing = false;
-  TextEditingController textEditingController1 = TextEditingController();
-  TextEditingController textEditingController2 = TextEditingController();
-  String initialText1 = 'Nombre provisional';
-  String initialUser =
-      'Aquí tiene que haber una descripción del usuario que explique '
-      'un poco por encima su entorno, situación y personalidad. '
-      'Cuántos animales ha cuidado, cuales son, como fue, cual es su situacion '
-      'actual, en que tipo de casa residen, si tiene experiencia en '
-      'adiestramiento, en participación en protectoras, en trabajos con '
-      'animales, etc. Tendrá un máximo de caracteres. ';
-  String initialShelter =
-      'Aquí tiene que haber una descripción de la protectora que explique '
-      'dónde se encuentra y cuál es su situación. Cuántos animales hay en, '
-      'la protectora, cuáles son, en que estado se encuentran, en que tipo'
-      'de animales se especializan, qué ayuda necesitan, económica o de '
-      'voluntariado, con qué servicios cuentan, etc. ';
+  TextEditingController nameEditingController = TextEditingController();
+  TextEditingController userDescriptionEditingController = TextEditingController();
+  late String? name;
+  late String? userDescription;
+  late bool isShelter = true; //variable que define el tipo de usuario
+  bool isLoading = true;
+  late String profileImageUrl;
+  late String profilePicture;
+  late List<XFile> imageFileList;
+
+  @override
+  void initState() {
+    super.initState();
+      try {
+        userId = firebaseAuth.currentUser?.uid;
+        UserData userData;
+        DatabaseService(uid: userId).gettingUserData(
+            userId).then((value){
+          setState(() {
+            userData = value;
+            name = userData.name;
+            userDescription = userData.description;
+            isShelter = userData.isShelter!;
+            profilePicture = userData.profilePicture!;
+            isLoading = false;
+          });
+          DatabaseService(uid: userId).getUserImages(userId).then((value){
+            setState(() {
+            imageFileList = value;
+            });
+          });
+        }
+        );
+      } catch (e){
+        print(e);
+      }
+
+  }
 
   @override
   void dispose() {
-    textEditingController1.dispose();
-    textEditingController2.dispose();
+    nameEditingController.dispose();
+    userDescriptionEditingController.dispose();
     super.dispose();
   }
 
   void startEditing() {
     setState(() {
       isEditing = true;
-      textEditingController1.text = initialText1;
-      textEditingController2.text = initialUser;
+      nameEditingController.text = name!;
+      userDescriptionEditingController.text = userDescription!;
     });
   }
 
   void saveText() {
     setState(() {
       isEditing = false;
-      initialText1 = textEditingController1.text;
-      initialUser = textEditingController2.text;
+      name = nameEditingController.text;
+      userDescription = userDescriptionEditingController.text;
+      DatabaseService(uid: userId).updateNameAndDescription(name!, userDescription!);
     });
   }
 
-  bool isShelter = false; //variable que define el tipo de usuario
-
   final ImagePicker imagePicker = ImagePicker();
-  List<XFile>? imageFileList = [];
-
   void selectedImages() async {
+    String groupImageUrls;
+    late File imageElement;
+    File? _image;
     final List<XFile> selectedImages = await imagePicker.pickMultiImage();
     if (selectedImages.isNotEmpty) {
-      imageFileList!.addAll(selectedImages);
+      imageFileList.addAll(selectedImages);
+      imageFileList.forEach((element) {
+      setState(() {
+        imageElement = File(element.path);
+      });
+      var storageReference = FirebaseStorage.instance
+          .ref()
+          .child(userId!)
+          .child('${DateTime.now()}.jpg');
+      storageReference.putFile(_image!);
+      groupImageUrls =  storageReference.getDownloadURL() as String;
+      storageReference.root;
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update({
+        'gallery': FieldValue.arrayUnion([groupImageUrls])
+      });
+      });
     }
     setState(() {});
   }
 
-  File? _image;
+
   final _pickerPerfil = ImagePicker();
 
   //metodo del imagePicker para abrir galería
   Future<void> _openImagePicker() async {
+    File? _image;
     final XFile? pickedImage =
         await _pickerPerfil.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);
+        print(_image);
       });
+      var storageReference = FirebaseStorage.instance
+          .ref()
+          .child(userId!)
+          .child('${DateTime.now()}.jpg');
+    await storageReference.putFile(_image!);
+    profileImageUrl = await storageReference.getDownloadURL();
+      try{
+        DatabaseService(uid: userId).updateProfilePictures(userId, profileImageUrl);
+      }
+      catch (e){
+        print("No se ha podido borrar nada");
+      }
+
+    setState(() {
+      profilePicture = profileImageUrl;
+    });
     }
+
   }
 
   //metodo del imagePicker para abrir cámara
   Future<void> _takeImagePicker() async {
+    File? _image;
     final XFile? pickedImage =
         await _pickerPerfil.pickImage(source: ImageSource.camera);
     if (pickedImage != null) {
@@ -94,6 +161,10 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context); //variable theme para usar colores
+    // DatabaseService(uid: userId).getUserProfileImage(userId).then((value){
+    //   String? backgroundPicture = value;
+    // });
+
     return Scaffold(
       appBar: AppBar(
         //barra superior
@@ -135,7 +206,11 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
-      body: ListView(
+      body: isLoading
+          ? Center(
+        child: CircularProgressIndicator(),
+      )
+          :ListView(
         //cuerpo en formato lista
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
         children: [
@@ -143,15 +218,9 @@ class _ProfilePageState extends State<ProfilePage> {
           GestureDetector(
             //al presionar durante unos segundos se abre la galería
             onLongPress: _openImagePicker,
-            child: Container(
-              width: 110,
-              height: 90,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle, //forma de imagen circular
-                image: DecorationImage(
-                    image: AssetImage('assets/icono_perfil.png'),
-                    fit: BoxFit.contain),
-              ),
+            child: CircleAvatar(
+              radius: 90,
+              backgroundImage: NetworkImage(profilePicture),
             ),
           ),
           const SizedBox(height: 10), //espacio en blanco de separación
@@ -177,14 +246,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                        isEditing
                        ? TextField(
-                         controller: textEditingController1,
+                         controller: nameEditingController,
                          textCapitalization: TextCapitalization.sentences,
                          decoration: const InputDecoration(
                            border: OutlineInputBorder(),
                          ),
                        )
                        : Text(
-                        initialText1,
+                        name!,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
@@ -207,7 +276,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         padding: const EdgeInsets.all(5.0),
                         child: isEditing
                             ? TextField(
-                                controller: textEditingController2,
+                                controller: userDescriptionEditingController,
                                 textCapitalization: TextCapitalization.sentences,
                                 textAlign: TextAlign.start,
                                 maxLength: 400,
@@ -217,7 +286,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 maxLines: 10,
                               )
                             : ReadMoreText(
-                                isShelter ? initialShelter : initialUser,
+                                userDescription!,
                                 textAlign: TextAlign.center,
                                 //texto justificado
                                 trimLines: 3,
@@ -332,6 +401,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     //cuando se deslice en cualquier dirección
                     setState(() {
                       //se elimina ese item de la lista
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(userId)
+                          .update({
+                        'gallery': FieldValue.arrayRemove([item.path])
+                      });
                       imageFileList?.removeAt(index);
                     });
 
