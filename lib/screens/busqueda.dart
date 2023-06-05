@@ -13,6 +13,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  bool isSearching = false;
   //metodo para generar Cards con lista de productos
   List<Card> _buildGridCards(BuildContext context) {
     List<Product> products = ProductsRepository.loadProducts(Breed.all);
@@ -21,6 +22,8 @@ class _SearchPageState extends State<SearchPage> {
       //si la lista estuviera vacia devolvería una Card vacia
       return const <Card>[];
     }
+
+
 
     final ThemeData theme = Theme.of(context); //variable theme para usar colores
 
@@ -79,12 +82,27 @@ class _SearchPageState extends State<SearchPage> {
     }).toList();
   }
 
-  Widget customSearchBar = const Text('Welcome'); //variable de widget de texto
-  Icon customIcon = const Icon(Icons.search); //variable de icono
+  final TextEditingController _searchController = TextEditingController();
+
+  void startSearch() {
+    setState(() {
+      isSearching = true;
+      _searchController.text = "";
+    });
+  }
+
+  void stopSearch() {
+    setState(() {
+      isSearching = false;
+    });
+  }
+
+  // Widget customSearchBar = const Text('Welcome'); //variable de widget de texto
+  // Icon customIcon = const Icon(Icons.search); //variable de icono
 
   List<Product> products = ProductsRepository.loadProducts(Breed.all); //lista de todos los productos
   //controlador de texto de TextField
-  final TextEditingController _searchController = TextEditingController();
+
 
   bool isShelter = false; //variable que define el tipo de usuario
 
@@ -92,48 +110,38 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: customSearchBar,
+        title: isSearching
+        ? TextFormField(
+          onChanged: (text) {
+            //aqui falta implementar funcionalidad de busqueda
+          },
+          controller: _searchController,
+          decoration: const InputDecoration(
+            hintText: ' Search...',
+            hintStyle: TextStyle(
+              fontSize: 18,
+              fontStyle: FontStyle.normal,
+            ),
+            focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.black38)),
+          ),
+        )
+        : Text("Bienvenido"),
         automaticallyImplyLeading: false, //esto no lo entiendo
         actions: [
-          IconButton(
+          isSearching
+          ? IconButton(
+          onPressed: () {
+            stopSearch();
+          },
+            icon: Icon(Icons.clear),
+          )
+          : IconButton(
             onPressed: () {
-              setState(() {
-                //si se pulsa y el icono era el de busqueda, cambia al de cancelar
-                if (customIcon.icon == Icons.search) {
-                  //y se abre una barra de busqueda
-                  customIcon = const Icon(Icons.cancel);
-                  customSearchBar = ListTile(
-                    title: TextField(
-                      onChanged: (text) {
-                        //aqui falta implementar funcionalidad de busqueda
-                        // if(text == products.){
-                        //
-                        // }
-                        //print('textfield: $text');
-                      },
-                      controller: _searchController,
-                      decoration: const InputDecoration(
-                        hintText: ' Search...',
-                        hintStyle: TextStyle(
-                          fontSize: 18,
-                          fontStyle: FontStyle.normal,
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                            //subrayado
-                            borderSide: BorderSide(color: Colors.black38)),
-                      ),
-                    ),
-                  );
-                } else {
-                  //si el icono no es de busqueda, vuelve a serlo y en lugar de la barra de busqueda
-                  customIcon = const Icon(Icons.search);
-                  customSearchBar = const Text('Adoptions'); //hay un text
-                }
-              });
+              startSearch();
             },
-            icon: customIcon,
+            icon: Icon(Icons.search),
           ),
-          //button provisional para accedes a la pantalla que hace llamada a una api
           IconButton(
             onPressed: () {
               //Navigator.pushNamed(context, '/api');

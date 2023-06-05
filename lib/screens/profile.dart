@@ -198,11 +198,11 @@ class _ProfilePageState extends State<ProfilePage> {
               },
               icon: const Icon(Icons.save),
             )
-              : IconButton(
-                onPressed: () {
-                  startEditing();
-                },
-                icon: const Icon(Icons.edit),
+            : IconButton(
+              onPressed: () {
+                startEditing();
+              },
+              icon: const Icon(Icons.edit),
           ),
         ],
       ),
@@ -218,10 +218,20 @@ class _ProfilePageState extends State<ProfilePage> {
           GestureDetector(
             //al presionar durante unos segundos se abre la galería
             onLongPress: _openImagePicker,
-            child: CircleAvatar(
-              radius: 90,
-              backgroundImage: NetworkImage(profilePicture),
-            ),
+            child: Container(
+              width: 110,
+              height: 90,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle, //forma de imagen circular
+                image: DecorationImage(
+                    image: NetworkImage(profilePicture),
+                    fit: BoxFit.contain),
+                ),
+            // child: CircleAvatar(
+            //   radius: 90,
+            //   backgroundImage: NetworkImage(profilePicture),
+            // ),
+              ),
           ),
           const SizedBox(height: 10), //espacio en blanco de separación
           Container(
