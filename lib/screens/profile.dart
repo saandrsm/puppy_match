@@ -28,7 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
   bool isLoading = true;
   late String profileImageUrl;
   late String profilePicture;
-  late List<XFile> imageFileList;
+  late List<File> imageFileList;
 
   @override
   void initState() {
@@ -90,8 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
     File? _image;
     final List<XFile> selectedImages = await imagePicker.pickMultiImage();
     if (selectedImages.isNotEmpty) {
-      imageFileList.addAll(selectedImages);
-      imageFileList.forEach((element) {
+      selectedImages.forEach((element) {
       setState(() {
         imageElement = File(element.path);
       });
@@ -102,6 +101,9 @@ class _ProfilePageState extends State<ProfilePage> {
       UploadTask uploadTask = storageReference.putFile(imageElement);
       uploadTask.whenComplete(()async {
         groupImageUrls = await storageReference.getDownloadURL();
+        setState(() {
+          imageFileList.add(File(groupImageUrls));
+        });
         storageReference.root;
         FirebaseFirestore.instance
             .collection('users')
@@ -418,8 +420,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           .collection('users')
                           .doc(userId)
                           .update({
-                        'gallery': FieldValue.arrayRemove([item.path])
+                        'gallery': FieldValue.arrayRemove([imageFileList[index].path])
                       });
+                      final Reference storageReference = FirebaseStorage.instance.refFromURL(imageFileList[index].path!);
+                      try{
+                        storageReference.delete();
+                      }catch (e){
+                        print(e);
+                      }
                       imageFileList?.removeAt(index);
                     });
 
@@ -429,7 +437,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ));
                   },
                   //background: Container(color: Colors.red),
-                  child: Image.file(File(imageFileList[index].path),
+                  child: Image.network(imageFileList[index].path,
                       fit: BoxFit.fill),
                   // child: imageFileList!= null
                   //     ? Image.file(File(imageFileList![index].path), fit: BoxFit.fill)

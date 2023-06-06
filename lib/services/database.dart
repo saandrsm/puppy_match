@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:PuppyMatch/model/userData.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -12,18 +12,18 @@ class DatabaseService {
   final CollectionReference userCollection = FirebaseFirestore.instance.collection("users");
 
   Future registerUserData(String fullname, String email) async{
-    AssetImage baseProfileImage = AssetImage("assets/icono_perfil.png");
-    return await userCollection.doc(uid).set({
-      'uid': uid,
-      'name': fullname,
-      'email': email,
-      'description': "",
-      'profilePicture': "",
-      'gallery': [],
-      'favourites': [],
-      'isShelter': false
+    await FirebaseStorage.instance.ref("icono_perfil.png").getDownloadURL().then((value) async {
+      return await userCollection.doc(uid).set({
+        'uid': uid,
+        'name': fullname,
+        'email': email,
+        'description': "",
+        'profilePicture': value,
+        'gallery': [],
+        'favourites': [],
+        'isShelter': false
+      });
     });
-
   }
 
   Future gettingUserData(String? userId) async {
@@ -51,7 +51,7 @@ class DatabaseService {
   }
 
   Future getUserImages(String? userId) async {
-    List<XFile> imageFiles = [];
+    List<File> imageFiles = [];
     UserData? userData;
     gettingUserData(userId).then((value){
 
@@ -62,12 +62,9 @@ class DatabaseService {
     for (var item in listResult.items) {
       String imageUrl = await storageReference.child(item.name).getDownloadURL();
       if(imageUrl != userData?.profilePicture){
-        await storageReference.child(item.name).getData().then((value) {
-          XFile imageFile = XFile.fromData(value!);
-          imageFiles.add(imageFile);
-        });
-      }
-    }
+          imageFiles.add(File(imageUrl));
+        };
+  }
     return imageFiles;
   }
 
