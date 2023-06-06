@@ -2,7 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:readmore/readmore.dart';
+import 'package:PuppyMatch/services/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:PuppyMatch/services/database.dart';
+import 'package:PuppyMatch/model/userData.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -12,70 +17,141 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;  //instancia de la base de datos
+  late String? userId;
   bool isEditing = false;
-  TextEditingController textEditingController1 = TextEditingController();
-  TextEditingController textEditingController2 = TextEditingController();
-  String initialText1 = 'Nombre provisional';
-  String initialText2 =
-      'Aquí tiene que haber una descripción del usuario que explique '
-      'un poco por encima su entorno, situación y personalidad. '
-      'Cuántos animales ha cuidado, cuales son, como fue, cual es su situacion '
-      'actual, en que tipo de casa residen, si tiene experiencia en '
-      'adiestramiento, en participación en protectoras, en trabajos con '
-      'animales, etc. Tendrá un máximo de caracteres. ';
+  TextEditingController nameEditingController = TextEditingController();
+  TextEditingController userDescriptionEditingController = TextEditingController();
+  late String? name;
+  late String? userDescription;
+  late bool isShelter = true; //variable que define el tipo de usuario
+  bool isLoading = true;
+  late String profileImageUrl;
+  late String profilePicture;
+  late List<XFile> imageFileList;
+
+  @override
+  void initState() {
+    super.initState();
+      try {
+        userId = firebaseAuth.currentUser?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
+        UserData userData;
+        DatabaseService(uid: userId).gettingUserData(
+            userId).then((value){
+          setState(() {
+            userData = value;
+            name = userData.name;
+            userDescription = userData.description;
+            isShelter = userData.isShelter!;
+            profilePicture = userData.profilePicture!;
+          }); //se llama al método para obtener el registro del usuario y sus datos correspondientes, asignando dichos datos a las variables de la clase
+          DatabaseService(uid: userId).getUserImages(userId).then((value){
+            setState(() {
+            imageFileList = value;
+            isLoading = false;
+            }); //llama al método getUserImages que devuelve una lista de tipo List<XFile> y la asigna a la variable imageFileList
+          });
+        }
+        );
+      } catch (e){
+        print(e);
+      }
+
+  }
 
   @override
   void dispose() {
-    textEditingController1.dispose();
-    textEditingController2.dispose();
+    nameEditingController.dispose();
+    userDescriptionEditingController.dispose();
     super.dispose();
   }
 
   void startEditing() {
     setState(() {
       isEditing = true;
-      textEditingController1.text = initialText1;
-      textEditingController2.text = initialText2;
+      nameEditingController.text = name!;
+      userDescriptionEditingController.text = userDescription!;
     });
   }
 
   void saveText() {
     setState(() {
       isEditing = false;
-      initialText1 = textEditingController1.text;
-      initialText2 = textEditingController2.text;
+      name = nameEditingController.text;
+      userDescription = userDescriptionEditingController.text;
+      DatabaseService(uid: userId).updateNameAndDescription(name!, userDescription!); //llama al método para actualizar el nombre y descripción al dejar de editar
     });
   }
 
-  bool isShelter = true; //variable que define el tipo de usuario
-
   final ImagePicker imagePicker = ImagePicker();
-  List<XFile>? imageFileList = [];
-
   void selectedImages() async {
+    late String groupImageUrls;
+    late File imageElement;
+    File? _image;
     final List<XFile> selectedImages = await imagePicker.pickMultiImage();
-    if (selectedImages!.isNotEmpty) {
-      imageFileList!.addAll(selectedImages);
+    if (selectedImages.isNotEmpty) {
+      imageFileList.addAll(selectedImages);
+      imageFileList.forEach((element) {
+      setState(() {
+        imageElement = File(element.path);
+      });
+      var storageReference = FirebaseStorage.instance
+          .ref()
+          .child(userId!)
+          .child('${DateTime.now()}.jpg');
+      UploadTask uploadTask = storageReference.putFile(imageElement);
+      uploadTask.whenComplete(()async {
+        groupImageUrls = await storageReference.getDownloadURL();
+        storageReference.root;
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({
+          'gallery': FieldValue.arrayUnion([groupImageUrls])
+        });
+      });
+      });
     }
     setState(() {});
   }
 
-  File? _image;
+
   final _pickerPerfil = ImagePicker();
 
   //metodo del imagePicker para abrir galería
   Future<void> _openImagePicker() async {
+    File? _image;
     final XFile? pickedImage =
         await _pickerPerfil.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);
       });
+      var storageReference = FirebaseStorage.instance
+          .ref()
+          .child(userId!)
+          .child('${DateTime.now()}.jpg'); //crea o se dirige a una referencia  (dependiendo si ya existe) con nombre del id del usuario y dentro otra con
+                                           // la fechahora.jpg
+    await storageReference.putFile(_image!); //guarda la imagen en la referencia de encima con los datos de fechahora.jpg
+    profileImageUrl = await storageReference.getDownloadURL();
+      try{
+        DatabaseService(uid: userId).updateProfilePictures(userId, profileImageUrl); //llama al método para actualizar la foto de perfil con la nueva
+                                                                                     // y borra la antigua del storage
+      }
+      catch (e){
+        print("No se ha podido borrar nada");
+      }
+
+    setState(() {
+      profilePicture = profileImageUrl; //modifica la foto de perfil que se muestra con la añadida
+    });
     }
+
   }
 
   //metodo del imagePicker para abrir cámara
   Future<void> _takeImagePicker() async {
+    File? _image;
     final XFile? pickedImage =
         await _pickerPerfil.pickImage(source: ImageSource.camera);
     if (pickedImage != null) {
@@ -88,6 +164,10 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context); //variable theme para usar colores
+    // DatabaseService(uid: userId).getUserProfileImage(userId).then((value){
+    //   String? backgroundPicture = value;
+    // });
+
     return Scaffold(
       appBar: AppBar(
         //barra superior
@@ -121,15 +201,19 @@ class _ProfilePageState extends State<ProfilePage> {
               },
               icon: const Icon(Icons.save),
             )
-              : IconButton(
-                onPressed: () {
-                  startEditing();
-                },
-                icon: const Icon(Icons.edit),
+            : IconButton(
+              onPressed: () {
+                startEditing();
+              },
+              icon: const Icon(Icons.edit),
           ),
         ],
       ),
-      body: ListView(
+      body: isLoading
+          ? Center(
+        child: CircularProgressIndicator(),
+      )
+          :ListView(
         //cuerpo en formato lista
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
         children: [
@@ -140,16 +224,19 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Container(
               width: 110,
               height: 90,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle, //forma de imagen circular
                 image: DecorationImage(
-                    image: AssetImage('assets/icono_perfil.png'),
+                    image: NetworkImage(profilePicture),
                     fit: BoxFit.contain),
+                ),
+            // child: CircleAvatar(
+            //   radius: 90,
+            //   backgroundImage: NetworkImage(profilePicture),
+            // ),
               ),
-            ),
           ),
           const SizedBox(height: 10), //espacio en blanco de separación
-          //dataSection,
           Container(
             padding: const EdgeInsets.all(30),
             child: Row(
@@ -162,9 +249,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       Container(
                         //contenedor de texto (para poder poner padding)
                         padding: const EdgeInsets.only(bottom: 8),
-                        child: const Text(
-                          'Nombre completo',
-                          style: TextStyle(
+                        child: Text(
+                          isShelter ? 'Protectora' : 'Nombre',
+                          style: const TextStyle(
                             color: Colors.orangeAccent,
                             fontSize: 16,
                           ),
@@ -172,14 +259,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                        isEditing
                        ? TextField(
-                         controller: textEditingController1,
+                         controller: nameEditingController,
                          textCapitalization: TextCapitalization.sentences,
                          decoration: const InputDecoration(
                            border: OutlineInputBorder(),
                          ),
                        )
                        : Text(
-                        initialText1,
+                        name!,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
@@ -202,7 +289,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         padding: const EdgeInsets.all(5.0),
                         child: isEditing
                             ? TextField(
-                                controller: textEditingController2,
+                                controller: userDescriptionEditingController,
                                 textCapitalization: TextCapitalization.sentences,
                                 textAlign: TextAlign.start,
                                 maxLength: 400,
@@ -212,30 +299,30 @@ class _ProfilePageState extends State<ProfilePage> {
                                 maxLines: 10,
                               )
                             : ReadMoreText(
-                                  initialText2,
-                                  textAlign: TextAlign.center,
-                                  //texto justificado
-                                  trimLines: 3,
-                                  //colorClickableText: Colors.red,
-                                  trimMode: TrimMode.Line,
-                                  trimCollapsedText: 'Show more',
-                                  trimExpandedText: 'Hide',
-                                  //estilo de texto que amplía
-                                  moreStyle: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.blueGrey),
-                                  //estilo de texto que reduce
-                                  lessStyle: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.blueGrey),
-                                  //estilo de texto general
-                                  style: const TextStyle(
-                                    fontWeight:
-                                        FontWeight.bold, //estilo en negrita
-                                  ),
+                                userDescription!,
+                                textAlign: TextAlign.center,
+                                //texto justificado
+                                trimLines: 3,
+                                //colorClickableText: Colors.red,
+                                trimMode: TrimMode.Line,
+                                trimCollapsedText: 'Show more',
+                                trimExpandedText: 'Hide',
+                                //estilo de texto que amplía
+                                moreStyle: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.blueGrey),
+                                //estilo de texto que reduce
+                                lessStyle: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.blueGrey),
+                                //estilo de texto general
+                                style: const TextStyle(
+                                  fontWeight:
+                                      FontWeight.bold, //estilo en negrita
                                 ),
+                              ),
                       ),
                     ],
                   ),
@@ -309,14 +396,14 @@ class _ProfilePageState extends State<ProfilePage> {
               scrollDirection: Axis.vertical,
               //scroll vertical
               shrinkWrap: true,
-              itemCount: imageFileList!.length,
+              itemCount: imageFileList.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 mainAxisSpacing: 10,
                 // mainAxisExtent: 350,
                 crossAxisCount: 1, //columnas(imagenes) x fila
               ),
               itemBuilder: (BuildContext context, int index) {
-                final item = imageFileList![index];
+                final item = imageFileList[index];
                 //si lo rodeo con un expanded y una row respectivamente
                 //el tamaño de las fotos se ajusta
                 return Dismissible(
@@ -327,6 +414,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     //cuando se deslice en cualquier dirección
                     setState(() {
                       //se elimina ese item de la lista
+                      FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(userId)
+                          .update({
+                        'gallery': FieldValue.arrayRemove([item.path])
+                      });
                       imageFileList?.removeAt(index);
                     });
 
@@ -336,7 +429,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ));
                   },
                   //background: Container(color: Colors.red),
-                  child: Image.file(File(imageFileList![index].path),
+                  child: Image.file(File(imageFileList[index].path),
                       fit: BoxFit.fill),
                   // child: imageFileList!= null
                   //     ? Image.file(File(imageFileList![index].path), fit: BoxFit.fill)
