@@ -17,7 +17,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;  //instancia de la base de datos
   late String? userId;
   bool isEditing = false;
   TextEditingController nameEditingController = TextEditingController();
@@ -34,7 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
       try {
-        userId = firebaseAuth.currentUser?.uid;
+        userId = firebaseAuth.currentUser?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
         UserData userData;
         DatabaseService(uid: userId).gettingUserData(
             userId).then((value){
@@ -44,12 +44,12 @@ class _ProfilePageState extends State<ProfilePage> {
             userDescription = userData.description;
             isShelter = userData.isShelter!;
             profilePicture = userData.profilePicture!;
-            isLoading = false;
-          });
+          }); //se llama al método para obtener el registro del usuario y sus datos correspondientes, asignando dichos datos a las variables de la clase
           DatabaseService(uid: userId).getUserImages(userId).then((value){
             setState(() {
             imageFileList = value;
-            });
+            isLoading = false;
+            }); //llama al método getUserImages que devuelve una lista de tipo List<XFile> y la asigna a la variable imageFileList
           });
         }
         );
@@ -79,13 +79,13 @@ class _ProfilePageState extends State<ProfilePage> {
       isEditing = false;
       name = nameEditingController.text;
       userDescription = userDescriptionEditingController.text;
-      DatabaseService(uid: userId).updateNameAndDescription(name!, userDescription!);
+      DatabaseService(uid: userId).updateNameAndDescription(name!, userDescription!); //llama al método para actualizar el nombre y descripción al dejar de editar
     });
   }
 
   final ImagePicker imagePicker = ImagePicker();
   void selectedImages() async {
-    String groupImageUrls;
+    late String groupImageUrls;
     late File imageElement;
     File? _image;
     final List<XFile> selectedImages = await imagePicker.pickMultiImage();
@@ -99,14 +99,16 @@ class _ProfilePageState extends State<ProfilePage> {
           .ref()
           .child(userId!)
           .child('${DateTime.now()}.jpg');
-      storageReference.putFile(_image!);
-      groupImageUrls =  storageReference.getDownloadURL() as String;
-      storageReference.root;
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .update({
-        'gallery': FieldValue.arrayUnion([groupImageUrls])
+      UploadTask uploadTask = storageReference.putFile(imageElement);
+      uploadTask.whenComplete(()async {
+        groupImageUrls = await storageReference.getDownloadURL();
+        storageReference.root;
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({
+          'gallery': FieldValue.arrayUnion([groupImageUrls])
+        });
       });
       });
     }
@@ -124,23 +126,24 @@ class _ProfilePageState extends State<ProfilePage> {
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);
-        print(_image);
       });
       var storageReference = FirebaseStorage.instance
           .ref()
           .child(userId!)
-          .child('${DateTime.now()}.jpg');
-    await storageReference.putFile(_image!);
+          .child('${DateTime.now()}.jpg'); //crea o se dirige a una referencia  (dependiendo si ya existe) con nombre del id del usuario y dentro otra con
+                                           // la fechahora.jpg
+    await storageReference.putFile(_image!); //guarda la imagen en la referencia de encima con los datos de fechahora.jpg
     profileImageUrl = await storageReference.getDownloadURL();
       try{
-        DatabaseService(uid: userId).updateProfilePictures(userId, profileImageUrl);
+        DatabaseService(uid: userId).updateProfilePictures(userId, profileImageUrl); //llama al método para actualizar la foto de perfil con la nueva
+                                                                                     // y borra la antigua del storage
       }
       catch (e){
         print("No se ha podido borrar nada");
       }
 
     setState(() {
-      profilePicture = profileImageUrl;
+      profilePicture = profileImageUrl; //modifica la foto de perfil que se muestra con la añadida
     });
     }
 
@@ -393,14 +396,14 @@ class _ProfilePageState extends State<ProfilePage> {
               scrollDirection: Axis.vertical,
               //scroll vertical
               shrinkWrap: true,
-              itemCount: imageFileList!.length,
+              itemCount: imageFileList.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 mainAxisSpacing: 10,
                 // mainAxisExtent: 350,
                 crossAxisCount: 1, //columnas(imagenes) x fila
               ),
               itemBuilder: (BuildContext context, int index) {
-                final item = imageFileList![index];
+                final item = imageFileList[index];
                 //si lo rodeo con un expanded y una row respectivamente
                 //el tamaño de las fotos se ajusta
                 return Dismissible(
@@ -426,7 +429,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ));
                   },
                   //background: Container(color: Colors.red),
-                  child: Image.file(File(imageFileList![index].path),
+                  child: Image.file(File(imageFileList[index].path),
                       fit: BoxFit.fill),
                   // child: imageFileList!= null
                   //     ? Image.file(File(imageFileList![index].path), fit: BoxFit.fill)

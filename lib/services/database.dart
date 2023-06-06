@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:PuppyMatch/model/userData.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -57,18 +58,16 @@ class DatabaseService {
       userData = value;
     });
     final Reference storageReference = FirebaseStorage.instance.ref(userId);
-    storageReference.listAll().then((result) {
-      result.items.forEach((Reference ref) async {
-        String downloadURL = await ref.getDownloadURL();
-        if(downloadURL != userData?.profilePicture){
-          XFile imageFile = XFile(downloadURL);
+    final listResult = await storageReference.listAll();
+    for (var item in listResult.items) {
+      String imageUrl = await storageReference.child(item.name).getDownloadURL();
+      if(imageUrl != userData?.profilePicture){
+        await storageReference.child(item.name).getData().then((value) {
+          XFile imageFile = XFile.fromData(value!);
           imageFiles.add(imageFile);
-        }
-      });
-    }).catchError((error) {
-      print('Error retrieving image files: $error');
-    });
-
+        });
+      }
+    }
     return imageFiles;
   }
 

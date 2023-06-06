@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+//definición de un modelo de usuario para poder usarlo al sacar datos de Firestore
 class UserData {
   final String? uid;
   final String? name;
@@ -38,7 +38,7 @@ class UserData {
       data?['favourites'] is Iterable ? List.from(data?['favourites']) : null,
       isShelter: data?['isShelter'],
     );
-  }
+  } //metodo para obtener datos de firestore asignando cada dato de la base de datos a la variable definida en la clase
 
   Map<String, dynamic> toFirestore() {
     return {
@@ -52,4 +52,4 @@ class UserData {
       if (isShelter != null) "isShelter": isShelter,
     };
   }
-}
+} //metodo para enviar a firestore asignando de cada variable su correspondiente campo en la base de datos
