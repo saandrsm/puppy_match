@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:PuppyMatch/screens/register.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -70,6 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                               if (value!.isEmpty) {
                                 return 'Campo vacío';
                               }
+                              return null;
                             },
                             controller: _usernameController,
                             decoration: const InputDecoration(
@@ -85,6 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                               if (value!.isEmpty) {
                                 return 'Campo vacío';
                               }
+                              return null;
                             },
                             decoration: InputDecoration(
                               filled: false,
@@ -200,6 +201,7 @@ class _LoginPageState extends State<LoginPage> {
                               if (value!.isEmpty) {
                                 return 'Campo vacío';
                               }
+                              return null;
                             },
                             controller: _usernameController,
                             decoration: const InputDecoration(
@@ -215,6 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                               if (value!.isEmpty) {
                                 return 'Campo vacío';
                               }
+                              return null;
                             },
                             decoration: InputDecoration(
                               filled: false,

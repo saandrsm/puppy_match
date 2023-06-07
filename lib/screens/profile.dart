@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:readmore/readmore.dart';
-import 'package:PuppyMatch/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -87,7 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void selectedImages() async {
     late String groupImageUrls;
     late File imageElement;
-    File? _image;
+    //File? _image;
     final List<XFile> selectedImages = await imagePicker.pickMultiImage();
     if (selectedImages.isNotEmpty) {
       selectedImages.forEach((element) {
@@ -152,20 +151,20 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   //metodo del imagePicker para abrir cámara
-  Future<void> _takeImagePicker() async {
-    File? _image;
-    final XFile? pickedImage =
-        await _pickerPerfil.pickImage(source: ImageSource.camera);
-    if (pickedImage != null) {
-      setState(() {
-        _image = File(pickedImage.path);
-      });
-    }
-  }
+  // Future<void> _takeImagePicker() async {
+  //   File? _image;
+  //   final XFile? pickedImage =
+  //       await _pickerPerfil.pickImage(source: ImageSource.camera);
+  //   if (pickedImage != null) {
+  //     setState(() {
+  //       _image = File(pickedImage.path);
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context); //variable theme para usar colores
+    //final ThemeData theme = Theme.of(context); //variable theme para usar colores
     // DatabaseService(uid: userId).getUserProfileImage(userId).then((value){
     //   String? backgroundPicture = value;
     // });
@@ -422,13 +421,13 @@ class _ProfilePageState extends State<ProfilePage> {
                           .update({
                         'gallery': FieldValue.arrayRemove([imageFileList[index].path])
                       });
-                      final Reference storageReference = FirebaseStorage.instance.refFromURL(imageFileList[index].path!);
+                      final Reference storageReference = FirebaseStorage.instance.refFromURL(imageFileList[index].path);
                       try{
                         storageReference.delete();
                       }catch (e){
                         print(e);
                       }
-                      imageFileList?.removeAt(index);
+                      imageFileList.removeAt(index);
                     });
 
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

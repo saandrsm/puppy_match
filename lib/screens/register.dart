@@ -1,10 +1,7 @@
 import 'dart:core';
-import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:PuppyMatch/services/auth.dart';
-import 'login.dart';
 
 
 class RegisterPage extends StatefulWidget {

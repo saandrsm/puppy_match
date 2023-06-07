@@ -6,7 +6,6 @@ import 'package:PuppyMatch/screens/resetPassword.dart';
 import 'package:PuppyMatch/screens/chatListScreen.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:page_transition/page_transition.dart';
-
 import 'dogRegister.dart';
 import 'home.dart';
 import 'login.dart';
