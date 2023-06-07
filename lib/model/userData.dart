@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 //definición de un modelo de usuario para poder usarlo al sacar datos de Firestore
+
 class UserData {
   final String? uid;
   final String? name;
