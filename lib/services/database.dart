@@ -10,6 +10,7 @@ class DatabaseService {
   DatabaseService({this.uid});
 
   final CollectionReference userCollection = FirebaseFirestore.instance.collection("users");
+  final CollectionReference dogCollection = FirebaseFirestore.instance.collection("dogs");
 
   Future registerUserData(String fullname, String email) async{
     await FirebaseStorage.instance.ref("icono_perfil.png").getDownloadURL().then((value) async {
@@ -24,6 +25,21 @@ class DatabaseService {
         'isShelter': false
       });
     });
+  }
+
+  Future registerDogData(String name, String breed, String sex, int age, String description, String? profileImageUrl) async{
+    String dogId = dogCollection.doc().id;
+      return await userCollection.doc(dogId).set({
+        'dogId': dogId,
+        'name': name,
+        'breed': breed,
+        'sex': sex,
+        'age': age,
+        'description': description,
+        'shelterId': uid,
+        'profilePicture': profileImageUrl,
+        'gallery': []
+      });
   }
 
   Future gettingUserData(String? userId) async {

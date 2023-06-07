@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import '../services/database.dart';
 import 'llamadasApi.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -14,7 +17,9 @@ class DogRegisterPage extends StatefulWidget {
 enum Sex { male, female }
 
 class _DogRegisterPageState extends State<DogRegisterPage> {
-
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  late String? userId = firebaseAuth.currentUser?.uid;
+  late String profileImageUrl;
   final _claveSingupDog = GlobalKey<FormState>();
   final TextEditingController _nameDogController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
@@ -231,9 +236,16 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
             FilledButton.tonal(
               onPressed: () async {
                 if (_claveSingupDog.currentState!.validate()) {
-                  //registrar en la bbdd
-                } else {
-                  //mostrar error
+                  var storageReference = FirebaseStorage.instance.ref().child(userId!).child(
+                      '${DateTime.now()}.jpg'); //crea o se dirige a una referencia  (dependiendo si ya existe) con nombre del id del usuario y dentro otra con
+                  // la fechahora.jpg
+                  await storageReference.putFile(
+                      _image!); //guarda la imagen en la referencia de encima con los datos de fechahora.jpg
+                  profileImageUrl = await storageReference.getDownloadURL();
+                  DatabaseService(uid: userId).registerDogData(_nameDogController.text, dropdownValue, sexView.name, int.parse(_ageController.text),
+                      _descriptionController.text, profileImageUrl);
+                  Navigator.pushNamed(
+                      context, '/home');
                 }
               },
               child: const Text('REGISTER DOG'),
