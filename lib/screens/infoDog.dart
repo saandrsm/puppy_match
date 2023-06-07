@@ -21,7 +21,7 @@ class _InfoDogState extends State<InfoDog> {
       'carcaterísticas de su raza, enfermedades o cuidados específicos, '
       'carácter, particularidades y los detalles sobre cómo, porqué y '
       'dónde fue rescatado. También especificar que entorno y circunstancias '
-      'serían las idóneas para su familia y hogar adoptivo. ';
+      'serían las idóneas para su familia y hogar adoptivo.';
 
   //metodo para marcar/desmarcar button favoritos
   bool _isFavorite = true;
@@ -118,7 +118,7 @@ class _InfoDogState extends State<InfoDog> {
         dogDescription,
         trimLines: 3,
         trimMode: TrimMode.Line,
-        trimCollapsedText: 'Show more',
+        trimCollapsedText: ' Show more',
         trimExpandedText: ' Hide',
         //estilo de texto que amplía
         moreStyle: TextStyle(
@@ -189,6 +189,7 @@ class _InfoDogState extends State<InfoDog> {
                         textCapitalization: TextCapitalization.sentences,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
+                          hintText: 'Nombre',
                         ),
                       ),
                       SizedBox(height: 20),
@@ -197,6 +198,7 @@ class _InfoDogState extends State<InfoDog> {
                         textCapitalization: TextCapitalization.sentences,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
+                          hintText: 'Raza',
                         ),
                       ),
                     ],
@@ -213,6 +215,7 @@ class _InfoDogState extends State<InfoDog> {
                     maxLength: 400,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
+                      hintText: 'Descripción',
                     ),
                     maxLines: 10,
                   ),

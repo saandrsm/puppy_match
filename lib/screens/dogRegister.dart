@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'llamadasApi.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class DogRegisterPage extends StatefulWidget {
   const DogRegisterPage({Key? key}) : super(key: key);
@@ -97,7 +98,10 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
               future: fetchDogBreeds(),
               builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
+                  return LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.orangeAccent,
+                    size: 30,
+                  );
                 } else if (snapshot.hasError) {
                   return const Text('Error al obtener las razas de perro');
                 } else {
