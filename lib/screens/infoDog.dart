@@ -10,6 +10,19 @@ class InfoDog extends StatefulWidget {
 }
 
 class _InfoDogState extends State<InfoDog> {
+  bool isShelter = true; //variable que define el tipo de usuario
+  bool isEditing = false;
+
+  String dogName = 'Ejemplo Nombre';
+  String breedName = 'Ejemplo raza';
+  String dogDescription =
+      'Aquí tiene que haber una descripción sobre el animal en cuestión '
+      'que hable sobre sus principales características como edad, raza, '
+      'carcaterísticas de su raza, enfermedades o cuidados específicos, '
+      'carácter, particularidades y los detalles sobre cómo, porqué y '
+      'dónde fue rescatado. También especificar que entorno y circunstancias '
+      'serían las idóneas para su familia y hogar adoptivo. ';
+
   //metodo para marcar/desmarcar button favoritos
   bool _isFavorite = true;
   void _toggleFavorite() {
@@ -19,6 +32,37 @@ class _InfoDogState extends State<InfoDog> {
       } else {
         _isFavorite = true;
       }
+    });
+  }
+
+  TextEditingController nameEditingController = TextEditingController();
+  TextEditingController breedEditingController = TextEditingController();
+  TextEditingController dogDescriptionEditingController = TextEditingController();
+
+  @override
+  void dispose() {
+    nameEditingController.dispose();
+    breedEditingController.dispose();
+    dogDescriptionEditingController.dispose();
+    super.dispose();
+  }
+
+  void startEditing() {
+    setState(() {
+      isEditing = true;
+      nameEditingController.text = dogName;
+      breedEditingController.text = breedName;
+      dogDescriptionEditingController.text = dogDescription;
+    });
+  }
+
+  void saveText() {
+    setState(() {
+      isEditing = false;
+      dogName = nameEditingController.text;
+      breedName = breedEditingController.text;
+      dogDescription = dogDescriptionEditingController.text;
+      // DatabaseService(uid: userId).updateNameAndDescription(name!, userDescription!); //llama al método para actualizar el nombre y descripción al dejar de editar
     });
   }
 
@@ -35,15 +79,15 @@ class _InfoDogState extends State<InfoDog> {
               children: [
                 Container(
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: const Text(
-                    'Ejemplo Nombre',
+                  child: Text(
+                    dogName,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
                 Text(
-                  'Ejemplo raza',
+                  breedName,
                   style: TextStyle(
                     color: Colors.grey[500],
                   ),
@@ -51,36 +95,41 @@ class _InfoDogState extends State<InfoDog> {
               ],
             ),
           ),
-          IconButton(
-            onPressed: _toggleFavorite,
-            icon:
-                (_isFavorite //si se presiona o no (cambia el valor o no) muestra un icono u otro
-                    ? const Icon(Icons.favorite_border)
-                    : const Icon(Icons.favorite)),
-            color: Colors.brown,
-          ),
+          isShelter
+              ? SizedBox(
+                  width: 0,
+                )
+              : IconButton(
+                  onPressed: _toggleFavorite,
+                  icon:
+                      (_isFavorite //si se presiona o no (cambia el valor o no) muestra un icono u otro
+                          ? const Icon(Icons.favorite_border)
+                          : const Icon(Icons.favorite)),
+                  color: Colors.brown,
+                ),
         ],
       ),
     );
 
     //widget de seccion de texto
-    Widget textSection = const Padding(
+    Widget textSection = Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 20), //left, top, right, bottom
       child: ReadMoreText(
-        'Aquí tiene que haber una descripción sobre el animal en cuestión '
-        'que hable sobre sus principales características como edad, raza, '
-        'carcaterísticas de su raza, enfermedades o cuidados específicos, '
-        'carácter, particularidades y los detalles sobre cómo, porqué y '
-        'dónde fue rescatado. También especificar que entorno y circunstancias '
-        'serían las idóneas para su familia y hogar adoptivo. ',
+        dogDescription,
         trimLines: 3,
         trimMode: TrimMode.Line,
         trimCollapsedText: 'Show more',
-        trimExpandedText: 'Hide',
+        trimExpandedText: ' Hide',
         //estilo de texto que amplía
-        moreStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.blueGrey),
+        moreStyle: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.normal,
+            color: Colors.blueGrey),
         //estilo de texto que reduce
-        lessStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.blueGrey),
+        lessStyle: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.normal,
+            color: Colors.blueGrey),
         //softWrap: true, //saltos de linea cuando se acabe el espacio,
         // en false el texto está en linea horizontal ilimitada
       ),
@@ -100,6 +149,23 @@ class _InfoDogState extends State<InfoDog> {
             fontWeight: FontWeight.w600,
           ),
         ),
+        actions: [
+          isShelter
+              ? isEditing
+                  ? IconButton(
+                      onPressed: () {
+                        saveText();
+                      },
+                      icon: const Icon(Icons.save),
+                    )
+                  : IconButton(
+                      onPressed: () {
+                        startEditing();
+                      },
+                      icon: const Icon(Icons.edit),
+                    )
+              : SizedBox(width: 0)
+        ],
       ),
       body: ListView(
         //cuerpo en formato de lista
@@ -113,23 +179,104 @@ class _InfoDogState extends State<InfoDog> {
             fit: BoxFit.contain,
           ),
           const SizedBox(height: 5), //espacio en blanco de separación
-          titleSection,
-          textSection,
+          isEditing
+              ? Padding(
+                  padding: EdgeInsets.fromLTRB(
+                      20, 10, 20, 20), //left, top, right, bottom
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: nameEditingController,
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      TextField(
+                        controller: breedEditingController,
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : titleSection,
+          isEditing
+              ? Padding(
+                  padding: EdgeInsets.fromLTRB(
+                      20, 0, 20, 20), //left, top, right, bottom
+                  child: TextField(
+                    controller: dogDescriptionEditingController,
+                    textCapitalization: TextCapitalization.sentences,
+                    textAlign: TextAlign.start,
+                    maxLength: 400,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                    maxLines: 10,
+                  ),
+                )
+              : textSection,
           const SizedBox(height: 5), //espacio en blanco de separación
           OverflowBar(
             //barra donde se encuentra el boton de Enviar Mensaje
             alignment: MainAxisAlignment.center,
             children: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  //falta funcionalidad hacia futura pantalla de chat
-                },
-                child: const Text('ENVIAR MENSAJE'),
-              )
+              isShelter
+                  ? ElevatedButton(
+                      onPressed: () {
+                        showAlertDialogInfo(context);
+                      },
+                      child: const Text('ELIMINAR PERRO'),
+                    )
+                  : ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('ENVIAR MENSAJE'),
+                    )
             ],
           ),
         ],
       ),
     );
   }
+}
+
+//alertDailog de confirmación
+showAlertDialogInfo(BuildContext context) {
+  Widget okButton = TextButton(
+    child: const Text("ELIMINAR"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+  Widget cancelButton = TextButton(
+    child: const Text("CANCELAR"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: const Text(
+      'Eliminar perro',
+      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+    ),
+    content: const Text(
+      '¿Estás seguro de que quieres eliminar este perro?',
+      style: TextStyle(fontSize: 16),
+      textAlign: TextAlign.start,
+    ),
+    actions: [cancelButton, okButton],
+  );
+// show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }
