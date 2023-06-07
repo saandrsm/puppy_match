@@ -405,42 +405,46 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               itemBuilder: (BuildContext context, int index) {
                 final item = imageFileList[index];
-                //si lo rodeo con un expanded y una row respectivamente
-                //el tamaño de las fotos se ajusta
-                return Dismissible(
-                  //widgets eliminables
-                  //la llave identifica los widgets, tiene que ser un String
-                  key: Key(item.path),
-                  onDismissed: (direction) {
-                    //cuando se deslice en cualquier dirección
-                    setState(() {
-                      //se elimina ese item de la lista
-                      FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(userId)
-                          .update({
-                        'gallery': FieldValue.arrayRemove([imageFileList[index].path])
-                      });
-                      final Reference storageReference = FirebaseStorage.instance.refFromURL(imageFileList[index].path);
-                      try{
-                        storageReference.delete();
-                      }catch (e){
-                        print(e);
-                      }
-                      imageFileList.removeAt(index);
-                    });
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Dismissible(
+                        //widgets eliminables
+                        //la llave identifica los widgets, tiene que ser un String
+                        key: Key(item.path),
+                        onDismissed: (direction) {
+                          //cuando se deslice en cualquier dirección
+                          setState(() {
+                            //se elimina ese item de la lista
+                            FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(userId)
+                                .update({
+                              'gallery': FieldValue.arrayRemove([imageFileList[index].path])
+                            });
+                            final Reference storageReference = FirebaseStorage.instance.refFromURL(imageFileList[index].path);
+                            try{
+                              storageReference.delete();
+                            }catch (e){
+                              print(e);
+                            }
+                            imageFileList.removeAt(index);
+                          });
 
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Imagen eliminada'), //texto del snackbar
-                      duration: Duration(seconds: 1), //duracion del snackbar
-                    ));
-                  },
-                  //background: Container(color: Colors.red),
-                  child: Image.network(imageFileList[index].path,
-                      fit: BoxFit.fill),
-                  // child: imageFileList!= null
-                  //     ? Image.file(File(imageFileList![index].path), fit: BoxFit.fill)
-                  //     : const Text('Selecciona una imagen'),
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text('Imagen eliminada'), //texto del snackbar
+                            duration: Duration(seconds: 1), //duracion del snackbar
+                          ));
+                        },
+                        //background: Container(color: Colors.red),
+                        child: Image.network(imageFileList[index].path,
+                            fit: BoxFit.fill),
+                        // child: imageFileList!= null
+                        //     ? Image.file(File(imageFileList![index].path), fit: BoxFit.fill)
+                        //     : const Text('Selecciona una imagen'),
+                      ),
+                    ),
+                  ],
                 );
               }),
         ],
@@ -464,90 +468,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  //widget de seccion de datos
-//   Widget dataSection = Container(
-//     padding: const EdgeInsets.all(30),
-//     child: Row(
-//       children: [
-//         Expanded(
-//           child: Column(
-//             crossAxisAlignment:
-//                 CrossAxisAlignment.center, //alineación en el centro
-//             children: [
-//               Container(
-//                 //contenedor de texto (para poder poner padding)
-//                 padding: const EdgeInsets.only(bottom: 8),
-//                 child: const Text(
-//                   'Nombre de usuario',
-//                   style: TextStyle(
-//                     color: Colors.orangeAccent,
-//                     fontSize: 16,
-//                   ),
-//                 ),
-//               ),
-//               const Text(
-//                 '@username',
-//                 style: TextStyle(
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               ),
-//               const SizedBox(height: 20), //espacio en blanco de separación
-//               Container(
-//                 //contenedor de texto (para poder poner padding)
-//                 padding: const EdgeInsets.only(bottom: 8),
-//                 child: const Text(
-//                   'Descripción',
-//                   style: TextStyle(
-//                     color: Colors.orangeAccent,
-//                     fontSize: 16,
-//                   ),
-//                 ),
-//               ),
-//               //prueba de paquete de texto ocultable (leer mas, leer menos)
-//               isEditing
-//                 ? TextField(
-//                   controller: textEditingController,
-//                   decoration: InputDecoration(
-//                   border: OutlineInputBorder(),
-//                   ),
-//                 : GestureDetector(
-//                   onTap: startEditing,
-//                   child: ReadMoreText(
-//                     'Aquí tiene que haber una descripción del usuario que explique '
-//                     'un poco por encima su entorno, situación y personalidad. '
-//                     'Cuántos animales ha cuidado, cuales son, como fue, cual es su situacion '
-//                     'actual, en que tipo de casa residen, si tiene experiencia en '
-//                     'adiestramiento, en participación en protectoras, en trabajos con '
-//                     'animales, etc. Tendrá un máximo de caracteres. ',
-//                     textAlign: TextAlign.center, //texto justificado
-//                     trimLines: 3,
-//                     //colorClickableText: Colors.red,
-//                     trimMode: TrimMode.Line,
-//                     trimCollapsedText: 'Show more',
-//                     trimExpandedText: 'Hide',
-//                     //estilo de texto que amplía
-//                     moreStyle: TextStyle(
-//                         fontSize: 14,
-//                         fontWeight: FontWeight.normal,
-//                         color: Colors.blueGrey),
-//                     //estilo de texto que reduce
-//                     lessStyle: TextStyle(
-//                         fontSize: 14,
-//                         fontWeight: FontWeight.normal,
-//                         color: Colors.blueGrey),
-//                     //estilo de texto general
-//                     style: TextStyle(
-//                       fontWeight: FontWeight.bold, //estilo en negrita
-//                     ),
-//                   ),
-//                 ),
-//             ],
-//           ),
-//         ),
-//       ],
-//     ),
-//   );
-// }
 
 //alertDailog de información
   showAlertDialogInfo(BuildContext context) {

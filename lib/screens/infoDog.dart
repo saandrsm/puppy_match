@@ -181,8 +181,7 @@ class _InfoDogState extends State<InfoDog> {
           const SizedBox(height: 5), //espacio en blanco de separación
           isEditing
               ? Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      20, 10, 20, 20), //left, top, right, bottom
+                  padding: EdgeInsets.fromLTRB(20, 10, 20, 20), //left, top, right, bottom
                   child: Column(
                     children: [
                       TextField(
@@ -206,8 +205,7 @@ class _InfoDogState extends State<InfoDog> {
               : titleSection,
           isEditing
               ? Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      20, 0, 20, 20), //left, top, right, bottom
+                  padding: EdgeInsets.fromLTRB(20, 0, 20, 20), //left, top, right, bottom
                   child: TextField(
                     controller: dogDescriptionEditingController,
                     textCapitalization: TextCapitalization.sentences,
@@ -238,6 +236,7 @@ class _InfoDogState extends State<InfoDog> {
                     )
             ],
           ),
+          SizedBox(height: 10)
         ],
       ),
     );
