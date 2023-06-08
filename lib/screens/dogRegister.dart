@@ -239,8 +239,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                   var storageReference = FirebaseStorage.instance.ref().child(userId!).child(
                       '${DateTime.now()}.jpg'); //crea o se dirige a una referencia  (dependiendo si ya existe) con nombre del id del usuario y dentro otra con
                   // la fechahora.jpg
-                  await storageReference.putFile(
-                      _image!); //guarda la imagen en la referencia de encima con los datos de fechahora.jpg
+                  await storageReference.putFile(_image!); //guarda la imagen en la referencia de encima con los datos de fechahora.jpg
                   profileImageUrl = await storageReference.getDownloadURL();
                   DatabaseService(uid: userId).registerDogData(_nameDogController.text, dropdownValue, sexView.name, int.parse(_ageController.text),
                       _descriptionController.text, profileImageUrl);

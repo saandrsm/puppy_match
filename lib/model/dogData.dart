@@ -13,7 +13,6 @@ class DogData {
   final List<String>? gallery;
 
 
-
   DogData({
     this.dogId,
     this.name,

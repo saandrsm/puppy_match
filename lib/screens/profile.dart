@@ -17,13 +17,11 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final FirebaseAuth firebaseAuth =
-      FirebaseAuth.instance; //instancia de la base de datos
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance; //instancia de la base de datos
   late String? userId;
   bool isEditing = false;
   TextEditingController nameEditingController = TextEditingController();
-  TextEditingController userDescriptionEditingController =
-      TextEditingController();
+  TextEditingController userDescriptionEditingController = TextEditingController();
   late String? name;
   late String? userDescription;
   late bool isShelter = true; //variable que define el tipo de usuario
@@ -36,8 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     try {
-      userId = firebaseAuth.currentUser
-          ?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
+      userId = firebaseAuth.currentUser?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
       UserData userData;
       DatabaseService(uid: userId).gettingUserData(userId).then((value) {
         setState(() {
@@ -261,8 +258,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             isEditing
                                 ? TextField(
                                     controller: nameEditingController,
-                                    textCapitalization:
-                                        TextCapitalization.sentences,
+                                    textCapitalization: TextCapitalization.sentences,
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
                                     ),
@@ -347,118 +343,122 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ],
                       )
-                    : Row(
-                        //alignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          IconButton(
-                            onPressed: () {
-                              showAlertDialogInfo(context);
-                            },
-                            icon: const Icon(
-                              Icons.info_outline,
-                              semanticLabel: 'info',
-                              //color: Colors.brown,
-                            ),
-                          ),
-                          const Expanded(child: SizedBox(width: 5)),
-                          const Text(
-                            'Galería',
-                            style: TextStyle(
-                              color: Colors.orangeAccent,
-                              fontSize: 16,
-                            ),
-                          ),
-                          const Expanded(child: SizedBox(width: 5)),
-                          IconButton(
-                            onPressed: () {
-                              //_openImagePicker();
-                              selectedImages();
-                            },
-                            icon: const Icon(
-                              Icons.photo_library_rounded,
-                              semanticLabel: 'gallery',
-                              //color: Colors.brown,
-                            ),
-                            // child: const Text("Abrir Galería",
-                            //     style: TextStyle(fontWeight: FontWeight.bold))
-                          ),
-                          const SizedBox(
-                              width: 10), //espacio en blanco de separación
-                          //button de abrir camara proxima implementacion en foto de perfil
-                          // IconButton(
-                          //     onPressed: () {
-                          //       _takeImagePicker();
-                          //     },
-                          //   icon: const Icon(Icons.photo_camera_rounded),
-                          //     // child: const Text("Abrir Cámara",
-                          //     //     style: TextStyle(fontWeight: FontWeight.bold))
-                          // ),
-                        ],
-                      ),
-                const SizedBox(height: 20), //espacio en blanco de separación
-                GridView.builder(
-                    //tabla para mostrar las imagenes seleccionadas
-                    padding: const EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 0.0),
-                    scrollDirection: Axis.vertical,
-                    //scroll vertical
-                    shrinkWrap: true,
-                    itemCount: imageFileList.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      mainAxisSpacing: 10,
-                      // mainAxisExtent: 350,
-                      crossAxisCount: 1, //columnas(imagenes) x fila
-                    ),
-                    itemBuilder: (BuildContext context, int index) {
-                      final item = imageFileList[index];
-                      return Row(
-                        children: [
-                          Expanded(
-                            child: Dismissible(
-                              //widgets eliminables
-                              //la llave identifica los widgets, tiene que ser un String
-                              key: Key(item.path),
-                              onDismissed: (direction) {
-                                //cuando se deslice en cualquier dirección
-                                setState(() {
-                                  //se elimina ese item de la lista
-                                  FirebaseFirestore.instance
-                                      .collection('users')
-                                      .doc(userId)
-                                      .update({
-                                    'gallery': FieldValue.arrayRemove(
-                                        [imageFileList[index].path])
-                                  });
-                                  final Reference storageReference =
-                                      FirebaseStorage.instance.refFromURL(
-                                          imageFileList[index].path);
-                                  try {
-                                    storageReference.delete();
-                                  } catch (e) {
-                                    print(e);
-                                  }
-                                  imageFileList.removeAt(index);
-                                });
-
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
-                                  content: Text(
-                                      'Imagen eliminada'), //texto del snackbar
-                                  duration: Duration(
-                                      seconds: 1), //duracion del snackbar
-                                ));
+                    : ListView(
+                      children: [
+                        Row(
+                          //alignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            IconButton(
+                              onPressed: () {
+                                showAlertDialogInfo(context);
                               },
-                              //background: Container(color: Colors.red),
-                              child: Image.network(imageFileList[index].path,
-                                  fit: BoxFit.fill),
-                              // child: imageFileList!= null
-                              //     ? Image.file(File(imageFileList![index].path), fit: BoxFit.fill)
-                              //     : const Text('Selecciona una imagen'),
+                              icon: const Icon(
+                                Icons.info_outline,
+                                semanticLabel: 'info',
+                                //color: Colors.brown,
+                              ),
                             ),
-                          ),
-                        ],
-                      );
-                    }),
+                            const Expanded(child: SizedBox(width: 5)),
+                            const Text(
+                              'Galería',
+                              style: TextStyle(
+                                color: Colors.orangeAccent,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const Expanded(child: SizedBox(width: 5)),
+                            IconButton(
+                              onPressed: () {
+                                //_openImagePicker();
+                                selectedImages();
+                              },
+                              icon: const Icon(
+                                Icons.photo_library_rounded,
+                                semanticLabel: 'gallery',
+                                //color: Colors.brown,
+                              ),
+                              // child: const Text("Abrir Galería",
+                              //     style: TextStyle(fontWeight: FontWeight.bold))
+                            ),
+                            const SizedBox(
+                                width: 10), //espacio en blanco de separación
+                            //button de abrir camara proxima implementacion en foto de perfil
+                            // IconButton(
+                            //     onPressed: () {
+                            //       _takeImagePicker();
+                            //     },
+                            //   icon: const Icon(Icons.photo_camera_rounded),
+                            //     // child: const Text("Abrir Cámara",
+                            //     //     style: TextStyle(fontWeight: FontWeight.bold))
+                            // ),
+                          ],
+                        ),
+                        const SizedBox(height: 20), //espacio en blanco de separación
+                        GridView.builder(
+                          //tabla para mostrar las imagenes seleccionadas
+                            padding: const EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 0.0),
+                            scrollDirection: Axis.vertical,
+                            //scroll vertical
+                            shrinkWrap: true,
+                            itemCount: imageFileList.length,
+                            gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              mainAxisSpacing: 10,
+                              // mainAxisExtent: 350,
+                              crossAxisCount: 1, //columnas(imagenes) x fila
+                            ),
+                            itemBuilder: (BuildContext context, int index) {
+                              final item = imageFileList[index];
+                              return Row(
+                                children: [
+                                  Expanded(
+                                    child: Dismissible(
+                                      //widgets eliminables
+                                      //la llave identifica los widgets, tiene que ser un String
+                                      key: Key(item.path),
+                                      onDismissed: (direction) {
+                                        //cuando se deslice en cualquier dirección
+                                        setState(() {
+                                          //se elimina ese item de la lista
+                                          FirebaseFirestore.instance
+                                              .collection('users')
+                                              .doc(userId)
+                                              .update({
+                                            'gallery': FieldValue.arrayRemove(
+                                                [imageFileList[index].path])
+                                          });
+                                          final Reference storageReference =
+                                          FirebaseStorage.instance.refFromURL(
+                                              imageFileList[index].path);
+                                          try {
+                                            storageReference.delete();
+                                          } catch (e) {
+                                            print(e);
+                                          }
+                                          imageFileList.removeAt(index);
+                                        });
+
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                          content: Text(
+                                              'Imagen eliminada'), //texto del snackbar
+                                          duration: Duration(
+                                              seconds: 1), //duracion del snackbar
+                                        ));
+                                      },
+                                      //background: Container(color: Colors.red),
+                                      child: Image.network(imageFileList[index].path,
+                                          fit: BoxFit.fill),
+                                      // child: imageFileList!= null
+                                      //     ? Image.file(File(imageFileList![index].path), fit: BoxFit.fill)
+                                      //     : const Text('Selecciona una imagen'),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }),
+                      ]
+                    ),
               ],
             ),
       floatingActionButton: FloatingActionButton(

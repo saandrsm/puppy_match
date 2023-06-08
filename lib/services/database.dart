@@ -1,9 +1,8 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:PuppyMatch/model/userData.dart';
+import 'package:PuppyMatch/model/dogData.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 
 class DatabaseService {
   final String? uid;
@@ -29,7 +28,7 @@ class DatabaseService {
 
   Future registerDogData(String name, String breed, String sex, int age, String description, String? profileImageUrl) async{
     String dogId = dogCollection.doc().id;
-      return await userCollection.doc(dogId).set({
+      return await dogCollection.doc(dogId).set({
         'dogId': dogId,
         'name': name,
         'breed': breed,
@@ -50,7 +49,16 @@ class DatabaseService {
     final docSnap = await ref.get();
     final userData = docSnap.data()!;
     return userData;
+  }
 
+  Future gettingDogData(String? dogId) async {
+    final ref = await dogCollection.doc(dogId).withConverter(
+      fromFirestore: DogData.fromFirestore,
+      toFirestore: (DogData dog, _) => dog.toFirestore(),
+    );
+    final docSnap = await ref.get();
+    final dogData = docSnap.data()!;
+    return dogData;
 
   }
 
@@ -66,11 +74,11 @@ class DatabaseService {
     }
   }
 
+
   Future getUserImages(String? userId) async {
     List<File> imageFiles = [];
     UserData? userData;
     gettingUserData(userId).then((value){
-
       userData = value;
     });
     final Reference storageReference = FirebaseStorage.instance.ref(userId);

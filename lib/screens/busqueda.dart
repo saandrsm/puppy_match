@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'llamadasApi.dart';
 import '/model/perro.dart';
 import '/model/perros_repository.dart';
+import 'package:PuppyMatch/services/database.dart';
+import 'package:PuppyMatch/model/userData.dart';
+import 'package:PuppyMatch/model/dogData.dart';
+
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -12,73 +16,107 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance; //instancia de la base de datos
+  final FirebaseFirestore firebaseFire = FirebaseFirestore.instance; //instancia de la base de datos
+  late String? userId;
+  late String? dogId;
+  late String? name;
+  late String? breed;
+  late String? shelterId;
+  late String? description;
+  late bool isShelter = true; //variable que define el tipo de usuario
+  bool isLoading = true;
+  late String profilePicture;
+  //late List<File> imageFileList;
   bool isSearching = false;
-  //metodo para generar Cards con lista de productos
-  List<Card> _buildGridCards(BuildContext context) {
-    List<Product> products = ProductsRepository.loadProducts(Breed.all);
 
-    if (products.isEmpty) {
-      //si la lista estuviera vacia devolvería una Card vacia
-      return const <Card>[];
+    @override
+    void initState() {
+      super.initState();
+      try {
+        userId = firebaseAuth.currentUser?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
+        UserData userData;
+        DogData dogData;
+        DatabaseService(uid: userId).gettingUserData(userId).then((value) {
+          setState(() {
+            userData = value;
+            isShelter = userData.isShelter!;
+          }); //se llama al método para obtener el registro del usuario y sus datos correspondientes, asignando dichos datos a las variables de la clase
+          DatabaseService(uid: dogId).gettingDogData(dogId).then((value) {
+            setState(() {
+              dogData = value;
+              name = dogData.name!;
+              breed = dogData.breed!;
+              description = dogData.description!;
+              profilePicture = dogData.profilePicture!;
+            });
+          });
+        });
+      } catch (e) {
+        print(e);
+      }
     }
 
-
-
+  //metodo para generar Cards con coleccion de perros
+  List<Card> _buildGridCards(BuildContext context) {
     final ThemeData theme = Theme.of(context); //variable theme para usar colores
 
-    return products.map((product) {
-      return Card(
-        //clipBehavior: Clip.antiAlias, //esto aún no se que es
-        elevation: 5,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: FutureBuilder<Dogdata>(
-            future: getImageRandom(),
-            builder: (BuildContext context, AsyncSnapshot<Dogdata> snapshot) {
-             return Column(
-                crossAxisAlignment:
-                CrossAxisAlignment.center, //alineado en el centro
-                children: <Widget>[
-                  // const Image(
-                  //   image: AssetImage('assets/golden-retriever.jpg'),
-                  // ),
-                  Expanded(
-                    // height: 135,
-                    // width: 300,
+    firebaseFire.collection("dogs").get().then(
+            (querySnapshot) {
+          print("Successfully completed");
+          for (var docSnapshot in querySnapshot.docs) {
+              List<DocumentSnapshot> perros = querySnapshot.docs;
+              perros.add(docSnapshot);
+              if (perros.isEmpty) {
+                //si la lista estuviera vacia devolvería una Card vacia
+                return const <Card>[];
+              } else {
+                return perros.map((perros) {
+                  return Card(
+                    //clipBehavior: Clip.antiAlias, //esto aún no se que es
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     child: ClipRRect(
-                      borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                      child: Image.network(
-                        snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
-                        // width: 330,
-                        // height: 150,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                   TextButton(
-                      style: TextButton.styleFrom(
-                          textStyle: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
+                      borderRadius: BorderRadius.circular(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center, //alineado en el centro
+                        children: <Widget>[
+                          Expanded(
+                            // height: 135,
+                            // width: 300,
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                              child: Image.network(
+                                profilePicture,
+                                //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                                fit: BoxFit.fill,
+                              ),
+                            ),
                           ),
-                          foregroundColor: theme.colorScheme
-                              .secondary //usar esquema determinado para color de fuente
+                          TextButton(
+                            style: TextButton.styleFrom(
+                                textStyle: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                foregroundColor: theme.colorScheme.secondary //usar esquema determinado para color de fuente
+                            ),
+                            onPressed: () {
+                              //al presional pasa hacia pantalla InfoDog
+                              Navigator.pushNamed(context, '/info');
+                            },
+                            child: Text(name!), //el texto es el getter del nombre del perro
+                          ),
+                        ],
                       ),
-                      onPressed: () {
-                        //al presional pasa hacia pantalla InfoPage
-                        Navigator.pushNamed(context, '/info');
-                      },
-                      child: Text(product
-                          .name), //el texto es el getter del nombre del producto
                     ),
-                ],
-              );
-            }
-          ),
-        ),
+                  );
+                }).toList();
+              }
+          }
+        },
+        onError: (e) => print("Error completing: $e"),
       );
-    }).toList();
   }
 
   final TextEditingController _searchController = TextEditingController();
@@ -96,14 +134,9 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-  // Widget customSearchBar = const Text('Welcome'); //variable de widget de texto
-  // Icon customIcon = const Icon(Icons.search); //variable de icono
 
   List<Product> products = ProductsRepository.loadProducts(Breed.all); //lista de todos los productos
-  //controlador de texto de TextField
 
-
-  bool isShelter = false; //variable que define el tipo de usuario
 
   @override
   Widget build(BuildContext context) {
