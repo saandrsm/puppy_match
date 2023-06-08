@@ -1,11 +1,10 @@
+import 'package:PuppyMatch/model/perro.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import '../services/database.dart';
-import 'llamadasApi.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class DogRegisterPage extends StatefulWidget {
   const DogRegisterPage({Key? key}) : super(key: key);
@@ -99,19 +98,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                 Expanded(child: SizedBox(width: 60)), //espacio en blanco de separación
               ],
             ),
-            FutureBuilder<List<String>>(
-              future: fetchDogBreeds(),
-              builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return LoadingAnimationWidget.staggeredDotsWave(
-                    color: Colors.orangeAccent,
-                    size: 30,
-                  );
-                } else if (snapshot.hasError) {
-                  return const Text('Error al obtener las razas de perro');
-                } else {
-                  List<String> razasPerro = snapshot.data!;
-                  return DropdownButtonFormField<String>(
+            DropdownButtonFormField<String>(
                     isExpanded: true,
                     value: dropdownValue,
                     onChanged: (String? newValue) {
@@ -119,15 +106,12 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                         dropdownValue = newValue!;
                       });
                     },
-                    items: razasPerro.map<DropdownMenuItem<String>>((String value) {
+                    items: razasDePerro.map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),
                       );
                     }).toList(),
-                  );
-                }
-              },
             ),
             const SizedBox(height: 20),
             Row(

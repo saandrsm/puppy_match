@@ -1,40 +1,103 @@
-// Copyright 2018-present the Flutter authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 
-enum Breed {  //listar todas las razas?
-  all,
-  accessories,
-  clothing,
-  home,
-}
+List<String> razasDePerro = [
+  "Mestizo",
+  "Akita Inu",
+  "Bulldog",
+  "Bulldog Francés",
+  "Caniche",
+  "Dálmata",
+  "Golden Retriever",
+  "Labrador Retriever",
+  "Pomerania",
+  "Pastor Alemán",
+  "Pug",
+  "Rottweiler",
+  "San Bernardo",
+  "Shih Tzu",
+  "Bichón Frisé",
+  "Bichón Maltés",
+  "Border Collie",
+  "Bull Terrier",
+  "Chihuahua",
+  "Chow Chow",
+  "Cocker Spaniel",
+  "Dóberman",
+  "Dóberman Pinscher",
+  "Dogo Argentino",
+  "Dogo de Burdeos",
+  "Galgo Español",
+  "Gran Danés",
+  "Husky Siberiano",
+  "Jack Russell Terrier",
+  "Mastín Español",
+  "Mastín Napolitano",
+  "Papillon",
+  "Pastor Belga",
+  "Pastor de Shetland",
+  "Pequinés",
+  "Perro de Agua Español",
+  "Perro Lobo Checoslovaco",
+  "Perro Lobo de Saarloos",
+  "Pointer",
+  "Presa Canario",
+  "Samoyedo",
+  "Schnauzer",
+  "Setter Irlandés",
+  "Shar Pei",
+  "Springer Spaniel",
+  "Terranova",
+  "Weimaraner",
+  "West Highland White Terrier",
+  "Whippet",
+  "Xoloitzcuintli",
+  "Yorkshire Terrier",
+  "Affenpinscher",
+  "Basset Hound",
+  "Beagle",
+  "Belga Malinois",
+  "Bóxer",
+  "Boyero de Berna",
+  "Boykin Spaniel",
+  "Braco de Weimar",
+  "Braco Húngaro",
+  "Braco Italiano",
+  "Braco Saint Germain",
+  "Bullmastiff",
+  "Cairn Terrier",
+  "Cane Corso",
+  "Cavalier King Charles Spaniel",
+  "Cimarrón Uruguayo",
+  "Cirneco del Etna",
+  "Clumber Spaniel",
+  "Corgi Galés",
+  "Dachshund",
+  "Deerhound Escocés",
+  "Drentse Patrijshond",
+  "Dunker Noruego",
+  "Eurasier",
+  "Field Spaniel",
+  "Fila Brasileño",
+  "Flat Coated Retriever",
+  "Fox Terrier",
+  "Gos d'Atura Català",
+  "Gran Boyero Suizo",
+  "Gran Perro Japonés",
+  "Hokkaido",
+  "Hovawart",
+  "Ibizan Hound",
+  "Irish Terrier",
+  "Irish Water Spaniel",
+  "Kai Ken",
+  "Klee Kai",
+  "Komondor",
+  "Kuvasz",
+  "Laika",
+  "Leonberger",
+  "Lundehund",
+  "Löwchen",
+  "Malinois",
+  "Maltés",
+  "Mastiff",
+];
 
-class Product {
-  const Product({
-    required this.breed,
-    required this.id,
-    required this.name,
-    required this.age,
-  });
 
-  final Breed breed;
-  final int id;
-  final String name;
-  final String age;
-
-  String get assetName => '$id-0.jpg';
-  //String get assetPackage => 'assets/diamond.png';
-
-  @override
-  String toString() => "$name (id=$id)";
-}

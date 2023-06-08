@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '/model/perro.dart';
-import '/model/perros_repository.dart';
 import 'package:PuppyMatch/services/database.dart';
 import 'package:PuppyMatch/model/userData.dart';
 import 'package:PuppyMatch/model/dogData.dart';
@@ -66,7 +64,6 @@ class _SearchPageState extends State<SearchPage> {
           print("Successfully completed");
           for (var docSnapshot in querySnapshot.docs) {
               List<DocumentSnapshot> perros = querySnapshot.docs;
-              perros.add(docSnapshot);
               if (perros.isEmpty) {
                 //si la lista estuviera vacia devolvería una Card vacia
                 return const <Card>[];
@@ -134,8 +131,6 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-
-  List<Product> products = ProductsRepository.loadProducts(Breed.all); //lista de todos los productos
 
 
   @override
