@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:PuppyMatch/services/database.dart';
 import 'package:PuppyMatch/model/userData.dart';
 import 'package:PuppyMatch/model/dogData.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 
 class SearchPage extends StatefulWidget {
@@ -22,9 +23,10 @@ class _SearchPageState extends State<SearchPage> {
   late String? breed;
   late String? shelterId;
   late String? description;
-  late bool isShelter = true; //variable que define el tipo de usuario
+  late bool isShelter; //variable que define el tipo de usuario
   bool isLoading = true;
   late String profilePicture;
+  List<Card> dogCards = [];
   //late List<File> imageFileList;
   bool isSearching = false;
 
@@ -34,87 +36,24 @@ class _SearchPageState extends State<SearchPage> {
       try {
         userId = firebaseAuth.currentUser?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
         UserData userData;
-        DogData dogData;
         DatabaseService(uid: userId).gettingUserData(userId).then((value) {
           setState(() {
             userData = value;
             isShelter = userData.isShelter!;
           }); //se llama al método para obtener el registro del usuario y sus datos correspondientes, asignando dichos datos a las variables de la clase
-          DatabaseService(uid: dogId).gettingDogData(dogId).then((value) {
-            setState(() {
-              dogData = value;
-              name = dogData.name!;
-              breed = dogData.breed!;
-              description = dogData.description!;
-              profilePicture = dogData.profilePicture!;
-            });
+        });
+        Future.delayed(Duration.zero, () {
+          setState(() {
+            dogCards = DatabaseService(uid: userId).getAllDogs(context);
+            isLoading = false;
           });
         });
+
       } catch (e) {
         print(e);
       }
     }
 
-  //metodo para generar Cards con coleccion de perros
-  List<Card> _buildGridCards(BuildContext context) {
-    final ThemeData theme = Theme.of(context); //variable theme para usar colores
-
-    firebaseFire.collection("dogs").get().then(
-            (querySnapshot) {
-          print("Successfully completed");
-          for (var docSnapshot in querySnapshot.docs) {
-              List<DocumentSnapshot> perros = querySnapshot.docs;
-              if (perros.isEmpty) {
-                //si la lista estuviera vacia devolvería una Card vacia
-                return const <Card>[];
-              } else {
-                return perros.map((perros) {
-                  return Card(
-                    //clipBehavior: Clip.antiAlias, //esto aún no se que es
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center, //alineado en el centro
-                        children: <Widget>[
-                          Expanded(
-                            // height: 135,
-                            // width: 300,
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                              child: Image.network(
-                                profilePicture,
-                                //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          ),
-                          TextButton(
-                            style: TextButton.styleFrom(
-                                textStyle: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                foregroundColor: theme.colorScheme.secondary //usar esquema determinado para color de fuente
-                            ),
-                            onPressed: () {
-                              //al presional pasa hacia pantalla InfoDog
-                              Navigator.pushNamed(context, '/info');
-                            },
-                            child: Text(name!), //el texto es el getter del nombre del perro
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList();
-              }
-          }
-        },
-        onError: (e) => print("Error completing: $e"),
-      );
-  }
 
   final TextEditingController _searchController = TextEditingController();
 
@@ -182,7 +121,10 @@ class _SearchPageState extends State<SearchPage> {
                           leading: const Icon(Icons.pets),
                           title: const Text('Todos'),
                           onTap: () {
-                            Navigator.pop(context);
+                            setState(() {
+                              dogCards = DatabaseService(uid: userId).getAllDogs(context);
+                              isLoading = false;
+                            });
                           },
                         ),
                         isShelter
@@ -191,21 +133,30 @@ class _SearchPageState extends State<SearchPage> {
                           leading: const Icon(Icons.favorite),
                           title: const Text('Favoritos'),
                           onTap: () {
-                            Navigator.pop(context);
+                            setState(() {
+                              dogCards = DatabaseService(uid: userId).getFavouriteDogs(context);
+                              isLoading = false;
+                            });
                           },
                         ),
                         ListTile(
                           leading: const Icon(Icons.female),
                           title: const Text('Hembras'),
                           onTap: () {
-                            Navigator.pop(context);
+                            setState(() {
+                              dogCards = DatabaseService(uid: userId).getFemaleDogs(context);
+                              isLoading = false;
+                            });
                           },
                         ),
                         ListTile(
                           leading: const Icon(Icons.male),
                           title: const Text('Machos'),
                           onTap: () {
-                            Navigator.pop(context);
+                            setState(() {
+                              dogCards = DatabaseService(uid: userId).getMaleDogs(context);
+                              isLoading = false;
+                            });
                           },
                         ),
                       ],
@@ -233,7 +184,13 @@ class _SearchPageState extends State<SearchPage> {
           },
         ),
       ),
-      body: OrientationBuilder(
+      body: isLoading
+          ? Center(
+        child: LoadingAnimationWidget.staggeredDotsWave(
+          color: Colors.orangeAccent,
+          size: 40,
+        ),
+      ):OrientationBuilder(
           //el cuerpo es un orientation builder para controlar las columns en horizontal
           builder: (context, orientation) {
         return GridView.count(
@@ -241,7 +198,7 @@ class _SearchPageState extends State<SearchPage> {
             crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
             padding: const EdgeInsets.all(16.0),
             childAspectRatio: 8.0 / 9.0, //esto no se muy bien que es
-            children: _buildGridCards(context) //llama al metodo para generar las Cards
+            children: dogCards, //llama al metodo para generar las Cards
             );
       }),
       floatingActionButton: FloatingActionButton(

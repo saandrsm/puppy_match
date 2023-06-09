@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:PuppyMatch/model/userData.dart';
 import 'package:PuppyMatch/model/dogData.dart';
@@ -115,8 +116,243 @@ class DatabaseService {
         }
       }
     });
+  }
 
+  List<Card> getAllDogs(BuildContext context){
+    List<Card> dogCards = [];
+    final ThemeData theme = Theme.of(context);
+    late String? profilePicture;
+    late String? name;
+    dogCollection.withConverter(
+      fromFirestore: DogData.fromFirestore,
+      toFirestore: (DogData dog, _) => dog.toFirestore(),
+    ).get().then((querySnapshot) async {
+      for (var docSnapshot in querySnapshot.docs) {
+        final dogData = docSnapshot.data();
+        profilePicture = dogData.profilePicture;
+        name = dogData.name;
+        Card dogCard = new Card(
+          elevation: 5,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center, //alineado en el centro
+              children: <Widget>[
+                Expanded(
+                  // height: 135,
+                  // width: 300,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                    child: Image.network(
+                      profilePicture!,
+                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      foregroundColor: theme.colorScheme.secondary //usar esquema determinado para color de fuente
+                  ),
+                  onPressed: () {
+                    //al presional pasa hacia pantalla InfoDog
+                    Navigator.pushNamed(context, '/info');
+                  },
+                  child: Text(name!), //el texto es el getter del nombre del perro
+                ),
+              ],
+            ),
+          ),
+        );
+        dogCards.add(dogCard);
+      }
 
+    }
+    );
+    return dogCards;
+  }
 
+  List<Card> getMaleDogs(BuildContext context){
+    List<Card> dogCards = [];
+    final ThemeData theme = Theme.of(context);
+    late String? profilePicture;
+    late String? name;
+    dogCollection.where("breed", isEqualTo: "male").withConverter(
+      fromFirestore: DogData.fromFirestore,
+      toFirestore: (DogData dog, _) => dog.toFirestore(),
+    ).get().then((querySnapshot) async {
+      for (var docSnapshot in querySnapshot.docs) {
+        final dogData = docSnapshot.data();
+        profilePicture = dogData.profilePicture;
+        name = dogData.name;
+        Card dogCard = new Card(
+          elevation: 5,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center, //alineado en el centro
+              children: <Widget>[
+                Expanded(
+                  // height: 135,
+                  // width: 300,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                    child: Image.network(
+                      profilePicture!,
+                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      foregroundColor: theme.colorScheme.secondary //usar esquema determinado para color de fuente
+                  ),
+                  onPressed: () {
+                    //al presional pasa hacia pantalla InfoDog
+                    Navigator.pushNamed(context, '/info');
+                  },
+                  child: Text(name!), //el texto es el getter del nombre del perro
+                ),
+              ],
+            ),
+          ),
+        );
+        dogCards.add(dogCard);
+      }
+
+    }
+    );
+    return dogCards;
+  }
+
+  List<Card> getFemaleDogs(BuildContext context){
+    List<Card> dogCards = [];
+    final ThemeData theme = Theme.of(context);
+    late String? profilePicture;
+    late String? name;
+    dogCollection.where("breed", isEqualTo: "female").withConverter(
+      fromFirestore: DogData.fromFirestore,
+      toFirestore: (DogData dog, _) => dog.toFirestore(),
+    ).get().then((querySnapshot) async {
+      for (var docSnapshot in querySnapshot.docs) {
+        final dogData = docSnapshot.data();
+        profilePicture = dogData.profilePicture;
+        name = dogData.name;
+        Card dogCard = new Card(
+          elevation: 5,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center, //alineado en el centro
+              children: <Widget>[
+                Expanded(
+                  // height: 135,
+                  // width: 300,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                    child: Image.network(
+                      profilePicture!,
+                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      foregroundColor: theme.colorScheme.secondary //usar esquema determinado para color de fuente
+                  ),
+                  onPressed: () {
+                    //al presional pasa hacia pantalla InfoDog
+                    Navigator.pushNamed(context, '/info');
+                  },
+                  child: Text(name!), //el texto es el getter del nombre del perro
+                ),
+              ],
+            ),
+          ),
+        );
+        dogCards.add(dogCard);
+      }
+
+    }
+    );
+    return dogCards;
+  }
+
+  List<Card> getFavouriteDogs(BuildContext context){
+    List<Card> dogCards = [];
+    final ThemeData theme = Theme.of(context);
+    late String? profilePicture;
+    late String? name;
+    UserData? userData;
+    DogData dogData;
+    List<String>? favouriteDogs;
+    gettingUserData(uid).then((value){
+      userData = value;
+      favouriteDogs = userData!.favourites;
+    });
+    for(var dogId in favouriteDogs!){
+        gettingDogData(dogId).then((value) {
+        dogData = value;
+        profilePicture = dogData.profilePicture;
+        name = dogData.name;
+        Card dogCard = new Card(
+          elevation: 5,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center, //alineado en el centro
+              children: <Widget>[
+                Expanded(
+                  // height: 135,
+                  // width: 300,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                    child: Image.network(
+                      profilePicture!,
+                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      foregroundColor: theme.colorScheme.secondary //usar esquema determinado para color de fuente
+                  ),
+                  onPressed: () {
+                    //al presional pasa hacia pantalla InfoDog
+                    Navigator.pushNamed(context, '/info');
+                  },
+                  child: Text(name!), //el texto es el getter del nombre del perro
+                ),
+              ],
+            ),
+          ),
+        );
+        dogCards.add(dogCard);
+      });
+    }
+    return dogCards;
   }
 }

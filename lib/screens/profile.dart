@@ -344,6 +344,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       )
                     : ListView(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
                       children: [
                         Row(
                           //alignment: MainAxisAlignment.center,
