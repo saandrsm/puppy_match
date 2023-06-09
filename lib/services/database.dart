@@ -18,7 +18,7 @@ class DatabaseService {
         'uid': uid,
         'name': fullname,
         'email': email,
-        'description': "",
+        'description': "Escribe una descripción.",
         'profilePicture': value,
         'gallery': [],
         'favourites': [],
@@ -182,7 +182,7 @@ class DatabaseService {
     final ThemeData theme = Theme.of(context);
     late String? profilePicture;
     late String? name;
-    dogCollection.where("breed", isEqualTo: "male").withConverter(
+    dogCollection.where("sex", isEqualTo: "male").withConverter(
       fromFirestore: DogData.fromFirestore,
       toFirestore: (DogData dog, _) => dog.toFirestore(),
     ).get().then((querySnapshot) async {
@@ -241,7 +241,7 @@ class DatabaseService {
     final ThemeData theme = Theme.of(context);
     late String? profilePicture;
     late String? name;
-    dogCollection.where("breed", isEqualTo: "female").withConverter(
+    dogCollection.where("sex", isEqualTo: "female").withConverter(
       fromFirestore: DogData.fromFirestore,
       toFirestore: (DogData dog, _) => dog.toFirestore(),
     ).get().then((querySnapshot) async {

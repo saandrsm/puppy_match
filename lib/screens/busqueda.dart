@@ -1,9 +1,9 @@
+import 'package:PuppyMatch/model/dogData.dart';
+import 'package:PuppyMatch/model/userData.dart';
+import 'package:PuppyMatch/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:PuppyMatch/services/database.dart';
-import 'package:PuppyMatch/model/userData.dart';
-import 'package:PuppyMatch/model/dogData.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 
@@ -29,45 +29,7 @@ class _SearchPageState extends State<SearchPage> {
   //late List<File> imageFileList;
   bool isSearching = false;
 
-    @override
-    void initState() {
-      super.initState();
-      try {
-        userId = firebaseAuth.currentUser?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
-        UserData userData;
-        DatabaseService(uid: userId).gettingUserData(userId).then((value) {
-          setState(() {
-            userData = value;
-            isShelter = userData.isShelter!;
-          }); //se llama al método para obtener el registro del usuario y sus datos correspondientes, asignando dichos datos a las variables de la clase
-        });
-        Future.delayed(Duration.zero, () {
-          setState(() {
-            dogCards = DatabaseService(uid: userId).getAllDogs(context);
-          });
-        });
-
-      } catch (e) {
-        print(e);
-      }
-    }
-
-
-  final TextEditingController _searchController = TextEditingController();
-
-  void startSearch() {
-    setState(() {
-      isSearching = true;
-      _searchController.text = "";
-    });
-  }
-
-  void stopSearch() {
-    setState(() {
-      isSearching = false;
-    });
-  }
-
+    final TextEditingController _searchController = TextEditingController();
 
 
   @override
@@ -120,7 +82,9 @@ class _SearchPageState extends State<SearchPage> {
                           title: const Text('Todos'),
                           onTap: () {
                             setState(() {
+                              dogCards.clear();
                               dogCards = DatabaseService(uid: userId).getAllDogs(context);
+                              Navigator.pop(context);
                             });
                           },
                         ),
@@ -131,7 +95,9 @@ class _SearchPageState extends State<SearchPage> {
                           title: const Text('Favoritos'),
                           onTap: () {
                             setState(() {
+                              dogCards.clear();
                               dogCards = DatabaseService(uid: userId).getFavouriteDogs(context);
+                              Navigator.pop(context);
                             });
                           },
                         ),
@@ -140,7 +106,9 @@ class _SearchPageState extends State<SearchPage> {
                           title: const Text('Hembras'),
                           onTap: () {
                             setState(() {
+                              dogCards.clear();
                               dogCards = DatabaseService(uid: userId).getFemaleDogs(context);
+                              Navigator.pop(context);
                             });
                           },
                         ),
@@ -149,7 +117,9 @@ class _SearchPageState extends State<SearchPage> {
                           title: const Text('Machos'),
                           onTap: () {
                             setState(() {
+                              dogCards.clear();
                               dogCards = DatabaseService(uid: userId).getMaleDogs(context);
+                              Navigator.pop(context);
                             });
                           },
                         ),
@@ -207,6 +177,45 @@ class _SearchPageState extends State<SearchPage> {
         child: const Icon(Icons.chat_outlined),
       ),
     );
+  }
+
+  @override
+    void initState() {
+      super.initState();
+      try {
+        userId = firebaseAuth.currentUser?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
+        UserData userData;
+        DatabaseService(uid: userId).gettingUserData(userId).then((value) {
+          setState(() {
+            userData = value;
+            isShelter = userData.isShelter!;
+          }); //se llama al método para obtener el registro del usuario y sus datos correspondientes, asignando dichos datos a las variables de la clase
+        });
+        Future.delayed(Duration.zero, () {
+          setState(() {
+            dogCards = DatabaseService(uid: userId).getAllDogs(context);
+          });
+        });
+
+      } catch (e) {
+        print(e);
+      }
+    }
+
+
+  void startSearch() {
+    setState(() {
+      isSearching = true;
+      _searchController.text = "";
+    });
+  }
+
+
+
+  void stopSearch() {
+    setState(() {
+      isSearching = false;
+    });
   }
 }
 
