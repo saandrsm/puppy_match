@@ -24,7 +24,6 @@ class _SearchPageState extends State<SearchPage> {
   late String? shelterId;
   late String? description;
   late bool isShelter; //variable que define el tipo de usuario
-  bool isLoading = true;
   late String profilePicture;
   List<Card> dogCards = [];
   //late List<File> imageFileList;
@@ -45,7 +44,6 @@ class _SearchPageState extends State<SearchPage> {
         Future.delayed(Duration.zero, () {
           setState(() {
             dogCards = DatabaseService(uid: userId).getAllDogs(context);
-            isLoading = false;
           });
         });
 
@@ -123,7 +121,6 @@ class _SearchPageState extends State<SearchPage> {
                           onTap: () {
                             setState(() {
                               dogCards = DatabaseService(uid: userId).getAllDogs(context);
-                              isLoading = false;
                             });
                           },
                         ),
@@ -135,7 +132,6 @@ class _SearchPageState extends State<SearchPage> {
                           onTap: () {
                             setState(() {
                               dogCards = DatabaseService(uid: userId).getFavouriteDogs(context);
-                              isLoading = false;
                             });
                           },
                         ),
@@ -145,7 +141,6 @@ class _SearchPageState extends State<SearchPage> {
                           onTap: () {
                             setState(() {
                               dogCards = DatabaseService(uid: userId).getFemaleDogs(context);
-                              isLoading = false;
                             });
                           },
                         ),
@@ -155,7 +150,6 @@ class _SearchPageState extends State<SearchPage> {
                           onTap: () {
                             setState(() {
                               dogCards = DatabaseService(uid: userId).getMaleDogs(context);
-                              isLoading = false;
                             });
                           },
                         ),
@@ -184,7 +178,7 @@ class _SearchPageState extends State<SearchPage> {
           },
         ),
       ),
-      body: isLoading
+      body: dogCards.isEmpty
           ? Center(
         child: LoadingAnimationWidget.staggeredDotsWave(
           color: Colors.orangeAccent,
