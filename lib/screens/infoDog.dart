@@ -1,58 +1,118 @@
+import 'dart:io';
+import 'package:PuppyMatch/model/dogData.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:readmore/readmore.dart';
 
-class InfoDog extends StatefulWidget {
-  //const InfoDog({super.key});
-  const InfoDog({Key? key}) : super(key: key);
+import '../model/userData.dart';
+import '../services/database.dart';
 
+class InfoDog extends StatefulWidget {
+  final String dogId; //inicializa la variable donde se guarda el Id de la Card
+  const InfoDog({Key? key, required this.dogId}) : super(key: key); //obtiene el valor de la key y lo asigna a la variable
+  static final routeName = '/info';
   @override
-  State<InfoDog> createState() => _InfoDogState();
+  State<InfoDog> createState() => _InfoDogState(dogId);
 }
 
 class _InfoDogState extends State<InfoDog> {
-  bool isShelter = true; //variable que define el tipo de usuario
+  final String? dogId;
+  _InfoDogState(this.dogId);
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance; //instancia de la base de datos
+  final FirebaseFirestore firebaseFire = FirebaseFirestore.instance; //instancia de la base de datos
+  late bool isShelter = false; //variable que define el tipo de usuario
   bool isEditing = false;
-
-  String dogName = 'Ejemplo Nombre';
-  String breedName = 'Ejemplo raza';
-  String dogDescription =
-      'Aquí tiene que haber una descripción sobre el animal en cuestión '
-      'que hable sobre sus principales características como edad, raza, '
-      'carcaterísticas de su raza, enfermedades o cuidados específicos, '
-      'carácter, particularidades y los detalles sobre cómo, porqué y '
-      'dónde fue rescatado. También especificar que entorno y circunstancias '
-      'serían las idóneas para su familia y hogar adoptivo.';
+  late String? dogName = "";
+  late String? breedName = "";
+  late String? dogDescription = "";
+  late int? dogAge = 0;
+  late String? userId;
+  late String? dogProfilePicture = "";
+  late String profileImageUrl = "";
+  late List<String>? userFavouriteDogs;
+  late bool _isFavorite = false;
+  bool isLoading = true;
 
   //metodo para marcar/desmarcar button favoritos
-  bool _isFavorite = true;
-  void _toggleFavorite() {
-    setState(() {
+  void _toggleFavorite() async {
       if (_isFavorite) {
-        _isFavorite = false;
+        await DatabaseService(uid: userId).removeDogFavourite(dogId!).then((value) {
+          setState(() {
+            _isFavorite = false;
+          });
+        });
       } else {
-        _isFavorite = true;
+        await DatabaseService(uid: userId).addDogFavourite(dogId!).then((value) {
+          setState(() {
+            _isFavorite = true;
+          });
+        });
       }
-    });
   }
 
   TextEditingController nameEditingController = TextEditingController();
   TextEditingController breedEditingController = TextEditingController();
   TextEditingController dogDescriptionEditingController = TextEditingController();
+  TextEditingController dogAgeEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    try {
+      userId = firebaseAuth.currentUser?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
+      UserData userData;
+      DatabaseService(uid: userId).gettingUserData(userId).then((value) {
+        setState(() {
+        userData = value;
+        isShelter = userData.isShelter!;
+        userFavouriteDogs = userData.favourites;
+        if(userFavouriteDogs!.contains(dogId)){
+          _isFavorite = true;
+        }
+        else {
+          _isFavorite = false;
+        }
+        });
+      });
+      Future.delayed(Duration.zero, () async {
+        await DatabaseService(uid: userId).gettingDogData(dogId).then((value) {
+          setState(() {
+            DogData dogData = value;
+            dogDescription = dogData.description;
+            dogName = dogData.name;
+            breedName = dogData.breed;
+            dogProfilePicture = dogData.profilePicture;
+            dogAge = dogData.age;
+            isLoading = false;
+          });
+        });
+      });
+    } catch (e) {
+      print(e);
+    }
+
+  }
 
   @override
   void dispose() {
     nameEditingController.dispose();
     breedEditingController.dispose();
     dogDescriptionEditingController.dispose();
+    dogAgeEditingController.dispose();
     super.dispose();
   }
 
   void startEditing() {
     setState(() {
       isEditing = true;
-      nameEditingController.text = dogName;
-      breedEditingController.text = breedName;
-      dogDescriptionEditingController.text = dogDescription;
+      nameEditingController.text = dogName!;
+      breedEditingController.text = breedName!;
+      dogDescriptionEditingController.text = dogDescription!;
+      dogAgeEditingController.text = dogAge.toString();
     });
   }
 
@@ -62,8 +122,40 @@ class _InfoDogState extends State<InfoDog> {
       dogName = nameEditingController.text;
       breedName = breedEditingController.text;
       dogDescription = dogDescriptionEditingController.text;
-      // DatabaseService(uid: userId).updateNameAndDescription(name!, userDescription!); //llama al método para actualizar el nombre y descripción al dejar de editar
+      dogAge = int.parse(dogAgeEditingController.text);
+      DatabaseService(uid: userId).updateDogNameDescriptionBreedAndAge(dogId!, dogName!, dogDescription!,breedName!, dogAge!); //llama al método para actualizar el nombre y descripción al dejar de editar
     });
+  }
+
+  final _pickerPerfil = ImagePicker();
+  //metodo del imagePicker para abrir galería
+  Future<void> _openImagePicker() async {
+    File? _image;
+    final XFile? pickedImage =
+    await _pickerPerfil.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        _image = File(pickedImage.path);
+      });
+      var storageReference = FirebaseStorage.instance.ref().child(userId!).child(
+          '${DateTime.now()}.jpg'); //crea o se dirige a una referencia  (dependiendo si ya existe) con nombre del id del usuario y dentro otra con
+      // la fechahora.jpg
+      await storageReference.putFile(
+          _image!); //guarda la imagen en la referencia de encima con los datos de fechahora.jpg
+      profileImageUrl = await storageReference.getDownloadURL();
+      try {
+        DatabaseService(uid: userId).updateDogProfilePictures(dogId,
+            profileImageUrl); //llama al método para actualizar la foto de perfil con la nueva
+        // y borra la antigua del storage
+      } catch (e) {
+        print("No se ha podido borrar nada");
+      }
+
+      setState(() {
+        dogProfilePicture =
+            profileImageUrl; //modifica la foto de perfil que se muestra con la añadida
+      });
+    }
   }
 
   @override
@@ -80,14 +172,20 @@ class _InfoDogState extends State<InfoDog> {
                 Container(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Text(
-                    dogName,
+                    dogName!,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
                 Text(
-                  breedName,
+                  breedName!,
+                  style: TextStyle(
+                    color: Colors.grey[500],
+                  ),
+                ),
+                Text(
+                  dogAge!.toString(),
                   style: TextStyle(
                     color: Colors.grey[500],
                   ),
@@ -103,8 +201,8 @@ class _InfoDogState extends State<InfoDog> {
                   onPressed: _toggleFavorite,
                   icon:
                       (_isFavorite //si se presiona o no (cambia el valor o no) muestra un icono u otro
-                          ? const Icon(Icons.favorite_border)
-                          : const Icon(Icons.favorite)),
+                          ? const Icon(Icons.favorite)
+                          : const Icon(Icons.favorite_border)),
                   color: Colors.brown,
                 ),
         ],
@@ -115,7 +213,7 @@ class _InfoDogState extends State<InfoDog> {
     Widget textSection = Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 20), //left, top, right, bottom
       child: ReadMoreText(
-        dogDescription,
+        dogDescription!,
         trimLines: 3,
         trimMode: TrimMode.Line,
         trimCollapsedText: ' Show more',
@@ -167,16 +265,26 @@ class _InfoDogState extends State<InfoDog> {
               : SizedBox(width: 0)
         ],
       ),
-      body: ListView(
+      body: isLoading
+          ? Center(
+        child: LoadingAnimationWidget.staggeredDotsWave(
+          color: Colors.orangeAccent,
+          size: 40,
+        ),
+      )
+          : ListView(
         //cuerpo en formato de lista
         padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
         children: [
-          Image.asset(
-            //imagen y sus parametros
-            'assets/golden-retriever.jpg',
-            width: 600,
-            height: 240,
-            fit: BoxFit.contain,
+          GestureDetector(
+            onLongPress: _openImagePicker,
+            child: Image.network(
+              //imagen y sus parametros
+              dogProfilePicture!,
+              width: 600,
+              height: 240,
+              fit: BoxFit.contain,
+            ),
           ),
           const SizedBox(height: 5), //espacio en blanco de separación
           isEditing
@@ -199,6 +307,14 @@ class _InfoDogState extends State<InfoDog> {
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: 'Raza',
+                        ),
+                      ),
+                      TextField(
+                        controller: dogAgeEditingController,
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Edad',
                         ),
                       ),
                     ],
@@ -229,7 +345,7 @@ class _InfoDogState extends State<InfoDog> {
               isShelter
                   ? ElevatedButton(
                       onPressed: () {
-                        showAlertDialogInfo(context);
+                        showAlertDialogInfo(context, userId!, dogId!);
                       },
                       child: const Text('ELIMINAR PERRO'),
                     )
@@ -247,11 +363,13 @@ class _InfoDogState extends State<InfoDog> {
 }
 
 //alertDailog de confirmación
-showAlertDialogInfo(BuildContext context) {
+showAlertDialogInfo(BuildContext context, String userId, dogId) {
   Widget okButton = TextButton(
     child: const Text("ELIMINAR"),
-    onPressed: () {
-      Navigator.of(context).pop();
+    onPressed: () async {
+      await DatabaseService(uid: userId).deleteDog(dogId).then((value) {
+        Navigator.pushNamed(context, '/home');
+      });
     },
   );
   Widget cancelButton = TextButton(

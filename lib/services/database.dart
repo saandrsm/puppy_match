@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:PuppyMatch/screens/infoDog.dart';
+import 'package:deep_route/deep_route.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:PuppyMatch/model/userData.dart';
@@ -57,8 +59,9 @@ class DatabaseService {
       fromFirestore: DogData.fromFirestore,
       toFirestore: (DogData dog, _) => dog.toFirestore(),
     );
+    DogData? dogData;
     final docSnap = await ref.get();
-    final dogData = docSnap.data()!;
+    dogData = docSnap.data();
     return dogData;
 
   }
@@ -69,6 +72,20 @@ class DatabaseService {
       await userRef.update({
         'name': newName,
         'description': newDescription,
+      });
+    } catch (error) {
+      return Future.error(error);
+    }
+  }
+
+  Future<void> updateDogNameDescriptionBreedAndAge(String dogId, String newName, String newDescription, String breed, int age) async {
+    try {
+      final dogRef = dogCollection.doc(dogId);
+      await dogRef.update({
+        'name': newName,
+        'description': newDescription,
+        'breed': breed,
+        'age': age,
       });
     } catch (error) {
       return Future.error(error);
@@ -96,37 +113,202 @@ class DatabaseService {
   Future <void> updateProfilePictures(String? userId, String? profileImageUrl) async {
     UserData? userData;
     String? profilePicture;
-    gettingUserData(userId).then((value){
+    gettingUserData(userId).then((value) async {
       userData = value;
       profilePicture = userData?.profilePicture;
       try {
         final userRef = userCollection.doc(uid);
-         userRef.update({
+        userRef.update({
           'profilePicture': profileImageUrl,
         });
       } catch (error) {
         return Future.error(error);
       }
-      if(profilePicture != ""){
-        final Reference storageReference = FirebaseStorage.instance.refFromURL(profilePicture!);
-        try{
+      await FirebaseStorage.instance.ref("icono_perfil.png").getDownloadURL().then((value) async {
+      if (profilePicture != value) {
+        final Reference storageReference = FirebaseStorage.instance.refFromURL(
+            profilePicture!);
+        try {
           storageReference.delete();
-        }catch (e){
+        } catch (e) {
           print(e);
         }
       }
     });
+    });
   }
 
-  List<Card> getAllDogs(BuildContext context){
+  Future <void> updateDogProfilePictures(String? dogId, String? profileImageUrl) async {
+    DogData? dogData;
+    String? profilePicture;
+    gettingDogData(dogId).then((value) async {
+      dogData = value;
+      profilePicture = dogData?.profilePicture;
+      try {
+        final dogRef = dogCollection.doc(dogId);
+        dogRef.update({
+          'profilePicture': profileImageUrl,
+        });
+      } catch (error) {
+        return Future.error(error);
+      }
+      await FirebaseStorage.instance.ref("icono_perfil.png").getDownloadURL().then((value) async {
+        if (profilePicture != value) {
+          final Reference storageReference = FirebaseStorage.instance
+              .refFromURL(profilePicture!);
+          try {
+            storageReference.delete();
+          } catch (e) {
+            print(e);
+          }
+        }
+      });
+    });
+  }
+
+  Future getAllDogs(BuildContext context) async {
     List<Card> dogCards = [];
     final ThemeData theme = Theme.of(context);
     late String? profilePicture;
     late String? name;
-    dogCollection.withConverter(
+    try {
+      QuerySnapshot<DogData> querySnapshot = await dogCollection.withConverter(
+        fromFirestore: DogData.fromFirestore,
+        toFirestore: (DogData dog, _) => dog.toFirestore(),
+      ).get();
+        for (var docSnapshot in querySnapshot.docs) {
+          DogData dogData = docSnapshot.data();
+          profilePicture = dogData.profilePicture;
+          name = dogData.name;
+          Card dogCard = new Card(
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                //alineado en el centro
+                children: <Widget>[
+                  Expanded(
+                    // height: 135,
+                    // width: 300,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10)),
+                      child: Image.network(
+                        profilePicture!,
+                        //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                        textStyle: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        foregroundColor: theme.colorScheme
+                            .secondary //usar esquema determinado para color de fuente
+                    ),
+                    onPressed: () {
+                      //al presional pasa hacia pantalla InfoDog
+                      DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId);
+                    },
+                    child: Text(
+                        name!), //el texto es el getter del nombre del perro
+                  ),
+                ],
+              ),
+            ),
+          );
+          dogCards.add(dogCard);
+        }
+    } catch (error){
+      return Future.error(error);
+    }
+
+      return dogCards;
+  }
+
+  Future getAllShelterDogs(BuildContext context) async {
+    List<Card> dogCards = [];
+    final ThemeData theme = Theme.of(context);
+    late String? profilePicture;
+    late String? name;
+    try {
+      QuerySnapshot<DogData> querySnapshot = await dogCollection.where("shelterId", isEqualTo: uid).withConverter(
+        fromFirestore: DogData.fromFirestore,
+        toFirestore: (DogData dog, _) => dog.toFirestore(),
+      ).get();
+      for (var docSnapshot in querySnapshot.docs) {
+        DogData dogData = docSnapshot.data();
+        profilePicture = dogData.profilePicture;
+        name = dogData.name;
+        Card dogCard = new Card(
+          elevation: 5,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              //alineado en el centro
+              children: <Widget>[
+                Expanded(
+                  // height: 135,
+                  // width: 300,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                    child: Image.network(
+                      profilePicture!,
+                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      foregroundColor: theme.colorScheme
+                          .secondary //usar esquema determinado para color de fuente
+                  ),
+                  onPressed: () {
+                    //al presional pasa hacia pantalla InfoDog
+                    DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId);
+                  },
+                  child: Text(
+                      name!), //el texto es el getter del nombre del perro
+                ),
+              ],
+            ),
+          ),
+        );
+        dogCards.add(dogCard);
+      }
+    } catch (error){
+      return Future.error(error);
+    }
+
+    return dogCards;
+  }
+
+  Future getMaleDogs(BuildContext context) async{
+    List<Card> dogCards = [];
+    final ThemeData theme = Theme.of(context);
+    late String? profilePicture;
+    late String? name;
+    QuerySnapshot<DogData> querySnapshot = await dogCollection.where("sex", isEqualTo: "male").withConverter(
       fromFirestore: DogData.fromFirestore,
       toFirestore: (DogData dog, _) => dog.toFirestore(),
-    ).get().then((querySnapshot) async {
+    ).get();
       for (var docSnapshot in querySnapshot.docs) {
         final dogData = docSnapshot.data();
         profilePicture = dogData.profilePicture;
@@ -161,7 +343,7 @@ class DatabaseService {
                   ),
                   onPressed: () {
                     //al presional pasa hacia pantalla InfoDog
-                    Navigator.pushNamed(context, '/info');
+                    DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId);
                   },
                   child: Text(name!), //el texto es el getter del nombre del perro
                 ),
@@ -172,20 +354,86 @@ class DatabaseService {
         dogCards.add(dogCard);
       }
 
-    }
-    );
     return dogCards;
   }
 
-  List<Card> getMaleDogs(BuildContext context){
+  Future getShelterMaleDogs(BuildContext context) async {
     List<Card> dogCards = [];
     final ThemeData theme = Theme.of(context);
     late String? profilePicture;
     late String? name;
-    dogCollection.where("sex", isEqualTo: "male").withConverter(
+    try {
+      QuerySnapshot<DogData> querySnapshot = await dogCollection.where("shelterId", isEqualTo: uid).where("sex", isEqualTo: "male").withConverter(
+        fromFirestore: DogData.fromFirestore,
+        toFirestore: (DogData dog, _) => dog.toFirestore(),
+      ).get();
+      for (var docSnapshot in querySnapshot.docs) {
+        DogData dogData = docSnapshot.data();
+        profilePicture = dogData.profilePicture;
+        name = dogData.name;
+        Card dogCard = new Card(
+          elevation: 5,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              //alineado en el centro
+              children: <Widget>[
+                Expanded(
+                  // height: 135,
+                  // width: 300,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                    child: Image.network(
+                      profilePicture!,
+                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      foregroundColor: theme.colorScheme
+                          .secondary //usar esquema determinado para color de fuente
+                  ),
+                  onPressed: () {
+                    //al presional pasa hacia pantalla InfoDog
+                    DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId);
+                  },
+                  child: Text(
+                      name!), //el texto es el getter del nombre del perro
+                ),
+              ],
+            ),
+          ),
+        );
+        dogCards.add(dogCard);
+      }
+    } catch (error){
+      //return Future.error(error);
+      return print("está fallando esto");
+    }
+
+    return dogCards;
+  }
+
+  Future getFemaleDogs(BuildContext context) async{
+    List<Card> dogCards = [];
+    final ThemeData theme = Theme.of(context);
+    late String? profilePicture;
+    late String? name;
+    QuerySnapshot<DogData> querySnapshot = await dogCollection.where("sex", isEqualTo: "female").withConverter(
       fromFirestore: DogData.fromFirestore,
       toFirestore: (DogData dog, _) => dog.toFirestore(),
-    ).get().then((querySnapshot) async {
+    ).get();
       for (var docSnapshot in querySnapshot.docs) {
         final dogData = docSnapshot.data();
         profilePicture = dogData.profilePicture;
@@ -220,7 +468,7 @@ class DatabaseService {
                   ),
                   onPressed: () {
                     //al presional pasa hacia pantalla InfoDog
-                    Navigator.pushNamed(context, '/info');
+                    DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId);
                   },
                   child: Text(name!), //el texto es el getter del nombre del perro
                 ),
@@ -230,38 +478,40 @@ class DatabaseService {
         );
         dogCards.add(dogCard);
       }
-
-    }
-    );
     return dogCards;
   }
 
-  List<Card> getFemaleDogs(BuildContext context){
+  Future getShelterFemaleDogs(BuildContext context) async {
     List<Card> dogCards = [];
     final ThemeData theme = Theme.of(context);
     late String? profilePicture;
     late String? name;
-    dogCollection.where("sex", isEqualTo: "female").withConverter(
-      fromFirestore: DogData.fromFirestore,
-      toFirestore: (DogData dog, _) => dog.toFirestore(),
-    ).get().then((querySnapshot) async {
+    try {
+      QuerySnapshot<DogData> querySnapshot = await dogCollection.where("shelterId", isEqualTo: uid).where("sex", isEqualTo: "female").withConverter(
+        fromFirestore: DogData.fromFirestore,
+        toFirestore: (DogData dog, _) => dog.toFirestore(),
+      ).get();
       for (var docSnapshot in querySnapshot.docs) {
-        final dogData = docSnapshot.data();
+        DogData dogData = docSnapshot.data();
         profilePicture = dogData.profilePicture;
         name = dogData.name;
         Card dogCard = new Card(
           elevation: 5,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center, //alineado en el centro
+              crossAxisAlignment: CrossAxisAlignment.center,
+              //alineado en el centro
               children: <Widget>[
                 Expanded(
                   // height: 135,
                   // width: 300,
                   child: ClipRRect(
-                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
                     child: Image.network(
                       profilePicture!,
                       //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
@@ -275,13 +525,15 @@ class DatabaseService {
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
-                      foregroundColor: theme.colorScheme.secondary //usar esquema determinado para color de fuente
+                      foregroundColor: theme.colorScheme
+                          .secondary //usar esquema determinado para color de fuente
                   ),
                   onPressed: () {
                     //al presional pasa hacia pantalla InfoDog
-                    Navigator.pushNamed(context, '/info');
+                    DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId);
                   },
-                  child: Text(name!), //el texto es el getter del nombre del perro
+                  child: Text(
+                      name!), //el texto es el getter del nombre del perro
                 ),
               ],
             ),
@@ -289,13 +541,14 @@ class DatabaseService {
         );
         dogCards.add(dogCard);
       }
-
+    } catch (error){
+      return Future.error(error);
     }
-    );
+
     return dogCards;
   }
 
-  List<Card> getFavouriteDogs(BuildContext context){
+  Future getFavouriteDogs(BuildContext context) async {
     List<Card> dogCards = [];
     final ThemeData theme = Theme.of(context);
     late String? profilePicture;
@@ -303,12 +556,12 @@ class DatabaseService {
     UserData? userData;
     DogData dogData;
     List<String>? favouriteDogs;
-    gettingUserData(uid).then((value){
+    await gettingUserData(uid).then((value){
       userData = value;
       favouriteDogs = userData!.favourites;
     });
     for(var dogId in favouriteDogs!){
-        gettingDogData(dogId).then((value) {
+        await gettingDogData(dogId).then((value) {
         dogData = value;
         profilePicture = dogData.profilePicture;
         name = dogData.name;
@@ -342,7 +595,7 @@ class DatabaseService {
                   ),
                   onPressed: () {
                     //al presional pasa hacia pantalla InfoDog
-                    Navigator.pushNamed(context, '/info');
+                    DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId);
                   },
                   child: Text(name!), //el texto es el getter del nombre del perro
                 ),
@@ -355,4 +608,37 @@ class DatabaseService {
     }
     return dogCards;
   }
+
+  Future<void> deleteDog(String dogId) async {
+    DogData? dogData;
+    String? profilePicture;
+    await gettingDogData(dogId).then((value) async {
+      dogData = value;
+      profilePicture = dogData?.profilePicture;
+      try {
+        final dogRef = dogCollection.doc(dogId);
+        dogRef.delete();
+      } catch (error) {
+          return Future.error(error);
+      }
+    });
+    final Reference storageReference = FirebaseStorage.instance.refFromURL(profilePicture!);
+    try {
+      storageReference.delete();
+    } catch (e) {
+        print(e);
+    }
+  }
+  Future<void> addDogFavourite(String dogId) async{
+    userCollection.doc(uid).update({
+      'favourites': FieldValue.arrayUnion([dogId])
+    });
+  }
+
+  Future<void> removeDogFavourite(String dogId) async{
+    userCollection.doc(uid).update({
+      'favourites': FieldValue.arrayRemove([dogId])
+    });
+  }
+
 }

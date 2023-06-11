@@ -1,4 +1,3 @@
-import 'package:PuppyMatch/model/dogData.dart';
 import 'package:PuppyMatch/model/userData.dart';
 import 'package:PuppyMatch/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -28,6 +27,7 @@ class _SearchPageState extends State<SearchPage> {
   List<Card> dogCards = [];
   //late List<File> imageFileList;
   bool isSearching = false;
+  bool isLoading = true;
 
     final TextEditingController _searchController = TextEditingController();
 
@@ -80,12 +80,33 @@ class _SearchPageState extends State<SearchPage> {
                         ListTile(
                           leading: const Icon(Icons.pets),
                           title: const Text('Todos'),
-                          onTap: () {
-                            setState(() {
-                              dogCards.clear();
-                              dogCards = DatabaseService(uid: userId).getAllDogs(context);
-                              Navigator.pop(context);
+                          onTap: ()  {
+                            Future.delayed(Duration.zero, (){
+                              setState(() {
+                                isLoading = true;
+                              });
+                              if(isShelter){
+                                DatabaseService(uid: userId).getAllShelterDogs(context).then((value) {
+                                  setState(() {
+                                    isLoading = true;
+                                    dogCards.clear();
+                                    dogCards = value;
+                                    isLoading = false;
+                                  });
+                                });
+                              }
+                              else{
+                                DatabaseService(uid: userId).getAllDogs(context).then((value) {
+                                  setState(() {
+                                    isLoading = true;
+                                    dogCards.clear();
+                                    dogCards = value;
+                                    isLoading = false;
+                                  });
+                                });
+                              }
                             });
+                            Navigator.pop(context);
                           },
                         ),
                         isShelter
@@ -94,33 +115,84 @@ class _SearchPageState extends State<SearchPage> {
                           leading: const Icon(Icons.favorite),
                           title: const Text('Favoritos'),
                           onTap: () {
-                            setState(() {
-                              dogCards.clear();
-                              dogCards = DatabaseService(uid: userId).getFavouriteDogs(context);
-                              Navigator.pop(context);
+                            Future.delayed(Duration.zero, (){
+                              setState(() {
+                                isLoading = true;
+                              });
+                              DatabaseService(uid: userId).getFavouriteDogs(context).then((value) {
+                                setState(() {
+                                  isLoading = true;
+                                  dogCards.clear();
+                                  dogCards = value;
+                                  isLoading = false;
+                                });
+                              });
                             });
+                            Navigator.pop(context);
                           },
                         ),
                         ListTile(
                           leading: const Icon(Icons.female),
                           title: const Text('Hembras'),
                           onTap: () {
-                            setState(() {
-                              dogCards.clear();
-                              dogCards = DatabaseService(uid: userId).getFemaleDogs(context);
-                              Navigator.pop(context);
+                            Future.delayed(Duration.zero, (){
+                              setState(() {
+                                isLoading = true;
+                              });
+                              if(isShelter){
+                                DatabaseService(uid: userId).getShelterFemaleDogs(context).then((value) {
+                                  setState(() {
+                                    isLoading = true;
+                                    dogCards.clear();
+                                    dogCards = value;
+                                    isLoading = false;
+                                  });
+                                });
+                              }
+                              else{
+                                DatabaseService(uid: userId).getFemaleDogs(context).then((value) {
+                                  setState(() {
+                                    isLoading = true;
+                                    dogCards.clear();
+                                    dogCards = value;
+                                    isLoading = false;
+                                  });
+                                });
+                              }
                             });
+                            Navigator.pop(context);
                           },
                         ),
                         ListTile(
                           leading: const Icon(Icons.male),
                           title: const Text('Machos'),
                           onTap: () {
-                            setState(() {
-                              dogCards.clear();
-                              dogCards = DatabaseService(uid: userId).getMaleDogs(context);
-                              Navigator.pop(context);
+                            Future.delayed(Duration.zero, (){
+                              setState(() {
+                                isLoading = true;
+                              });
+                              if(isShelter){
+                                DatabaseService(uid: userId).getShelterMaleDogs(context).then((value) {
+                                  setState(() {
+                                    isLoading = true;
+                                    dogCards.clear();
+                                    dogCards = value;
+                                    isLoading = false;
+                                  });
+                                });
+                              }
+                              else{
+                                DatabaseService(uid: userId).getMaleDogs(context).then((value) {
+                                  setState(() {
+                                    isLoading = true;
+                                    dogCards.clear();
+                                    dogCards = value;
+                                    isLoading = false;
+                                  });
+                                });
+                              }
                             });
+                            Navigator.pop(context);
                           },
                         ),
                       ],
@@ -148,7 +220,7 @@ class _SearchPageState extends State<SearchPage> {
           },
         ),
       ),
-      body: dogCards.isEmpty
+      body: isLoading
           ? Center(
         child: LoadingAnimationWidget.staggeredDotsWave(
           color: Colors.orangeAccent,
@@ -189,17 +261,32 @@ class _SearchPageState extends State<SearchPage> {
           setState(() {
             userData = value;
             isShelter = userData.isShelter!;
+            if(isShelter){
+              Future.delayed(Duration.zero, (){
+                DatabaseService(uid: userId).getAllShelterDogs(context).then((value) {
+                  setState(() {
+                    dogCards = value;
+                    isLoading = false;
+                  });
+                });
+              });
+            }
+            else{
+              Future.delayed(Duration.zero, (){
+                DatabaseService(uid: userId).getAllDogs(context).then((value) {
+                  setState(() {
+                    dogCards = value;
+                    isLoading = false;
+                  });
+                });
+              });
+            }
           }); //se llama al método para obtener el registro del usuario y sus datos correspondientes, asignando dichos datos a las variables de la clase
         });
-        Future.delayed(Duration.zero, () {
-          setState(() {
-            dogCards = DatabaseService(uid: userId).getAllDogs(context);
-          });
-        });
-
       } catch (e) {
         print(e);
       }
+
     }
 
 
@@ -217,7 +304,10 @@ class _SearchPageState extends State<SearchPage> {
       isSearching = false;
     });
   }
+  
+  
 }
+
 
 // void _onTap() {
 //   print('Hola');

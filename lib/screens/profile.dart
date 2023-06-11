@@ -371,7 +371,6 @@ class _ProfilePageState extends State<ProfilePage> {
                             const Expanded(child: SizedBox(width: 5)),
                             IconButton(
                               onPressed: () {
-                                //_openImagePicker();
                                 selectedImages();
                               },
                               icon: const Icon(
