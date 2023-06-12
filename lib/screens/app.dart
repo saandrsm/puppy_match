@@ -1,3 +1,4 @@
+import 'package:deep_route/deep_material_app.dart';
 import 'package:flutter/material.dart';
 import 'package:PuppyMatch/screens/infoDog.dart';
 import 'package:PuppyMatch/screens/profile.dart';
@@ -6,7 +7,6 @@ import 'package:PuppyMatch/screens/resetPassword.dart';
 import 'package:PuppyMatch/screens/chatListScreen.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:page_transition/page_transition.dart';
-
 import 'dogRegister.dart';
 import 'home.dart';
 import 'login.dart';
@@ -17,7 +17,7 @@ class PuppyMatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return DeepMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'PuppyMatch',
       home: AnimatedSplashScreen(
@@ -43,11 +43,24 @@ class PuppyMatch extends StatelessWidget {
         '/api': (context) => const Api(),
         '/register': (context) => const RegisterPage(),
         '/profile': (context) => const ProfilePage(),
-        '/info': (context) => const InfoDog(),
         '/reset': (context) => const ResetPage(),
         '/conversations': (context) => const ChatListScreen(),
         '/registerDog': (context) => const DogRegisterPage()
 
+      },
+      onGenerateRoute: (settings){
+    if (settings.name == InfoDog.routeName) {
+      final args = settings.arguments as String;
+      return MaterialPageRoute(
+        builder: (context) {
+          return InfoDog(
+            dogId: args,
+          );
+        },
+      );
+    }
+        assert(false, 'No se ha recibido ${settings.name}');
+        return null;
       },
       theme: ThemeData(   //definición del tema claro
         useMaterial3: true,

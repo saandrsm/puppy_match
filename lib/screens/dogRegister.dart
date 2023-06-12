@@ -1,7 +1,10 @@
+import 'package:PuppyMatch/model/perro.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'llamadasApi.dart';
+import '../services/database.dart';
 
 class DogRegisterPage extends StatefulWidget {
   const DogRegisterPage({Key? key}) : super(key: key);
@@ -13,7 +16,9 @@ class DogRegisterPage extends StatefulWidget {
 enum Sex { male, female }
 
 class _DogRegisterPageState extends State<DogRegisterPage> {
-
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  late String? userId = firebaseAuth.currentUser?.uid;
+  late String profileImageUrl;
   final _claveSingupDog = GlobalKey<FormState>();
   final TextEditingController _nameDogController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
@@ -93,16 +98,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                 Expanded(child: SizedBox(width: 60)), //espacio en blanco de separación
               ],
             ),
-            FutureBuilder<List<String>>(
-              future: fetchDogBreeds(),
-              builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return const Text('Error al obtener las razas de perro');
-                } else {
-                  List<String> razasPerro = snapshot.data!;
-                  return DropdownButtonFormField<String>(
+            DropdownButtonFormField<String>(
                     isExpanded: true,
                     value: dropdownValue,
                     onChanged: (String? newValue) {
@@ -110,15 +106,12 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                         dropdownValue = newValue!;
                       });
                     },
-                    items: razasPerro.map<DropdownMenuItem<String>>((String value) {
+                    items: razasDePerro.map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),
                       );
                     }).toList(),
-                  );
-                }
-              },
             ),
             const SizedBox(height: 20),
             Row(
@@ -227,9 +220,15 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
             FilledButton.tonal(
               onPressed: () async {
                 if (_claveSingupDog.currentState!.validate()) {
-                  //registrar en la bbdd
-                } else {
-                  //mostrar error
+                  var storageReference = FirebaseStorage.instance.ref().child(userId!).child(
+                      '${DateTime.now()}.jpg'); //crea o se dirige a una referencia  (dependiendo si ya existe) con nombre del id del usuario y dentro otra con
+                  // la fechahora.jpg
+                  await storageReference.putFile(_image!); //guarda la imagen en la referencia de encima con los datos de fechahora.jpg
+                  profileImageUrl = await storageReference.getDownloadURL();
+                  DatabaseService(uid: userId).registerDogData(_nameDogController.text, dropdownValue, sexView.name, int.parse(_ageController.text),
+                      _descriptionController.text, profileImageUrl);
+                  Navigator.pushNamed(
+                      context, '/home');
                 }
               },
               child: const Text('REGISTER DOG'),

@@ -1,9 +1,10 @@
+import 'package:PuppyMatch/model/userData.dart';
+import 'package:PuppyMatch/services/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'llamadasApi.dart';
-import '/model/perro.dart';
-import '/model/perros_repository.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -13,98 +14,23 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance; //instancia de la base de datos
+  final FirebaseFirestore firebaseFire = FirebaseFirestore.instance; //instancia de la base de datos
+  late String? userId;
+  late String? dogId;
+  late String? name;
+  late String? breed;
+  late String? shelterId;
+  late String? description;
+  late bool isShelter; //variable que define el tipo de usuario
+  late String profilePicture;
+  List<Card> dogCards = [];
+  //late List<File> imageFileList;
   bool isSearching = false;
-  //metodo para generar Cards con lista de productos
-  List<Card> _buildGridCards(BuildContext context) {
-    List<Product> products = ProductsRepository.loadProducts(Breed.all);
+  bool isLoading = true;
 
-    if (products.isEmpty) {
-      //si la lista estuviera vacia devolvería una Card vacia
-      return const <Card>[];
-    }
+    final TextEditingController _searchController = TextEditingController();
 
-
-
-    final ThemeData theme = Theme.of(context); //variable theme para usar colores
-
-    return products.map((product) {
-      return Card(
-        //clipBehavior: Clip.antiAlias, //esto aún no se que es
-        elevation: 5,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: FutureBuilder<Dogdata>(
-            future: getImageRandom(),
-            builder: (BuildContext context, AsyncSnapshot<Dogdata> snapshot) {
-             return Column(
-                crossAxisAlignment:
-                CrossAxisAlignment.center, //alineado en el centro
-                children: <Widget>[
-                  // const Image(
-                  //   image: AssetImage('assets/golden-retriever.jpg'),
-                  // ),
-                  Expanded(
-                    // height: 135,
-                    // width: 300,
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                      child: Image.network(
-                        snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
-                        // width: 330,
-                        // height: 150,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                   TextButton(
-                      style: TextButton.styleFrom(
-                          textStyle: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          foregroundColor: theme.colorScheme
-                              .secondary //usar esquema determinado para color de fuente
-                      ),
-                      onPressed: () {
-                        //al presional pasa hacia pantalla InfoPage
-                        Navigator.pushNamed(context, '/info');
-                      },
-                      child: Text(product
-                          .name), //el texto es el getter del nombre del producto
-                    ),
-                ],
-              );
-            }
-          ),
-        ),
-      );
-    }).toList();
-  }
-
-  final TextEditingController _searchController = TextEditingController();
-
-  void startSearch() {
-    setState(() {
-      isSearching = true;
-      _searchController.text = "";
-    });
-  }
-
-  void stopSearch() {
-    setState(() {
-      isSearching = false;
-    });
-  }
-
-  // Widget customSearchBar = const Text('Welcome'); //variable de widget de texto
-  // Icon customIcon = const Icon(Icons.search); //variable de icono
-
-  List<Product> products = ProductsRepository.loadProducts(Breed.all); //lista de todos los productos
-  //controlador de texto de TextField
-
-
-  bool isShelter = false; //variable que define el tipo de usuario
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +80,32 @@ class _SearchPageState extends State<SearchPage> {
                         ListTile(
                           leading: const Icon(Icons.pets),
                           title: const Text('Todos'),
-                          onTap: () {
+                          onTap: ()  {
+                            Future.delayed(Duration.zero, (){
+                              setState(() {
+                                isLoading = true;
+                              });
+                              if(isShelter){
+                                DatabaseService(uid: userId).getAllShelterDogs(context).then((value) {
+                                  setState(() {
+                                    isLoading = true;
+                                    dogCards.clear();
+                                    dogCards = value;
+                                    isLoading = false;
+                                  });
+                                });
+                              }
+                              else{
+                                DatabaseService(uid: userId).getAllDogs(context).then((value) {
+                                  setState(() {
+                                    isLoading = true;
+                                    dogCards.clear();
+                                    dogCards = value;
+                                    isLoading = false;
+                                  });
+                                });
+                              }
+                            });
                             Navigator.pop(context);
                           },
                         ),
@@ -164,6 +115,19 @@ class _SearchPageState extends State<SearchPage> {
                           leading: const Icon(Icons.favorite),
                           title: const Text('Favoritos'),
                           onTap: () {
+                            Future.delayed(Duration.zero, (){
+                              setState(() {
+                                isLoading = true;
+                              });
+                              DatabaseService(uid: userId).getFavouriteDogs(context).then((value) {
+                                setState(() {
+                                  isLoading = true;
+                                  dogCards.clear();
+                                  dogCards = value;
+                                  isLoading = false;
+                                });
+                              });
+                            });
                             Navigator.pop(context);
                           },
                         ),
@@ -171,6 +135,31 @@ class _SearchPageState extends State<SearchPage> {
                           leading: const Icon(Icons.female),
                           title: const Text('Hembras'),
                           onTap: () {
+                            Future.delayed(Duration.zero, (){
+                              setState(() {
+                                isLoading = true;
+                              });
+                              if(isShelter){
+                                DatabaseService(uid: userId).getShelterFemaleDogs(context).then((value) {
+                                  setState(() {
+                                    isLoading = true;
+                                    dogCards.clear();
+                                    dogCards = value;
+                                    isLoading = false;
+                                  });
+                                });
+                              }
+                              else{
+                                DatabaseService(uid: userId).getFemaleDogs(context).then((value) {
+                                  setState(() {
+                                    isLoading = true;
+                                    dogCards.clear();
+                                    dogCards = value;
+                                    isLoading = false;
+                                  });
+                                });
+                              }
+                            });
                             Navigator.pop(context);
                           },
                         ),
@@ -178,6 +167,31 @@ class _SearchPageState extends State<SearchPage> {
                           leading: const Icon(Icons.male),
                           title: const Text('Machos'),
                           onTap: () {
+                            Future.delayed(Duration.zero, (){
+                              setState(() {
+                                isLoading = true;
+                              });
+                              if(isShelter){
+                                DatabaseService(uid: userId).getShelterMaleDogs(context).then((value) {
+                                  setState(() {
+                                    isLoading = true;
+                                    dogCards.clear();
+                                    dogCards = value;
+                                    isLoading = false;
+                                  });
+                                });
+                              }
+                              else{
+                                DatabaseService(uid: userId).getMaleDogs(context).then((value) {
+                                  setState(() {
+                                    isLoading = true;
+                                    dogCards.clear();
+                                    dogCards = value;
+                                    isLoading = false;
+                                  });
+                                });
+                              }
+                            });
                             Navigator.pop(context);
                           },
                         ),
@@ -206,7 +220,13 @@ class _SearchPageState extends State<SearchPage> {
           },
         ),
       ),
-      body: OrientationBuilder(
+      body: isLoading
+          ? Center(
+        child: LoadingAnimationWidget.staggeredDotsWave(
+          color: Colors.orangeAccent,
+          size: 40,
+        ),
+      ):OrientationBuilder(
           //el cuerpo es un orientation builder para controlar las columns en horizontal
           builder: (context, orientation) {
         return GridView.count(
@@ -214,7 +234,7 @@ class _SearchPageState extends State<SearchPage> {
             crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
             padding: const EdgeInsets.all(16.0),
             childAspectRatio: 8.0 / 9.0, //esto no se muy bien que es
-            children: _buildGridCards(context) //llama al metodo para generar las Cards
+            children: dogCards, //llama al metodo para generar las Cards
             );
       }),
       floatingActionButton: FloatingActionButton(
@@ -230,7 +250,64 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
   }
+
+  @override
+    void initState() {
+      super.initState();
+      try {
+        userId = firebaseAuth.currentUser?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
+        UserData userData;
+        DatabaseService(uid: userId).gettingUserData(userId).then((value) {
+          setState(() {
+            userData = value;
+            isShelter = userData.isShelter!;
+            if(isShelter){
+              Future.delayed(Duration.zero, (){
+                DatabaseService(uid: userId).getAllShelterDogs(context).then((value) {
+                  setState(() {
+                    dogCards = value;
+                    isLoading = false;
+                  });
+                });
+              });
+            }
+            else{
+              Future.delayed(Duration.zero, (){
+                DatabaseService(uid: userId).getAllDogs(context).then((value) {
+                  setState(() {
+                    dogCards = value;
+                    isLoading = false;
+                  });
+                });
+              });
+            }
+          }); //se llama al método para obtener el registro del usuario y sus datos correspondientes, asignando dichos datos a las variables de la clase
+        });
+      } catch (e) {
+        print(e);
+      }
+
+    }
+
+
+  void startSearch() {
+    setState(() {
+      isSearching = true;
+      _searchController.text = "";
+    });
+  }
+
+
+
+  void stopSearch() {
+    setState(() {
+      isSearching = false;
+    });
+  }
+  
+  
 }
+
 
 // void _onTap() {
 //   print('Hola');

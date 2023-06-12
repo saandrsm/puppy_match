@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:PuppyMatch/screens/register.dart';
-import 'package:email_validator/email_validator.dart';
 
 class ResetPage extends StatefulWidget {
   const ResetPage({Key? key}) : super(key: key);
@@ -63,6 +61,7 @@ class _ResetPageState extends State<ResetPage> {
                   if (value!.isEmpty) {
                     return 'Campo vacío';
                   }
+                  return null;
                   // else if (mailValid(value) == false) {
                   //   return 'Correo electrónico inválido';
                   // }

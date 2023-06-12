@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);  //variable para utilizar colores del tema definido
+    //final ThemeData theme = Theme.of(context);  //variable para utilizar colores del tema definido
 
     //el indice en 0 muestra la HomePage y el indice en 1 muestra la ProfilePage
     Widget page;
