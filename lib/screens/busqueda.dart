@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
 
@@ -294,7 +293,6 @@ class _SearchPageState extends State<SearchPage> {
   }
 
 
-
   void stopSearch() {
     setState(() {
       isSearching = false;
@@ -352,10 +350,4 @@ class _SearchPageState extends State<SearchPage> {
       }
     });
   }
-  
 }
-
-
-// void _onTap() {
-//   print('Hola');
-// }

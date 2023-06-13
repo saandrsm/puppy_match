@@ -6,13 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:readmore/readmore.dart';
-
+import '../model/perro.dart';
 import '../model/userData.dart';
 import '../services/database.dart';
 
 class InfoDog extends StatefulWidget {
   final String dogId; //inicializa la variable donde se guarda el Id de la Card
-  const InfoDog({Key? key, required this.dogId}) : super(key: key); //obtiene el valor de la key y lo asigna a la variable
+  const InfoDog({Key? key, required this.dogId})
+      : super(key: key); //obtiene el valor de la key y lo asigna a la variable
   static final routeName = '/info';
   @override
   State<InfoDog> createState() => _InfoDogState(dogId);
@@ -21,7 +22,8 @@ class InfoDog extends StatefulWidget {
 class _InfoDogState extends State<InfoDog> {
   final String? dogId;
   _InfoDogState(this.dogId);
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance; //instancia de la base de datos
+  final FirebaseAuth firebaseAuth =
+      FirebaseAuth.instance; //instancia de la base de datos
   late bool isShelter = false; //variable que define el tipo de usuario
   bool isEditing = false;
   late String? dogName = "";
@@ -38,21 +40,24 @@ class _InfoDogState extends State<InfoDog> {
 
   //metodo para marcar/desmarcar button favoritos
   void _toggleFavorite() async {
-      if (_isFavorite) {
-        await DatabaseService(uid: userId).removeDogFavourite(dogId!).then((value) {
-          setState(() {
-            _isFavorite = false;
-          });
+    if (_isFavorite) {
+      await DatabaseService(uid: userId)
+          .removeDogFavourite(dogId!)
+          .then((value) {
+        setState(() {
+          _isFavorite = false;
         });
-      } else {
-        await DatabaseService(uid: userId).addDogFavourite(dogId!).then((value) {
-          setState(() {
-            _isFavorite = true;
-          });
+      });
+    } else {
+      await DatabaseService(uid: userId).addDogFavourite(dogId!).then((value) {
+        setState(() {
+          _isFavorite = true;
         });
-      }
+      });
+    }
   }
 
+  // String dropdownValue = breedName; //item por defecto en lista de DropDownButton de mascotas
   TextEditingController nameEditingController = TextEditingController();
   TextEditingController breedEditingController = TextEditingController();
   TextEditingController dogDescriptionEditingController = TextEditingController();
@@ -62,19 +67,19 @@ class _InfoDogState extends State<InfoDog> {
   void initState() {
     super.initState();
     try {
-      userId = firebaseAuth.currentUser?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
+      userId = firebaseAuth.currentUser
+          ?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
       UserData userData;
       DatabaseService(uid: userId).gettingUserData(userId).then((value) {
         setState(() {
-        userData = value;
-        isShelter = userData.isShelter!;
-        userFavouriteDogs = userData.favourites;
-        if(userFavouriteDogs!.contains(dogId)){
-          _isFavorite = true;
-        }
-        else {
-          _isFavorite = false;
-        }
+          userData = value;
+          isShelter = userData.isShelter!;
+          userFavouriteDogs = userData.favourites;
+          if (userFavouriteDogs!.contains(dogId)) {
+            _isFavorite = true;
+          } else {
+            _isFavorite = false;
+          }
         });
       });
       Future.delayed(Duration.zero, () async {
@@ -94,7 +99,6 @@ class _InfoDogState extends State<InfoDog> {
     } catch (e) {
       print(e);
     }
-
   }
 
   @override
@@ -120,10 +124,15 @@ class _InfoDogState extends State<InfoDog> {
     setState(() {
       isEditing = false;
       dogName = nameEditingController.text;
-      breedName = breedEditingController.text;
+      breedName = breedName;
       dogDescription = dogDescriptionEditingController.text;
       dogAge = int.parse(dogAgeEditingController.text);
-      DatabaseService(uid: userId).updateDogNameDescriptionBreedAndAge(dogId!, dogName!, dogDescription!,breedName!, dogAge!); //llama al método para actualizar el nombre y descripción al dejar de editar
+      DatabaseService(uid: userId).updateDogNameDescriptionBreedAndAge(
+          dogId!,
+          dogName!,
+          dogDescription!,
+          breedName!,
+          dogAge!); //llama al método para actualizar el nombre y descripción al dejar de editar
     });
   }
 
@@ -132,7 +141,7 @@ class _InfoDogState extends State<InfoDog> {
   Future<void> _openImagePicker() async {
     File? _image;
     final XFile? pickedImage =
-    await _pickerPerfil.pickImage(source: ImageSource.gallery);
+        await _pickerPerfil.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);
@@ -160,9 +169,9 @@ class _InfoDogState extends State<InfoDog> {
 
   @override
   Widget build(BuildContext context) {
-    //widget de seccion de titulo
+    //widget de seccion de nombre
     Widget titleSection = Container(
-      padding: const EdgeInsets.all(30),
+      padding: EdgeInsets.fromLTRB(20, 30, 20, 0), //left, top, right, bottom
       child: Row(
         children: [
           Expanded(
@@ -175,28 +184,15 @@ class _InfoDogState extends State<InfoDog> {
                     dogName!,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
-                  ),
-                ),
-                Text(
-                  breedName!,
-                  style: TextStyle(
-                    color: Colors.grey[500],
-                  ),
-                ),
-                Text(
-                  dogAge!.toString(),
-                  style: TextStyle(
-                    color: Colors.grey[500],
                   ),
                 ),
               ],
             ),
           ),
           isShelter
-              ? SizedBox(
-                  width: 0,
-                )
+              ? SizedBox(width: 0)
               : IconButton(
                   onPressed: _toggleFavorite,
                   icon:
@@ -209,8 +205,37 @@ class _InfoDogState extends State<InfoDog> {
       ),
     );
 
-    //widget de seccion de texto
-    Widget textSection = Padding(
+
+    //widget de seccion de datos de raza y edad
+    Widget dataSection = Padding(
+      padding: EdgeInsets.fromLTRB(20, 0, 20, 15), //left, top, right, bottom
+      child: Row(
+        children: [
+          Text(
+            breedName!,
+            style: TextStyle(
+              color: Colors.grey[500],
+            ),
+          ),
+          Text(
+            " | ",
+            style: TextStyle(
+              color: Colors.grey[500],
+            ),
+          ),
+          //Expanded(child: const SizedBox(width: 50)),
+          Text(
+            dogAge!.toString() + " años",
+            style: TextStyle(
+              color: Colors.grey[500],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    //widget de seccion de descripcion
+    Widget descriptionSection = Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 20), //left, top, right, bottom
       child: ReadMoreText(
         dogDescription!,
@@ -267,99 +292,125 @@ class _InfoDogState extends State<InfoDog> {
       ),
       body: isLoading
           ? Center(
-        child: LoadingAnimationWidget.staggeredDotsWave(
-          color: Colors.orangeAccent,
-          size: 40,
-        ),
-      )
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                color: Colors.orangeAccent,
+                size: 40,
+              ),
+            )
           : ListView(
-        //cuerpo en formato de lista
-        padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-        children: [
-          GestureDetector(
-            onLongPress: _openImagePicker,
-            child: Image.network(
-              //imagen y sus parametros
-              dogProfilePicture!,
-              width: 600,
-              height: 240,
-              fit: BoxFit.contain,
+              //cuerpo en formato de lista
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+              children: [
+                GestureDetector(
+                  onLongPress: _openImagePicker,
+                  child: Image.network(
+                    //imagen y sus parametros
+                    dogProfilePicture!,
+                    width: 600,
+                    height: 240,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                const SizedBox(height: 5), //espacio en blanco de separación
+                isEditing
+                    ? Padding(
+                        padding: EdgeInsets.fromLTRB(20, 10, 20, 0), //left, top, right, bottom
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: nameEditingController,
+                              maxLength: 20,
+                              textCapitalization: TextCapitalization.sentences,
+                              decoration: const InputDecoration(
+                                border: UnderlineInputBorder(),
+                                hintText: 'Nombre',
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                          ],
+                        ),
+                      )
+                    : titleSection,
+                isEditing
+                    ? Padding(
+                        padding: EdgeInsets.fromLTRB(20, 0, 20, 0), //left, top, right, bottom
+                        child: Column(
+                          children: [
+                            DropdownButtonFormField<String>(
+                              isExpanded: true,
+                              value: breedName,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  breedName = newValue!;
+                                });
+                              },
+                              items: razasDePerro.map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(
+                                      value,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.normal
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                            SizedBox(height: 20),
+                            TextField(
+                              controller: dogAgeEditingController,
+                              textCapitalization: TextCapitalization.sentences,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                border: UnderlineInputBorder(),
+                                hintText: 'Edad',
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                          ],
+                        ),
+                      )
+                    : dataSection,
+                isEditing
+                    ? Padding(
+                        padding: EdgeInsets.fromLTRB(20, 0, 20, 20), //left, top, right, bottom
+                        child: TextField(
+                          controller: dogDescriptionEditingController,
+                          textCapitalization: TextCapitalization.sentences,
+                          textAlign: TextAlign.start,
+                          maxLength: 400,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Descripción',
+                          ),
+                          maxLines: 10,
+                        ),
+                      )
+                    : descriptionSection,
+                const SizedBox(height: 5), //espacio en blanco de separación
+                OverflowBar(
+                  //barra donde se encuentra el boton de Enviar Mensaje
+                  alignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    isShelter
+                        ? ElevatedButton(
+                            onPressed: () {
+                              showAlertDialogInfo(context, userId!, dogId!);
+                            },
+                            child: const Text('ELIMINAR PERRO'),
+                          )
+                        : ElevatedButton(
+                            onPressed: () {
+                              DatabaseService(uid: userId)
+                                  .createNewChat(userId!, shelterId!);
+                            },
+                            child: const Text('ENVIAR MENSAJE'),
+                          )
+                  ],
+                ),
+                SizedBox(height: 10)
+              ],
             ),
-          ),
-          const SizedBox(height: 5), //espacio en blanco de separación
-          isEditing
-              ? Padding(
-                  padding: EdgeInsets.fromLTRB(20, 10, 20, 20), //left, top, right, bottom
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: nameEditingController,
-                        textCapitalization: TextCapitalization.sentences,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Nombre',
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      TextField(
-                        controller: breedEditingController,
-                        textCapitalization: TextCapitalization.sentences,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Raza',
-                        ),
-                      ),
-                      TextField(
-                        controller: dogAgeEditingController,
-                        textCapitalization: TextCapitalization.sentences,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Edad',
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              : titleSection,
-          isEditing
-              ? Padding(
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 20), //left, top, right, bottom
-                  child: TextField(
-                    controller: dogDescriptionEditingController,
-                    textCapitalization: TextCapitalization.sentences,
-                    textAlign: TextAlign.start,
-                    maxLength: 400,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Descripción',
-                    ),
-                    maxLines: 10,
-                  ),
-                )
-              : textSection,
-          const SizedBox(height: 5), //espacio en blanco de separación
-          OverflowBar(
-            //barra donde se encuentra el boton de Enviar Mensaje
-            alignment: MainAxisAlignment.center,
-            children: <Widget>[
-              isShelter
-                  ? ElevatedButton(
-                      onPressed: () {
-                        showAlertDialogInfo(context, userId!, dogId!);
-                      },
-                      child: const Text('ELIMINAR PERRO'),
-                    )
-                  : ElevatedButton(
-                      onPressed: () {
-                        DatabaseService(uid: userId).createNewChat(userId!, shelterId!);
-                      },
-                      child: const Text('ENVIAR MENSAJE'),
-                    )
-            ],
-          ),
-          SizedBox(height: 10)
-        ],
-      ),
     );
   }
 }

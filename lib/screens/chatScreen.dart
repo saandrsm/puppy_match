@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-
 import '../model/messageData.dart';
 import '../model/userData.dart';
 import '../services/database.dart';
@@ -94,7 +93,7 @@ class _ChatScreenState extends State<ChatScreen> {
               backgroundImage: NetworkImage(profilePicture!),
             ),
             const SizedBox(width: 13.0),
-            Text(name!),
+            Expanded(child: Text(name!)),
           ],
         ),
       ),
