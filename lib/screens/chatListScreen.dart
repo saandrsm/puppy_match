@@ -1,6 +1,8 @@
+import 'package:PuppyMatch/model/messageData.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../model/chatData.dart';
 import '../model/userData.dart';
@@ -121,6 +123,25 @@ class _ChatListItemState extends State<ChatListItem> {
   late String? name;
   late bool isLoading = true;
   late String? userChattedId;
+  late MessageData lastMessageData;
+
+  String formatTimestamp(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate().add(const Duration(hours: 2));
+    DateTime localDateTime = dateTime.toLocal(); // Convierte a la zona horaria local del dispositivo
+    DateTime now = DateTime.now();
+
+    if (now.year == localDateTime.year &&
+        now.month == localDateTime.month &&
+        now.day == localDateTime.day) {
+      // Es del día actual, mostrar solo la hora
+      String formattedTime = DateFormat('HH:mm').format(localDateTime);
+      return formattedTime;
+    } else {
+      // Es de otro día, mostrar día y hora
+      String formattedDateTime = DateFormat('d MMM, HH:mm').format(localDateTime);
+      return formattedDateTime;
+    }
+  }
 
 
   @override
@@ -139,7 +160,12 @@ class _ChatListItemState extends State<ChatListItem> {
         userData = value;
         profilePicture = userData.profilePicture;
         name = userData.name;
-        isLoading = false;
+      });
+      DatabaseService(uid: userId).getLastMessageDataFromChat(chat.chatId).then((value) {
+        setState(() {
+          lastMessageData = value;
+          isLoading = false;
+        });
       });
     });
   }
@@ -189,7 +215,25 @@ class _ChatListItemState extends State<ChatListItem> {
                     name!,
                     style: theme.textTheme.titleLarge,
                   ),
-                  const SizedBox(height: 8),
+              const SizedBox(height: 8),
+              Text(
+                lastMessageData.text!,
+                style: theme.textTheme.bodyMedium,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    formatTimestamp(lastMessageData.time!),
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                  ),
+                ],
+              ),
                 ],
               ),
             ),

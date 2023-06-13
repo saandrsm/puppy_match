@@ -251,10 +251,13 @@ class DatabaseService {
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(10),
                           topRight: Radius.circular(10)),
-                      child: Image.network(
-                        profilePicture!,
-                        //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
-                        fit: BoxFit.fill,
+                      child: GestureDetector(
+                        onTap: () => DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId),
+                        child: Image.network(
+                          profilePicture!,
+                          //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     ),
                   ),
@@ -318,10 +321,13 @@ class DatabaseService {
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10)),
-                    child: Image.network(
-                      profilePicture!,
-                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
-                      fit: BoxFit.fill,
+                    child: GestureDetector(
+                      onTap: () => DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId),
+                      child: Image.network(
+                        profilePicture!,
+                        //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
                 ),
@@ -385,10 +391,13 @@ class DatabaseService {
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10)),
-                    child: Image.network(
-                      profilePicture!,
-                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
-                      fit: BoxFit.fill,
+                    child: GestureDetector(
+                      onTap: () => DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId),
+                      child: Image.network(
+                        profilePicture!,
+                        //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
                 ),
@@ -453,10 +462,13 @@ class DatabaseService {
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10)),
-                    child: Image.network(
-                      profilePicture!,
-                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
-                      fit: BoxFit.fill,
+                    child: GestureDetector(
+                      onTap: () => DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId),
+                      child: Image.network(
+                        profilePicture!,
+                        //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
                 ),
@@ -532,6 +544,26 @@ class DatabaseService {
     return querySnapshot;
   }
 
+  Future getLastMessageDataFromChat(String? chatId) async {
+    List<MessageData> messages = [];
+    QuerySnapshot<MessageData> querySnapshot = await messageCollection.where("chatId", isEqualTo: chatId)
+        .orderBy('time', descending: true).withConverter(
+      fromFirestore: MessageData.fromFirestore,
+      toFirestore: (MessageData message, _) => message.toFirestore(),
+    ).get();
+    for (var docSnapshot in querySnapshot.docs) {
+      MessageData messageData = docSnapshot.data();
+      messages.add(messageData);
+    }
+    if(messages.length > 0){
+      MessageData lastMessageData = messages.first;
+      return lastMessageData;
+    } else{
+      MessageData lastMessageData = new MessageData(chatId: chatId, senderId: uid, text: "", time: Timestamp.now());
+      return lastMessageData;
+    }
+  }
+
   Future getMaleDogs(BuildContext context) async{
     List<Card> dogCards = [];
     final ThemeData theme = Theme.of(context);
@@ -558,10 +590,13 @@ class DatabaseService {
                   // width: 300,
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                    child: Image.network(
-                      profilePicture!,
-                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
-                      fit: BoxFit.fill,
+                    child: GestureDetector(
+                      onTap: () => DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId),
+                      child: Image.network(
+                        profilePicture!,
+                        //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
                 ),
@@ -620,10 +655,13 @@ class DatabaseService {
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10)),
-                    child: Image.network(
-                      profilePicture!,
-                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
-                      fit: BoxFit.fill,
+                    child: GestureDetector(
+                      onTap: () => DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId),
+                      child: Image.network(
+                        profilePicture!,
+                        //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
                 ),
@@ -683,10 +721,13 @@ class DatabaseService {
                   // width: 300,
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                    child: Image.network(
-                      profilePicture!,
-                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
-                      fit: BoxFit.fill,
+                    child: GestureDetector(
+                      onTap: () => DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId),
+                      child: Image.network(
+                        profilePicture!,
+                        //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
                 ),
@@ -744,10 +785,13 @@ class DatabaseService {
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10)),
-                    child: Image.network(
-                      profilePicture!,
-                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
-                      fit: BoxFit.fill,
+                    child: GestureDetector(
+                      onTap: () => DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId),
+                      child: Image.network(
+                        profilePicture!,
+                        //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
                 ),
@@ -810,10 +854,13 @@ class DatabaseService {
                   // width: 300,
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                    child: Image.network(
-                      profilePicture!,
-                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
-                      fit: BoxFit.fill,
+                    child: GestureDetector(
+                      onTap: () => DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId),
+                      child: Image.network(
+                        profilePicture!,
+                        //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
                 ),
@@ -849,7 +896,18 @@ class DatabaseService {
       profilePicture = dogData?.profilePicture;
       try {
         final dogRef = dogCollection.doc(dogId);
-        dogRef.delete();
+        await dogRef.delete().then((value) async {
+          QuerySnapshot<UserData> querySnapshot = await userCollection.where("favourites", arrayContains: dogId).withConverter(
+            fromFirestore: UserData.fromFirestore,
+            toFirestore: (UserData user, _) => user.toFirestore(),
+          ).get();
+          for (var docSnapshot in querySnapshot.docs) {
+                final userRef = docSnapshot.reference;
+                userRef.update({
+                  'favourites': FieldValue.arrayRemove([dogId])
+                });
+          }
+        });
       } catch (error) {
           return Future.error(error);
       }

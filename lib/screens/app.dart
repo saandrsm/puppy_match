@@ -1,4 +1,5 @@
 import 'package:PuppyMatch/model/chatData.dart';
+import 'package:PuppyMatch/screens/chatUserProfile.dart';
 import 'package:deep_route/deep_material_app.dart';
 import 'package:flutter/material.dart';
 import 'package:PuppyMatch/screens/infoDog.dart';
@@ -7,6 +8,7 @@ import 'package:PuppyMatch/screens/register.dart';
 import 'package:PuppyMatch/screens/resetPassword.dart';
 import 'package:PuppyMatch/screens/chatListScreen.dart';
 import 'package:PuppyMatch/screens/chatScreen.dart';
+import 'package:PuppyMatch/screens/chatUserProfile.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'dogRegister.dart';
@@ -67,6 +69,16 @@ class PuppyMatch extends StatelessWidget {
         builder: (context) {
           return ChatScreen(
             chat: args,
+          );
+        },
+      );
+    }
+    if (settings.name == ChatUserProfile.routeName) {
+      final args = settings.arguments as String;
+      return MaterialPageRoute(
+        builder: (context) {
+          return ChatUserProfile(
+            userId: args,
           );
         },
       );

@@ -13,7 +13,6 @@ class MessageData {
     this.senderId,
     this.text,
     this.time
-
   });
 
   factory MessageData.fromFirestore(
