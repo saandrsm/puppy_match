@@ -468,7 +468,6 @@ class _ProfilePageState extends State<ProfilePage> {
         foregroundColor: Colors.black87,
         onPressed: () {
           Navigator.pushNamed(context, '/conversations');
-          //falta añadir funcionalidad
         },
         child: const Icon(Icons.chat_outlined),
       ),

@@ -1,4 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import '../model/chatData.dart';
+import '../model/userData.dart';
+import '../services/database.dart';
 import 'chatScreen.dart';
 
 class ChatListScreen extends StatefulWidget {
@@ -10,65 +16,38 @@ class ChatListScreen extends StatefulWidget {
 
 class _ChatListScreenState extends State<ChatListScreen> {
   int selectedIndex = 0;
+  late String? userId;
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance; //instancia de la base de datos
+  final FirebaseFirestore firebaseFire = FirebaseFirestore.instance; //instancia de la base de datos
+  late bool isShelter = false; //variable que define el tipo de usuario
+  bool isLoading = true;
+  late List<ChatData> chats;
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-
-    final List<Chat> chatData = [
-      const Chat(
-        avatar: 'assets/pup.jpg',
-        name: 'Shelter 1',
-        lastMessage: "Yes, I'm interested",
-        lastMessageTime: '10:30 AM',
-        messages: [
-          Message(sender: 'Usuario 1', text: "Yes, I'm interested"),
-          Message(sender: 'Usuario 2', text: 'Hola, estoy bien. ¿Y tú?'),
-        ],
-      ),
-      const Chat(
-        avatar: 'assets/pup.jpg',
-        name: 'Shelter 2',
-        lastMessage: "Hello user, I'm a shelter",
-        lastMessageTime: '11:45 AM',
-        messages: [
-          Message(sender: 'Usuario 2', text: "Hello user, I'm a shelter"),
-          Message(sender: 'Usuario 1', text: "Hello I'm a user"),
-        ],
-      ),
-      const Chat(
-        avatar: 'assets/pup.jpg',
-        name: 'Shelter 3',
-        lastMessage: "Can you come by at 7 o'clock?",
-        lastMessageTime: 'Yesterday',
-        messages: [
-          Message(sender: 'Usuario 3', text: "Can you come by at 7 o'clock?"),
-          Message(sender: 'Usuario 1', text: 'Estoy trabajando en un proyecto.'),
-        ],
-      ),
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Conversations',
           style: theme.textTheme.titleLarge,
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.search),
-          ),
-        ],
       ),
-      body: Container(
+      body: isLoading
+          ? Center(
+        child: LoadingAnimationWidget.staggeredDotsWave(
+          color: Colors.orangeAccent,
+          size: 40,
+        ),
+      )
+      : Container(
         decoration: BoxDecoration(
           color: theme.colorScheme.background,
         ),
         child: ListView.builder(
-          itemCount: chatData.length,
+          itemCount: chats.length,
           itemBuilder: (context, index) {
-            final chat = chatData[index];
-
+            final chat = chats[index];
             return ChatListItem(
               chat: chat,
               onTap: () {
@@ -79,28 +58,103 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   ),
                 );
               },
+              isShelter: isShelter,
             );
           },
         ),
       ),
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+    try {
+      userId = firebaseAuth.currentUser?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
+      UserData userData;
+      DatabaseService(uid: userId).gettingUserData(userId).then((value) {
+        userData = value;
+        isShelter = userData.isShelter!;
+        Future.delayed(Duration.zero, () async {
+          if(isShelter){
+            await DatabaseService(uid: userId).getAllShelterChats().then((value) {
+              setState(() {
+                chats = value;
+                isLoading = false;
+              });
+            });
+          }
+          else{
+            await DatabaseService(uid: userId).getAllRegularUserChats().then((value) {
+              setState(() {
+                chats = value;
+                isLoading = false;
+              });
+            });
+          }
+        });
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 }
 
-class ChatListItem extends StatelessWidget {
-  final Chat chat;
+class ChatListItem extends StatefulWidget {
+  final ChatData chat;
   final VoidCallback onTap;
+  final bool isShelter;
+  const ChatListItem({Key? key, required this.chat, required this.onTap, required this.isShelter}) : super(key: key);
 
-  const ChatListItem({
-    required this.chat,
-    required this.onTap,
-  });
+  @override
+  State<ChatListItem> createState() => _ChatListItemState(this.chat, this.onTap, this.isShelter);
+}
+
+class _ChatListItemState extends State<ChatListItem> {
+  final ChatData chat;
+  final VoidCallback onTap;
+  late bool isShelter;
+  _ChatListItemState(this.chat, this.onTap, this.isShelter);
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  late String? userId;
+  late String? profilePicture;
+  late String? name;
+  late bool isLoading = true;
+  late String? userChattedId;
+
+
+  @override
+  void initState() {
+    super.initState();
+    UserData userData;
+    userId = firebaseAuth.currentUser?.uid;
+    if(isShelter) {
+      userChattedId = chat.regularUserId;
+    }
+    else{
+      userChattedId = chat.shelterId;
+    }
+    DatabaseService(uid: userId).gettingUserData(userChattedId).then((value){
+      setState(() {
+        userData = value;
+        profilePicture = userData.profilePicture;
+        name = userData.name;
+        isLoading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-
-    return InkWell(
+    return isLoading
+        ? Center(
+      child: LoadingAnimationWidget.staggeredDotsWave(
+        color: Colors.orangeAccent,
+        size: 40,
+      ),
+    )
+    :InkWell(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -121,7 +175,7 @@ class ChatListItem extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                  image: AssetImage(chat.avatar),
+                  image: NetworkImage(profilePicture!),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -132,28 +186,10 @@ class ChatListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    chat.name,
+                    name!,
                     style: theme.textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    chat.lastMessage,
-                    style: theme.textTheme.bodyMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        chat.lastMessageTime,
-                        style: theme.textTheme.bodyMedium!.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(0.6),
-                        ),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:PuppyMatch/model/dogData.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +22,6 @@ class _InfoDogState extends State<InfoDog> {
   final String? dogId;
   _InfoDogState(this.dogId);
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance; //instancia de la base de datos
-  final FirebaseFirestore firebaseFire = FirebaseFirestore.instance; //instancia de la base de datos
   late bool isShelter = false; //variable que define el tipo de usuario
   bool isEditing = false;
   late String? dogName = "";
@@ -31,6 +29,7 @@ class _InfoDogState extends State<InfoDog> {
   late String? dogDescription = "";
   late int? dogAge = 0;
   late String? userId;
+  late String? shelterId = "";
   late String? dogProfilePicture = "";
   late String profileImageUrl = "";
   late List<String>? userFavouriteDogs;
@@ -82,6 +81,7 @@ class _InfoDogState extends State<InfoDog> {
         await DatabaseService(uid: userId).gettingDogData(dogId).then((value) {
           setState(() {
             DogData dogData = value;
+            shelterId = dogData.shelterId;
             dogDescription = dogData.description;
             dogName = dogData.name;
             breedName = dogData.breed;
@@ -350,7 +350,9 @@ class _InfoDogState extends State<InfoDog> {
                       child: const Text('ELIMINAR PERRO'),
                     )
                   : ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        DatabaseService(uid: userId).createNewChat(userId!, shelterId!);
+                      },
                       child: const Text('ENVIAR MENSAJE'),
                     )
             ],

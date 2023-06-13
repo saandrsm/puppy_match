@@ -38,12 +38,9 @@ class _SearchPageState extends State<SearchPage> {
       appBar: AppBar(
         title: isSearching
         ? TextFormField(
-          onChanged: (text) {
-            //aqui falta implementar funcionalidad de busqueda
-          },
           controller: _searchController,
           decoration: const InputDecoration(
-            hintText: ' Search...',
+            hintText: 'Buscar por nombre...',
             hintStyle: TextStyle(
               fontSize: 18,
               fontStyle: FontStyle.normal,
@@ -242,9 +239,7 @@ class _SearchPageState extends State<SearchPage> {
         backgroundColor: Colors.orangeAccent,
         foregroundColor: Colors.black87,
         onPressed: () {
-          Navigator.pushNamed(context, '/registerDog'); //pasa hacia pantalla Chat
-
-          //falta añadir funcionalidad
+          Navigator.pushNamed(context, '/conversations'); //pasa hacia pantalla Chat
         },
         child: const Icon(Icons.chat_outlined),
       ),
@@ -254,6 +249,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
     void initState() {
       super.initState();
+      _searchController.addListener(getDogsByName);
       try {
         userId = firebaseAuth.currentUser?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
         UserData userData;
@@ -304,7 +300,58 @@ class _SearchPageState extends State<SearchPage> {
       isSearching = false;
     });
   }
-  
+
+  void getDogsByName(){
+    Future.delayed(Duration.zero, (){
+      setState(() {
+        isLoading = true;
+      });
+      if(_searchController.text.isEmpty){
+        if(isShelter){
+          DatabaseService(uid: userId).getAllShelterDogs(context).then((value) {
+            setState(() {
+              isLoading = true;
+              dogCards.clear();
+              dogCards = value;
+              isLoading = false;
+            });
+          });
+        }
+        else{
+          DatabaseService(uid: userId).getAllDogs(context).then((value) {
+            setState(() {
+              isLoading = true;
+              dogCards.clear();
+              dogCards = value;
+              isLoading = false;
+            });
+          });
+        }
+      }
+      else{
+        if(isShelter){
+          DatabaseService(uid: userId).getAllShelterDogsByName(context, _searchController.text).then((value) {
+            setState(() {
+              isLoading = true;
+              dogCards.clear();
+              dogCards = value;
+              isLoading = false;
+            });
+          });
+        }
+        else{
+          DatabaseService(uid: userId).getAllDogsByName(context, _searchController.text).then((value) {
+            setState(() {
+              isLoading = true;
+              dogCards.clear();
+              dogCards = value;
+              isLoading = false;
+            });
+          });
+        }
+      }
+    });
+  }
   
 }
 

@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:PuppyMatch/model/chatData.dart';
+import 'package:PuppyMatch/model/messageData.dart';
+import 'package:PuppyMatch/screens/chatScreen.dart';
 import 'package:PuppyMatch/screens/infoDog.dart';
 import 'package:deep_route/deep_route.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +16,8 @@ class DatabaseService {
 
   final CollectionReference userCollection = FirebaseFirestore.instance.collection("users");
   final CollectionReference dogCollection = FirebaseFirestore.instance.collection("dogs");
+  final CollectionReference chatCollection = FirebaseFirestore.instance.collection("chats");
+  final CollectionReference messageCollection = FirebaseFirestore.instance.collection("messages");
 
   Future registerUserData(String fullname, String email) async{
     await FirebaseStorage.instance.ref("icono_perfil.png").getDownloadURL().then((value) async {
@@ -44,6 +49,44 @@ class DatabaseService {
       });
   }
 
+  Future createNewChat(String regularUserId, String shelterId) async{
+    ChatData chatData;
+    QuerySnapshot<ChatData> querySnapshot = await chatCollection.where("regularUserId", isEqualTo: regularUserId)
+        .where("shelterId", isEqualTo: shelterId).withConverter(
+      fromFirestore: ChatData.fromFirestore,
+      toFirestore: (ChatData chat, _) => chat.toFirestore(),
+    ).get();
+    if(querySnapshot.size == 0){
+      String chatId = chatCollection.doc().id;
+      return await chatCollection.doc(chatId).set({
+        'chatId': chatId,
+        'regularUserId': regularUserId,
+        'shelterId': shelterId,
+      }).then((value) async {
+        await gettingChatData(chatId).then((value) {
+          chatData = value;
+          DeepRoute.toNamed(ChatScreen.routeName, arguments: chatData);
+        });
+      });
+
+    } else {
+      for (var docSnapshot in querySnapshot.docs) {
+        chatData = docSnapshot.data();
+        DeepRoute.toNamed(ChatScreen.routeName, arguments: chatData);
+      }
+    }
+  }
+
+  Future<void> sendMessageToChatroom(String chatId, String senderId, String message) async {
+    String messageId = messageCollection.doc().id;
+    messageCollection.doc(messageId).set({
+      'chatId': chatId,
+      'senderId': senderId,
+      'text': message,
+      'time': Timestamp.now()
+    });
+  }
+
   Future gettingUserData(String? userId) async {
     final ref = await userCollection.doc(userId).withConverter(
       fromFirestore: UserData.fromFirestore,
@@ -63,8 +106,19 @@ class DatabaseService {
     final docSnap = await ref.get();
     dogData = docSnap.data();
     return dogData;
-
   }
+
+  Future gettingChatData(String? chatId) async {
+    final ref = await chatCollection.doc(chatId).withConverter(
+      fromFirestore: ChatData.fromFirestore,
+      toFirestore: (ChatData chat, _) => chat.toFirestore(),
+    );
+    ChatData? chatData;
+    final docSnap = await ref.get();
+    chatData = docSnap.data();
+    return chatData;
+  }
+
 
   Future<void> updateNameAndDescription(String newName, String newDescription) async {
     try {
@@ -233,6 +287,73 @@ class DatabaseService {
       return dogCards;
   }
 
+  Future getAllDogsByName(BuildContext context, String searchedName) async {
+    List<Card> dogCards = [];
+    final ThemeData theme = Theme.of(context);
+    late String? profilePicture;
+    late String? name;
+    try {
+      QuerySnapshot<DogData> querySnapshot = await dogCollection.where("name", isEqualTo: searchedName).withConverter(
+        fromFirestore: DogData.fromFirestore,
+        toFirestore: (DogData dog, _) => dog.toFirestore(),
+      ).get();
+      for (var docSnapshot in querySnapshot.docs) {
+        DogData dogData = docSnapshot.data();
+        profilePicture = dogData.profilePicture;
+        name = dogData.name;
+        Card dogCard = new Card(
+          elevation: 5,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              //alineado en el centro
+              children: <Widget>[
+                Expanded(
+                  // height: 135,
+                  // width: 300,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                    child: Image.network(
+                      profilePicture!,
+                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      foregroundColor: theme.colorScheme
+                          .secondary //usar esquema determinado para color de fuente
+                  ),
+                  onPressed: () {
+                    //al presional pasa hacia pantalla InfoDog
+                    DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId);
+                  },
+                  child: Text(
+                      name!), //el texto es el getter del nombre del perro
+                ),
+              ],
+            ),
+          ),
+        );
+        dogCards.add(dogCard);
+      }
+    } catch (error){
+      return Future.error(error);
+    }
+
+    return dogCards;
+  }
+
   Future getAllShelterDogs(BuildContext context) async {
     List<Card> dogCards = [];
     final ThemeData theme = Theme.of(context);
@@ -298,6 +419,117 @@ class DatabaseService {
     }
 
     return dogCards;
+  }
+
+  Future getAllShelterDogsByName(BuildContext context, String searchedName) async {
+    List<Card> dogCards = [];
+    final ThemeData theme = Theme.of(context);
+    late String? profilePicture;
+    late String? name;
+    try {
+      QuerySnapshot<DogData> querySnapshot = await dogCollection.where("shelterId", isEqualTo: uid)
+          .where("name", isEqualTo: searchedName).withConverter(
+        fromFirestore: DogData.fromFirestore,
+        toFirestore: (DogData dog, _) => dog.toFirestore(),
+      ).get();
+      for (var docSnapshot in querySnapshot.docs) {
+        DogData dogData = docSnapshot.data();
+        profilePicture = dogData.profilePicture;
+        name = dogData.name;
+        Card dogCard = new Card(
+          elevation: 5,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              //alineado en el centro
+              children: <Widget>[
+                Expanded(
+                  // height: 135,
+                  // width: 300,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                    child: Image.network(
+                      profilePicture!,
+                      //snapshot.data?.imagen ?? 'https://images.dog.ceo/breeds/greyhound-italian/n02091032_7813.jpg',
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      foregroundColor: theme.colorScheme
+                          .secondary //usar esquema determinado para color de fuente
+                  ),
+                  onPressed: () {
+                    //al presional pasa hacia pantalla InfoDog
+                    DeepRoute.toNamed(InfoDog.routeName, arguments: dogData.dogId);
+                  },
+                  child: Text(
+                      name!), //el texto es el getter del nombre del perro
+                ),
+              ],
+            ),
+          ),
+        );
+        dogCards.add(dogCard);
+      }
+    } catch (error){
+      return Future.error(error);
+    }
+
+    return dogCards;
+  }
+
+  Future getAllRegularUserChats() async {
+    List<ChatData> chats = [];
+    try {
+      QuerySnapshot<ChatData> querySnapshot = await chatCollection.where("regularUserId", isEqualTo: uid).withConverter(
+        fromFirestore: ChatData.fromFirestore,
+        toFirestore: (ChatData chat, _) => chat.toFirestore(),
+      ).get();
+      for (var docSnapshot in querySnapshot.docs) {
+        ChatData chatData = docSnapshot.data();
+        chats.add(chatData);
+      }
+    } catch (error){
+      return Future.error(error);
+    }
+    return chats;
+  }
+
+  Future getAllShelterChats() async {
+    List<ChatData> chats = [];
+    try {
+      QuerySnapshot<ChatData> querySnapshot = await chatCollection.where("shelterId", isEqualTo: uid).withConverter(
+        fromFirestore: ChatData.fromFirestore,
+        toFirestore: (ChatData chat, _) => chat.toFirestore(),
+      ).get();
+      for (var docSnapshot in querySnapshot.docs) {
+        ChatData chatData = docSnapshot.data();
+        chats.add(chatData);
+      }
+    } catch (error){
+      return Future.error(error);
+    }
+    return chats;
+  }
+
+  Future getAllMessagesFromChat(String? chatId) async {
+    Stream<QuerySnapshot<MessageData>> querySnapshot = await messageCollection.where("chatId", isEqualTo: chatId)
+        .orderBy('time', descending: true).withConverter(
+      fromFirestore: MessageData.fromFirestore,
+      toFirestore: (MessageData message, _) => message.toFirestore(),
+    ).snapshots();
+    return querySnapshot;
   }
 
   Future getMaleDogs(BuildContext context) async{
@@ -640,5 +872,6 @@ class DatabaseService {
       'favourites': FieldValue.arrayRemove([dogId])
     });
   }
+
 
 }
