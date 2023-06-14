@@ -45,7 +45,6 @@ class DatabaseService {
         'description': description,
         'shelterId': uid,
         'profilePicture': profileImageUrl,
-        'gallery': []
       });
   }
 

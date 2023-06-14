@@ -10,7 +10,6 @@ class DogData {
   final String? description;
   final String? shelterId;
   final String? profilePicture;
-  final List<String>? gallery;
 
 
   DogData({
@@ -22,7 +21,6 @@ class DogData {
     this.description,
     this.shelterId,
     this.profilePicture,
-    this.gallery,
   });
 
   factory DogData.fromFirestore(
@@ -39,7 +37,6 @@ class DogData {
       description: data?['description'],
       shelterId: data?['shelterId'],
       profilePicture: data?['profilePicture'],
-      gallery: data?['gallery'] is Iterable ? List.from(data?['gallery']) : null,
     );
   } //metodo para obtener datos de firestore asignando cada dato de la base de datos a la variable definida en la clase
 
@@ -53,7 +50,6 @@ class DogData {
       if (description != null) "description": description,
       if (shelterId != null) "shelterId": shelterId,
       if (profilePicture != null) "profilePicture": profilePicture,
-      if (gallery != null) "gallery": gallery,
     };
   }
 } //metodo para enviar a firestore asignando de cada variable su correspondiente campo en la base de datos
