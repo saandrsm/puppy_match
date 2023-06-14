@@ -113,6 +113,17 @@ class _ChatScreenState extends State<ChatScreen> {
             Expanded(child: Text(name!)),
           ],
         ),
+        leading: IconButton(
+          //icono a la izquierda (principio) del texto para cerrar sesión
+          icon: const Icon(
+            Icons.arrow_back,
+            semanticLabel: 'logout',
+          ),
+          onPressed: () {
+            //al presionar vuelve hacia LoginPage
+            Navigator.pop(context); // Regresar a la pantalla de conversaciones
+          },
+        ),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -168,7 +179,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               // Aplica el desplazamiento de 2 horas a la hora del mensaje
                               final messageTime = message.time != null
                                   ? DateFormat('HH:mm').format(
-                                message.time!.toDate().add(Duration(hours: 2)),
+                                message.time!.toDate(),
                               )
                                   : '';
 

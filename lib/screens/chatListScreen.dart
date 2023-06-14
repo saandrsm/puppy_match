@@ -24,6 +24,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   late bool isShelter = false; //variable que define el tipo de usuario
   bool isLoading = true;
   late List<ChatData> chats;
+  int update = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +35,17 @@ class _ChatListScreenState extends State<ChatListScreen> {
           'Conversations',
           style: theme.textTheme.titleLarge,
         ),
+          leading: IconButton(
+            //icono a la izquierda (principio) del texto para cerrar sesión
+            icon: const Icon(
+              Icons.arrow_back,
+              semanticLabel: 'logout',
+            ),
+            onPressed: () {
+              //al presionar vuelve hacia LoginPage
+              Navigator.pop(context);
+            },
+          )
       ),
       body: isLoading
           ? Center(
@@ -52,13 +64,20 @@ class _ChatListScreenState extends State<ChatListScreen> {
             final chat = chats[index];
             return ChatListItem(
               chat: chat,
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                 await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ChatScreen(chat: chat),
                   ),
-                );
+                ).then((value) { //espera a que se haga el navigator.pop del chat y sustituye la pantalla por una actualizada
+                   Navigator.pushReplacement(
+                     context,
+                     MaterialPageRoute(
+                       builder: (context) => ChatListScreen(),
+                     ),
+                   );
+                 });
               },
               isShelter: isShelter,
             );
@@ -126,7 +145,7 @@ class _ChatListItemState extends State<ChatListItem> {
   late MessageData lastMessageData;
 
   String formatTimestamp(Timestamp timestamp) {
-    DateTime dateTime = timestamp.toDate().add(const Duration(hours: 2));
+    DateTime dateTime = timestamp.toDate();
     DateTime localDateTime = dateTime.toLocal(); // Convierte a la zona horaria local del dispositivo
     DateTime now = DateTime.now();
 
