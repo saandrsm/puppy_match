@@ -1,3 +1,6 @@
+//esta clase ha sido utilizada para el desarrollo del proyecto
+//pero no es utilizada en la versión final de la apllicación
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -19,7 +22,7 @@ class _ApiState extends State<Api> {
         centerTitle: true,
         //barra superior
         title: const Text('IMAGEN RANDOM'),
-        leading: IconButton( //los LEADINGIcon se situan al principio de la línea (a la izquierda del texto)
+        leading: IconButton( //los leadingIcon se situan al principio de la línea (a la izquierda del texto)
           icon: const Icon(
             Icons.arrow_back_ios,
             semanticLabel: 'back',

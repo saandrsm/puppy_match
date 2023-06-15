@@ -24,7 +24,6 @@ class _SearchPageState extends State<SearchPage> {
   late bool isShelter; //variable que define el tipo de usuario
   late String profilePicture;
   List<Card> dogCards = [];
-  //late List<File> imageFileList;
   bool isSearching = false;
   bool isLoading = true;
 
@@ -36,7 +35,7 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       appBar: AppBar(
         title: isSearching
-        ? TextFormField(
+        ? TextFormField( //si estás buscando se muestra un textField (barra de busqueda)
           controller: _searchController,
           decoration: const InputDecoration(
             hintText: 'Buscar por nombre...',
@@ -48,17 +47,17 @@ class _SearchPageState extends State<SearchPage> {
                 borderSide: BorderSide(color: Colors.black38)),
           ),
         )
-        : Text("Bienvenido"),
+        : Text("Bienvenido"), //sino, se muestra un Text
         automaticallyImplyLeading: false, //esto no lo entiendo
         actions: [
-          isSearching
+          isSearching //si esta buscando, al pulsar el boton deja de hacerlo
           ? IconButton(
           onPressed: () {
             stopSearch();
           },
             icon: Icon(Icons.clear),
           )
-          : IconButton(
+          : IconButton( //sino, al pulsarlo comienza a hacerlo
             onPressed: () {
               startSearch();
             },
@@ -66,132 +65,133 @@ class _SearchPageState extends State<SearchPage> {
           ),
           IconButton(
             onPressed: () {
-              //Navigator.pushNamed(context, '/api');
-              showModalBottomSheet(
+              showModalBottomSheet( //al pulsarse se muestra un menú de opciones
                   context: context,
                   builder: (context) {
-                    return Wrap(
-                      //mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        ListTile(
-                          leading: const Icon(Icons.pets),
-                          title: const Text('Todos'),
-                          onTap: ()  {
-                            Future.delayed(Duration.zero, (){
-                              setState(() {
-                                isLoading = true;
-                              });
-                              if(isShelter){
-                                DatabaseService(uid: userId).getAllShelterDogs(context).then((value) {
-                                  setState(() {
-                                    isLoading = true;
-                                    dogCards.clear();
-                                    dogCards = value;
-                                    isLoading = false;
-                                  });
-                                });
-                              }
-                              else{
-                                DatabaseService(uid: userId).getAllDogs(context).then((value) {
-                                  setState(() {
-                                    isLoading = true;
-                                    dogCards.clear();
-                                    dogCards = value;
-                                    isLoading = false;
-                                  });
-                                });
-                              }
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
-                        isShelter
-                        ? const SizedBox(height: 0)
-                        : ListTile(
-                          leading: const Icon(Icons.favorite),
-                          title: const Text('Favoritos'),
-                          onTap: () {
-                            Future.delayed(Duration.zero, (){
-                              setState(() {
-                                isLoading = true;
-                              });
-                              DatabaseService(uid: userId).getFavouriteDogs(context).then((value) {
+                    return Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Wrap(
+                        children: <Widget>[
+                          ListTile(
+                            leading: const Icon(Icons.pets),
+                            title: const Text('Todos'),
+                            onTap: ()  {
+                              Future.delayed(Duration.zero, (){
                                 setState(() {
                                   isLoading = true;
-                                  dogCards.clear();
-                                  dogCards = value;
-                                  isLoading = false;
+                                });
+                                if(isShelter){
+                                  DatabaseService(uid: userId).getAllShelterDogs(context).then((value) {
+                                    setState(() {
+                                      isLoading = true;
+                                      dogCards.clear();
+                                      dogCards = value;
+                                      isLoading = false;
+                                    });
+                                  });
+                                }
+                                else{
+                                  DatabaseService(uid: userId).getAllDogs(context).then((value) {
+                                    setState(() {
+                                      isLoading = true;
+                                      dogCards.clear();
+                                      dogCards = value;
+                                      isLoading = false;
+                                    });
+                                  });
+                                }
+                              });
+                              Navigator.pop(context);
+                            },
+                          ),
+                          isShelter
+                          ? const SizedBox(height: 0)
+                          : ListTile(
+                            leading: const Icon(Icons.favorite),
+                            title: const Text('Favoritos'),
+                            onTap: () {
+                              Future.delayed(Duration.zero, (){
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                DatabaseService(uid: userId).getFavouriteDogs(context).then((value) {
+                                  setState(() {
+                                    isLoading = true;
+                                    dogCards.clear();
+                                    dogCards = value;
+                                    isLoading = false;
+                                  });
                                 });
                               });
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.female),
-                          title: const Text('Hembras'),
-                          onTap: () {
-                            Future.delayed(Duration.zero, (){
-                              setState(() {
-                                isLoading = true;
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.female),
+                            title: const Text('Hembras'),
+                            onTap: () {
+                              Future.delayed(Duration.zero, (){
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                if(isShelter){
+                                  DatabaseService(uid: userId).getShelterFemaleDogs(context).then((value) {
+                                    setState(() {
+                                      isLoading = true;
+                                      dogCards.clear();
+                                      dogCards = value;
+                                      isLoading = false;
+                                    });
+                                  });
+                                }
+                                else{
+                                  DatabaseService(uid: userId).getFemaleDogs(context).then((value) {
+                                    setState(() {
+                                      isLoading = true;
+                                      dogCards.clear();
+                                      dogCards = value;
+                                      isLoading = false;
+                                    });
+                                  });
+                                }
                               });
-                              if(isShelter){
-                                DatabaseService(uid: userId).getShelterFemaleDogs(context).then((value) {
-                                  setState(() {
-                                    isLoading = true;
-                                    dogCards.clear();
-                                    dogCards = value;
-                                    isLoading = false;
-                                  });
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.male),
+                            title: const Text('Machos'),
+                            onTap: () {
+                              Future.delayed(Duration.zero, (){
+                                setState(() {
+                                  isLoading = true;
                                 });
-                              }
-                              else{
-                                DatabaseService(uid: userId).getFemaleDogs(context).then((value) {
-                                  setState(() {
-                                    isLoading = true;
-                                    dogCards.clear();
-                                    dogCards = value;
-                                    isLoading = false;
+                                if(isShelter){
+                                  DatabaseService(uid: userId).getShelterMaleDogs(context).then((value) {
+                                    setState(() {
+                                      isLoading = true;
+                                      dogCards.clear();
+                                      dogCards = value;
+                                      isLoading = false;
+                                    });
                                   });
-                                });
-                              }
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.male),
-                          title: const Text('Machos'),
-                          onTap: () {
-                            Future.delayed(Duration.zero, (){
-                              setState(() {
-                                isLoading = true;
+                                }
+                                else{
+                                  DatabaseService(uid: userId).getMaleDogs(context).then((value) {
+                                    setState(() {
+                                      isLoading = true;
+                                      dogCards.clear();
+                                      dogCards = value;
+                                      isLoading = false;
+                                    });
+                                  });
+                                }
                               });
-                              if(isShelter){
-                                DatabaseService(uid: userId).getShelterMaleDogs(context).then((value) {
-                                  setState(() {
-                                    isLoading = true;
-                                    dogCards.clear();
-                                    dogCards = value;
-                                    isLoading = false;
-                                  });
-                                });
-                              }
-                              else{
-                                DatabaseService(uid: userId).getMaleDogs(context).then((value) {
-                                  setState(() {
-                                    isLoading = true;
-                                    dogCards.clear();
-                                    dogCards = value;
-                                    isLoading = false;
-                                  });
-                                });
-                              }
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
+                              Navigator.pop(context); //navega hacia pantalla anterior
+                            },
+                          ),
+                        ],
+                      ),
                     );
                   });
             },
@@ -209,9 +209,8 @@ class _SearchPageState extends State<SearchPage> {
           ),
           onPressed: () {
             FirebaseAuth.instance.signOut().then((value) {
-              //al presionar vuelve hacia LoginPage
               print('Signed out');
-              Navigator.pushNamed(context, '/');
+              Navigator.pushNamed(context, '/'); //navega hacia la pantalla de inicio de la app
             });
           },
         ),
@@ -284,14 +283,13 @@ class _SearchPageState extends State<SearchPage> {
 
     }
 
-
+//metodos para controlar la busqueda
   void startSearch() {
     setState(() {
       isSearching = true;
       _searchController.text = "";
     });
   }
-
 
   void stopSearch() {
     setState(() {

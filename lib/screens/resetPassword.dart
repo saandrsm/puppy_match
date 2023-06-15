@@ -15,11 +15,6 @@ class _ResetPageState extends State<ResetPage> {
   //controladores de texto de TextFields
   final TextEditingController _mail = TextEditingController();
 
-  //metodo para validar email
-  //  mailValid(String email) {
-  //   bool isvalid = EmailValidator.validate(email);
-  //   print(isvalid);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +47,7 @@ class _ResetPageState extends State<ResetPage> {
           //el cuerpo de la pantalla es un formulario
           key: _claveReset,
           child: ListView(
-            padding: const EdgeInsets.fromLTRB(
-                24, 20, 24, 0), //left, top, right, bottom
+            padding: const EdgeInsets.fromLTRB(24, 20, 24, 0), //left, top, right, bottom
             children: <Widget>[
               const SizedBox(height: 60.0), //espacio en blanco de separación
               TextFormField(
@@ -69,7 +63,7 @@ class _ResetPageState extends State<ResetPage> {
                 controller: _mail,
                 decoration: const InputDecoration(
                   filled: false,
-                  labelText: 'Enter your email',
+                  labelText: 'Introduce tu email',
                 ),
               ),
               const SizedBox(height: 10.0), //espacio en blanco de separación
@@ -78,17 +72,17 @@ class _ResetPageState extends State<ResetPage> {
                 alignment: MainAxisAlignment.center, //posicionados al final (a la derecha)
                 children: <Widget>[
                   FilledButton(
-                      onPressed: () {
+                      onPressed: () { //si se valida el formulario envia el mail
                         if (_claveReset.currentState!.validate()) {
                           FirebaseAuth.instance.sendPasswordResetEmail(email: _mail.text).then((value) {
                             Navigator.popAndPushNamed(context, "/");
                           }).onError((error, stackTrace) {
                             print('Error ${error.toString()}');
-                            showAlertDialogError(context);
+                            showAlertDialogError(context); //si da error muestra el alertDialog
                           });;
                         }
                       },
-                      child: const Text('RESET PASSWORD'),
+                      child: const Text('RECUPERAR CONTRASEÑA'),
                   ),
                 ],
               ),

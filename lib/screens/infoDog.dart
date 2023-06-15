@@ -57,7 +57,6 @@ class _InfoDogState extends State<InfoDog> {
     }
   }
 
-  // String dropdownValue = breedName; //item por defecto en lista de DropDownButton de mascotas
   TextEditingController nameEditingController = TextEditingController();
   TextEditingController breedEditingController = TextEditingController();
   TextEditingController dogDescriptionEditingController = TextEditingController();
@@ -136,6 +135,7 @@ class _InfoDogState extends State<InfoDog> {
     });
   }
 
+  //metodo del imagePicker para abrir galería y seleccionar una imagen
   final _pickerPerfil = ImagePicker();
   //metodo del imagePicker para abrir galería
   Future<void> _openImagePicker() async {
@@ -161,8 +161,7 @@ class _InfoDogState extends State<InfoDog> {
       }
 
       setState(() {
-        dogProfilePicture =
-            profileImageUrl; //modifica la foto de perfil que se muestra con la añadida
+        dogProfilePicture = profileImageUrl; //modifica la foto de perfil que se muestra con la añadida
       });
     }
   }
@@ -192,24 +191,23 @@ class _InfoDogState extends State<InfoDog> {
             ),
           ),
           isShelter
-              ? SizedBox(width: 0)
-              : IconButton(
-                  onPressed: _toggleFavorite,
-                  icon:
-                      (_isFavorite //si se presiona o no (cambia el valor o no) muestra un icono u otro
-                          ? const Icon(Icons.favorite)
-                          : const Icon(Icons.favorite_border)),
-                  color: Colors.brown,
-                ),
+            ? SizedBox(width: 0)
+            : IconButton(
+                onPressed: _toggleFavorite,
+                icon:
+                    (_isFavorite //si se presiona o no (cambia el valor o no) muestra un icono u otro
+                        ? const Icon(Icons.favorite)
+                        : const Icon(Icons.favorite_border)),
+                color: Colors.brown,
+              ),
         ],
       ),
     );
 
-
-    //widget de seccion de datos de raza y edad
+    //widget de seccion de datos
     Widget dataSection = Padding(
       padding: EdgeInsets.fromLTRB(20, 0, 20, 15), //left, top, right, bottom
-      child: Row(
+      child: Row( //fila con datos de raza y edad
         children: [
           Text(
             breedName!,
@@ -223,7 +221,6 @@ class _InfoDogState extends State<InfoDog> {
               color: Colors.grey[500],
             ),
           ),
-          //Expanded(child: const SizedBox(width: 50)),
           Text(
             dogAge!.toString() + " años",
             style: TextStyle(
@@ -241,8 +238,8 @@ class _InfoDogState extends State<InfoDog> {
         dogDescription!,
         trimLines: 3,
         trimMode: TrimMode.Line,
-        trimCollapsedText: ' Show more',
-        trimExpandedText: ' Hide',
+        trimCollapsedText: ' Mostrar más',
+        trimExpandedText: ' Ocultar',
         //estilo de texto que amplía
         moreStyle: TextStyle(
             fontSize: 14,
@@ -253,8 +250,6 @@ class _InfoDogState extends State<InfoDog> {
             fontSize: 14,
             fontWeight: FontWeight.normal,
             color: Colors.blueGrey),
-        //softWrap: true, //saltos de linea cuando se acabe el espacio,
-        // en false el texto está en linea horizontal ilimitada
       ),
     );
 
@@ -301,7 +296,8 @@ class _InfoDogState extends State<InfoDog> {
               //cuerpo en formato de lista
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
               children: [
-                GestureDetector(
+                isShelter //si es una protectora
+                ? GestureDetector( //al mantener presionado sobre la imagen puede cambiarla
                   onLongPress: _openImagePicker,
                   child: Image.network(
                     //imagen y sus parametros
@@ -310,10 +306,17 @@ class _InfoDogState extends State<InfoDog> {
                     height: 240,
                     fit: BoxFit.contain,
                   ),
-                ),
+                )
+                : Image.network( //si es un usuario particular solo ve la imagen
+                  //imagen y sus parametros
+                    dogProfilePicture!,
+                    width: 600,
+                    height: 240,
+                    fit: BoxFit.contain,
+                  ),
                 const SizedBox(height: 5), //espacio en blanco de separación
                 isEditing
-                    ? Padding(
+                    ? Padding( //si se esta editando se muestra un TextField
                         padding: EdgeInsets.fromLTRB(20, 10, 20, 0), //left, top, right, bottom
                         child: Column(
                           children: [
@@ -330,8 +333,8 @@ class _InfoDogState extends State<InfoDog> {
                           ],
                         ),
                       )
-                    : titleSection,
-                isEditing
+                    : titleSection, //sino, muestra el widget de seccion de titulo
+                isEditing //si se está editando se muestra una columna con un DropdownButton y TextField
                     ? Padding(
                         padding: EdgeInsets.fromLTRB(20, 0, 20, 0), //left, top, right, bottom
                         child: Column(
@@ -356,7 +359,7 @@ class _InfoDogState extends State<InfoDog> {
                                 );
                               }).toList(),
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(height: 20), //espacio en blanco de separación
                             TextField(
                               controller: dogAgeEditingController,
                               textCapitalization: TextCapitalization.sentences,
@@ -366,13 +369,13 @@ class _InfoDogState extends State<InfoDog> {
                                 hintText: 'Edad',
                               ),
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(height: 20), //espacio en blanco de separación
                           ],
                         ),
                       )
-                    : dataSection,
+                    : dataSection, //sino, se muestra el widget de la sección de datos
                 isEditing
-                    ? Padding(
+                    ? Padding( //si se está editando se muestra un TextField
                         padding: EdgeInsets.fromLTRB(20, 0, 20, 20), //left, top, right, bottom
                         child: TextField(
                           controller: dogDescriptionEditingController,
@@ -386,7 +389,7 @@ class _InfoDogState extends State<InfoDog> {
                           maxLines: 10,
                         ),
                       )
-                    : descriptionSection,
+                    : descriptionSection, //sino, se muestra el widget de la sección de descripción
                 const SizedBox(height: 5), //espacio en blanco de separación
                 OverflowBar(
                   //barra donde se encuentra el boton de Enviar Mensaje
@@ -408,7 +411,7 @@ class _InfoDogState extends State<InfoDog> {
                           )
                   ],
                 ),
-                SizedBox(height: 10)
+                SizedBox(height: 10) //espacio en blanco de separación
               ],
             ),
     );

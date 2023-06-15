@@ -87,7 +87,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                 labelText: 'Nombre de perro',
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 10), //espacio en blanco de separación
             const Row(
               children: [
                 Text(
@@ -96,30 +96,30 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                     fontSize: 15,
                   ),
                 ),
-                Expanded(child: SizedBox(width: 60)), //espacio en blanco de separación
+                Expanded(child: SizedBox(width: 60)), //espacio en blanco de separación que ocupa todo el espacio posible
               ],
             ),
             DropdownButtonFormField<String>(
-                    isExpanded: true,
+                    isExpanded: true, //ocupa el espacio que necesita
                     value: dropdownValue,
                     onChanged: (String? newValue) {
                       setState(() {
-                        dropdownValue = newValue!;
+                        dropdownValue = newValue!; //el valor seleccionado se queda seleccionado
                       });
                     },
-                    items: razasDePerro.map<DropdownMenuItem<String>>((String value) {
+                    items: razasDePerro.map<DropdownMenuItem<String>>((String value) { //los items son una lista de perro.dart
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(
                             value,
-                          style: TextStyle(
+                          style: TextStyle( //estilo de los items
                               fontWeight: FontWeight.normal
                           ),
                         ),
                       );
-                    }).toList(),
+                    }).toList(), //transformado en una lista
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 20), //espacio en blanco de separación
             Row(
               children: [
                 const Text(
@@ -128,8 +128,8 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                     fontSize: 15,
                   ),
                 ),
-                const Expanded(child: SizedBox(width: 60)), //espacio en blanco de separación
-                SegmentedButton<Sex>(
+                const Expanded(child: SizedBox(width: 60)), //espacio en blanco de separación que ocupa todo el espacio posible
+                SegmentedButton<Sex>( //botón segmentado en dos opciones
                   segments: const <ButtonSegment<Sex>>[
                     ButtonSegment<Sex>(
                       value: Sex.male,
@@ -151,7 +151,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                 )
               ],
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 5), //espacio en blanco de separación
             TextFormField(
               validator: (value) {
                 if (value!.isEmpty) {
@@ -166,7 +166,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                 labelText: 'Edad (en años)',
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 30), //espacio en blanco de separación
             TextFormField(
               validator: (value) {
                 if (value!.isEmpty) {
@@ -185,7 +185,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
               ),
               maxLines: 10,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 20), //espacio en blanco de separación
             Row(
               children: [
                 OutlinedButton(
@@ -208,7 +208,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                   icon: const Icon(Icons.delete_outline_outlined))
               ],
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 15), //espacio en blanco de separación
             _image != null //si no hay imagen seleccionada, no muestra el container
               ? Column(
                 children: [
@@ -218,10 +218,10 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                     height: 300,
                     child: Image.file(_image!, fit: BoxFit.cover)
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 15), //espacio en blanco de separación
                 ],
               )
-              : const SizedBox(height: 15),
+              : const SizedBox(height: 15), //espacio en blanco de separación
             //const SizedBox(width: 5.0),
             FilledButton.tonal(
               onPressed: () async {
@@ -232,14 +232,13 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                   await storageReference.putFile(_image!); //guarda la imagen en la referencia de encima con los datos de fechahora.jpg
                   profileImageUrl = await storageReference.getDownloadURL();
                   DatabaseService(uid: userId).registerDogData(_nameDogController.text, dropdownValue, sexView.name, int.parse(_ageController.text),
-                      _descriptionController.text, profileImageUrl);
-                  Navigator.pushNamed(
-                      context, '/home');
+                      _descriptionController.text, profileImageUrl); //coge los datos de todos los campos y registra un nuevo perro en la bbdd con ellos
+                  Navigator.pushNamed(context, '/home');
                 }
               },
-              child: const Text('REGISTER DOG'),
+              child: const Text('REGISTRAR PERRO'),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 20), //espacio en blanco de separación
           ]
       ),
     ),
