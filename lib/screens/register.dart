@@ -213,57 +213,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 }
               },
             ),
-            const SizedBox(height: 25.0), //espacio en blanco de separación
-            // Row(
-            //   children: [
-            //     const Text(
-            //       '¿Anteriores mascotas?',
-            //       style: TextStyle(
-            //         fontSize: 15,
-            //       ),
-            //     ),
-            //     const Expanded(child: SizedBox(width: 110)), //espacio en blanco de separación
-            //     DropdownButton(
-            //       value: dropdownValue, //valor inicial
-            //       //lista de items del DropdownButton
-            //       items: <String>[
-            //         'Nothing',
-            //         'Dog',
-            //         'Cat',
-            //         'Hamster',
-            //         'Other'
-            //       ]
-            //           .map<DropdownMenuItem<String>>((String value) {
-            //         return DropdownMenuItem<String>(
-            //           //devuelve la lista
-            //           value: value,
-            //           child: Text(
-            //             value,
-            //             style: const TextStyle(fontSize: 16),
-            //           ),
-            //         );
-            //       }).toList(),
-            //       onChanged: (String? newValue) {
-            //         setState(() {
-            //           //al cambiar, pone el nuevo valor como valor determinado
-            //           dropdownValue = newValue!;
-            //         });
-            //       },
-            //     ),
-            //   ],
-            // ),
-            //prueba para utilizar el valor seleccionado en el DropdownButton
-            // const SizedBox(height: 20.0),
-            // Text(
-            //   'Selected Value: $dropdownValue',
-            //   style: TextStyle(fontSize: 13, fontWeight: FontWeight.normal),
-            // ),
-
-            const SizedBox(height: 5.0), //espacio en blanco de separación
+            const SizedBox(height: 30.0), //espacio en blanco de separación
             OverflowBar(
               //barra donde se encuentran los botones de sing up y cancel
-              alignment:
-                  MainAxisAlignment.end, //posicionados al final (a la derecha)
+              alignment: MainAxisAlignment.spaceBetween, //posicionados al final (a la derecha)
               children: <Widget>[
                 TextButton(
                   onPressed: () {
@@ -275,7 +228,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     _confPasswordController.clear();
                     _dateController.clear();
                   },
-                  child: const Text('CANCEL'),
+                  child: const Text('CANCELAR'),
                 ),
                 const SizedBox(width: 5.0),
                 ElevatedButton(
@@ -293,10 +246,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       });
                     }
                   },
-                  child: const Text('SIGN UP'),
+                  child: const Text('REGISTRARME'),
                 )
               ],
-            )
+            ),
+            SizedBox(height: 10)
           ],
         ),
       ),

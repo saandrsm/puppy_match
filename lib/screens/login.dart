@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                             controller: _usernameController,
                             decoration: const InputDecoration(
                               filled: false,
-                              labelText: 'Username',
+                              labelText: 'Correo electrónico',
                             ),
                           ),
                           const SizedBox(height: 16.0),
@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                             },
                             decoration: InputDecoration(
                               filled: false,
-                              labelText: 'Password',
+                              labelText: 'Contraseña',
                               suffixIcon: IconButton(
                                 //los SUFIXIcons se encuentran al final del text
                                 padding: const EdgeInsets.all(0),
@@ -116,14 +116,14 @@ class _LoginPageState extends State<LoginPage> {
                             //alignment: MainAxisAlignment.end, //posicionados al final (a la derecha)
                             children: [
                               forgetPassword(context),
-                              const Expanded(child: SizedBox(width: 50)),
+                              const Expanded(child: SizedBox(width: 30)),
                               TextButton(
                                 //al presionar se borra el texto de los controladores
                                 onPressed: () {
                                   _usernameController.clear();
                                   _passwordController.clear();
                                 },
-                                child: const Text('CANCEL'),
+                                child: const Text('CANCELAR'),
                               ),
                               const SizedBox(width: 5.0),
                               ElevatedButton(
@@ -150,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                                     _passwordController.clear();
                                   }
                                 },
-                                child: const Text('LOG IN'),
+                                child: const Text('ENTRAR'),
                               )
                             ],
                           ),
@@ -169,7 +169,7 @@ class _LoginPageState extends State<LoginPage> {
                                 Navigator.pushNamed(context,
                                     '/register'); //al pulsar pasa hacia pantalla RegisterPage
                               },
-                              child: const Text('Sign up')),
+                              child: const Text('Registrarme')),
                         ],
                       ),
                     );
@@ -206,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                             controller: _usernameController,
                             decoration: const InputDecoration(
                               filled: false,
-                              labelText: 'Username',
+                              labelText: 'Correo electrónico',
                             ),
                           ),
                           const SizedBox(height: 16.0),
@@ -221,7 +221,7 @@ class _LoginPageState extends State<LoginPage> {
                             },
                             decoration: InputDecoration(
                               filled: false,
-                              labelText: 'Password',
+                              labelText: 'Contraseña',
                               suffixIcon: IconButton(
                                 //los SUFIXIcons se encuentran al final del text
                                 padding: const EdgeInsets.all(0),
@@ -253,7 +253,7 @@ class _LoginPageState extends State<LoginPage> {
                                   _usernameController.clear();
                                   _passwordController.clear();
                                 },
-                                child: const Text('CANCEL'),
+                                child: const Text('CANCELAR'),
                               ),
                               const SizedBox(width: 5.0),
                               ElevatedButton(
@@ -280,11 +280,11 @@ class _LoginPageState extends State<LoginPage> {
                                     _passwordController.clear();
                                   }
                                 },
-                                child: const Text('LOG IN'),
+                                child: const Text('ENTRAR'),
                               )
                             ],
                           ),
-                          forgetPassword(context),
+                          forgetPassword2(context),
                           const SizedBox(height: 200.0),
                           //espacio en blanco de separación
                           // Text(
@@ -300,7 +300,7 @@ class _LoginPageState extends State<LoginPage> {
                                 Navigator.pushNamed(context,
                                     '/register'); //al pulsar pasa hacia pantalla RegisterPage
                               },
-                              child: const Text('Sign up')),
+                              child: const Text('Registrarme')),
                         ],
                       ),
                     );
@@ -358,7 +358,9 @@ showAlertDialogError(BuildContext context) {
 Widget forgetPassword(BuildContext context) {
   return TextButton(
         child: const Text(
-          'Forgot Password?',
+          '¿Recuperar \n'
+          'contraseña?',
+          textAlign: TextAlign.center,
           style: TextStyle(
               color: Colors.orangeAccent,
           ),
@@ -367,6 +369,21 @@ Widget forgetPassword(BuildContext context) {
         Navigator.pushNamed(context, '/reset'); //al pulsar pasa hacia pantalla ResetPage
       },
     );
+}
+
+Widget forgetPassword2(BuildContext context) {
+  return TextButton(
+    child: const Text(
+      '¿Recuperar contraseña?',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        color: Colors.orangeAccent,
+      ),
+    ),
+    onPressed: () {
+      Navigator.pushNamed(context, '/reset'); //al pulsar pasa hacia pantalla ResetPage
+    },
+  );
 }
 
 //metodo aparte para visibilizar e invisibilizar contraseñas pero impide controlar el texto del TextField

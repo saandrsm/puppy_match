@@ -306,8 +306,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                       trimLines: 3,
                                       //colorClickableText: Colors.red,
                                       trimMode: TrimMode.Line,
-                                      trimCollapsedText: 'Show more',
-                                      trimExpandedText: ' Hide',
+                                      trimCollapsedText: ' Mostrar más',
+                                      trimExpandedText: ' Ocultar',
                                       //estilo de texto que amplía
                                       moreStyle: const TextStyle(
                                           fontSize: 14,

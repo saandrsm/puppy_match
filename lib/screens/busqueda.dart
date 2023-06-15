@@ -70,128 +70,131 @@ class _SearchPageState extends State<SearchPage> {
               showModalBottomSheet(
                   context: context,
                   builder: (context) {
-                    return Wrap(
-                      //mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        ListTile(
-                          leading: const Icon(Icons.pets),
-                          title: const Text('Todos'),
-                          onTap: ()  {
-                            Future.delayed(Duration.zero, (){
-                              setState(() {
-                                isLoading = true;
-                              });
-                              if(isShelter){
-                                DatabaseService(uid: userId).getAllShelterDogs(context).then((value) {
-                                  setState(() {
-                                    isLoading = true;
-                                    dogCards.clear();
-                                    dogCards = value;
-                                    isLoading = false;
-                                  });
-                                });
-                              }
-                              else{
-                                DatabaseService(uid: userId).getAllDogs(context).then((value) {
-                                  setState(() {
-                                    isLoading = true;
-                                    dogCards.clear();
-                                    dogCards = value;
-                                    isLoading = false;
-                                  });
-                                });
-                              }
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
-                        isShelter
-                        ? const SizedBox(height: 0)
-                        : ListTile(
-                          leading: const Icon(Icons.favorite),
-                          title: const Text('Favoritos'),
-                          onTap: () {
-                            Future.delayed(Duration.zero, (){
-                              setState(() {
-                                isLoading = true;
-                              });
-                              DatabaseService(uid: userId).getFavouriteDogs(context).then((value) {
+                    return Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Wrap(
+                        //mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ListTile(
+                            leading: const Icon(Icons.pets),
+                            title: const Text('Todos'),
+                            onTap: ()  {
+                              Future.delayed(Duration.zero, (){
                                 setState(() {
                                   isLoading = true;
-                                  dogCards.clear();
-                                  dogCards = value;
-                                  isLoading = false;
+                                });
+                                if(isShelter){
+                                  DatabaseService(uid: userId).getAllShelterDogs(context).then((value) {
+                                    setState(() {
+                                      isLoading = true;
+                                      dogCards.clear();
+                                      dogCards = value;
+                                      isLoading = false;
+                                    });
+                                  });
+                                }
+                                else{
+                                  DatabaseService(uid: userId).getAllDogs(context).then((value) {
+                                    setState(() {
+                                      isLoading = true;
+                                      dogCards.clear();
+                                      dogCards = value;
+                                      isLoading = false;
+                                    });
+                                  });
+                                }
+                              });
+                              Navigator.pop(context);
+                            },
+                          ),
+                          isShelter
+                          ? const SizedBox(height: 0)
+                          : ListTile(
+                            leading: const Icon(Icons.favorite),
+                            title: const Text('Favoritos'),
+                            onTap: () {
+                              Future.delayed(Duration.zero, (){
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                DatabaseService(uid: userId).getFavouriteDogs(context).then((value) {
+                                  setState(() {
+                                    isLoading = true;
+                                    dogCards.clear();
+                                    dogCards = value;
+                                    isLoading = false;
+                                  });
                                 });
                               });
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.female),
-                          title: const Text('Hembras'),
-                          onTap: () {
-                            Future.delayed(Duration.zero, (){
-                              setState(() {
-                                isLoading = true;
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.female),
+                            title: const Text('Hembras'),
+                            onTap: () {
+                              Future.delayed(Duration.zero, (){
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                if(isShelter){
+                                  DatabaseService(uid: userId).getShelterFemaleDogs(context).then((value) {
+                                    setState(() {
+                                      isLoading = true;
+                                      dogCards.clear();
+                                      dogCards = value;
+                                      isLoading = false;
+                                    });
+                                  });
+                                }
+                                else{
+                                  DatabaseService(uid: userId).getFemaleDogs(context).then((value) {
+                                    setState(() {
+                                      isLoading = true;
+                                      dogCards.clear();
+                                      dogCards = value;
+                                      isLoading = false;
+                                    });
+                                  });
+                                }
                               });
-                              if(isShelter){
-                                DatabaseService(uid: userId).getShelterFemaleDogs(context).then((value) {
-                                  setState(() {
-                                    isLoading = true;
-                                    dogCards.clear();
-                                    dogCards = value;
-                                    isLoading = false;
-                                  });
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.male),
+                            title: const Text('Machos'),
+                            onTap: () {
+                              Future.delayed(Duration.zero, (){
+                                setState(() {
+                                  isLoading = true;
                                 });
-                              }
-                              else{
-                                DatabaseService(uid: userId).getFemaleDogs(context).then((value) {
-                                  setState(() {
-                                    isLoading = true;
-                                    dogCards.clear();
-                                    dogCards = value;
-                                    isLoading = false;
+                                if(isShelter){
+                                  DatabaseService(uid: userId).getShelterMaleDogs(context).then((value) {
+                                    setState(() {
+                                      isLoading = true;
+                                      dogCards.clear();
+                                      dogCards = value;
+                                      isLoading = false;
+                                    });
                                   });
-                                });
-                              }
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.male),
-                          title: const Text('Machos'),
-                          onTap: () {
-                            Future.delayed(Duration.zero, (){
-                              setState(() {
-                                isLoading = true;
+                                }
+                                else{
+                                  DatabaseService(uid: userId).getMaleDogs(context).then((value) {
+                                    setState(() {
+                                      isLoading = true;
+                                      dogCards.clear();
+                                      dogCards = value;
+                                      isLoading = false;
+                                    });
+                                  });
+                                }
                               });
-                              if(isShelter){
-                                DatabaseService(uid: userId).getShelterMaleDogs(context).then((value) {
-                                  setState(() {
-                                    isLoading = true;
-                                    dogCards.clear();
-                                    dogCards = value;
-                                    isLoading = false;
-                                  });
-                                });
-                              }
-                              else{
-                                DatabaseService(uid: userId).getMaleDogs(context).then((value) {
-                                  setState(() {
-                                    isLoading = true;
-                                    dogCards.clear();
-                                    dogCards = value;
-                                    isLoading = false;
-                                  });
-                                });
-                              }
-                            });
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      ),
                     );
                   });
             },

@@ -161,8 +161,7 @@ class _InfoDogState extends State<InfoDog> {
       }
 
       setState(() {
-        dogProfilePicture =
-            profileImageUrl; //modifica la foto de perfil que se muestra con la añadida
+        dogProfilePicture = profileImageUrl; //modifica la foto de perfil que se muestra con la añadida
       });
     }
   }
@@ -241,8 +240,8 @@ class _InfoDogState extends State<InfoDog> {
         dogDescription!,
         trimLines: 3,
         trimMode: TrimMode.Line,
-        trimCollapsedText: ' Show more',
-        trimExpandedText: ' Hide',
+        trimCollapsedText: ' Mostrar más',
+        trimExpandedText: ' Ocultar',
         //estilo de texto que amplía
         moreStyle: TextStyle(
             fontSize: 14,
@@ -301,7 +300,8 @@ class _InfoDogState extends State<InfoDog> {
               //cuerpo en formato de lista
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
               children: [
-                GestureDetector(
+                isShelter
+                ? GestureDetector(
                   onLongPress: _openImagePicker,
                   child: Image.network(
                     //imagen y sus parametros
@@ -310,7 +310,14 @@ class _InfoDogState extends State<InfoDog> {
                     height: 240,
                     fit: BoxFit.contain,
                   ),
-                ),
+                )
+                : Image.network(
+                  //imagen y sus parametros
+                    dogProfilePicture!,
+                    width: 600,
+                    height: 240,
+                    fit: BoxFit.contain,
+                  ),
                 const SizedBox(height: 5), //espacio en blanco de separación
                 isEditing
                     ? Padding(

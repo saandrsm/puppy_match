@@ -69,7 +69,7 @@ class _ResetPageState extends State<ResetPage> {
                 controller: _mail,
                 decoration: const InputDecoration(
                   filled: false,
-                  labelText: 'Enter your email',
+                  labelText: 'Introduce tu email',
                 ),
               ),
               const SizedBox(height: 10.0), //espacio en blanco de separación
@@ -88,7 +88,7 @@ class _ResetPageState extends State<ResetPage> {
                           });;
                         }
                       },
-                      child: const Text('RESET PASSWORD'),
+                      child: const Text('RECUPERAR CONTRASEÑA'),
                   ),
                 ],
               ),

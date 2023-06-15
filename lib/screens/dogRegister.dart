@@ -237,7 +237,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                       context, '/home');
                 }
               },
-              child: const Text('REGISTER DOG'),
+              child: const Text('REGISTRAR PERRO'),
             ),
             const SizedBox(height: 20),
           ]

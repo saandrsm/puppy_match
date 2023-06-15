@@ -302,7 +302,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (messages != null) {
       for (MessageData message in messages) {
         // Obtiene la fecha del mensaje en formato "yyyy-MM-dd"
-        String day = DateFormat('yyyy-MM-dd').format(
+        String day = DateFormat('dd-MM-yyyy').format(
           message.time!.toDate().add(Duration(hours: 2)),
         );
 
