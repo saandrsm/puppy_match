@@ -231,6 +231,12 @@ class _RegisterPageState extends State<RegisterPage> {
                         print('Created new account');
                         Navigator.pushNamed(
                         context, '/home'); //pasa hacia pantalla HomePage
+                        _mailController.clear();
+                        _newPasswordController.clear();
+                        _dateController.clear();
+                        _confPasswordController.clear();
+                        _confMailController.clear();
+                        _nameController.clear();
                       }).onError((error, stackTrace) {
                         print('Error ${error.toString()}');
                         showAlertDialogError(context);
