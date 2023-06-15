@@ -81,12 +81,13 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                 return null;
               },
               controller: _nameDogController,
+              maxLength: 20,
               decoration: const InputDecoration(
                 filled: false,
                 labelText: 'Nombre de perro',
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             const Row(
               children: [
                 Text(
@@ -109,7 +110,12 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                     items: razasDePerro.map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
-                        child: Text(value),
+                        child: Text(
+                            value,
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal
+                          ),
+                        ),
                       );
                     }).toList(),
             ),

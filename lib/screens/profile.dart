@@ -258,6 +258,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             isEditing
                                 ? TextField(
                                     controller: nameEditingController,
+                                    maxLength: 20,
                                     textCapitalization: TextCapitalization.sentences,
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
@@ -269,7 +270,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 10),
                             //espacio en blanco de separación
                             Container(
                               //contenedor de texto (para poder poner padding)
@@ -468,7 +469,6 @@ class _ProfilePageState extends State<ProfilePage> {
         foregroundColor: Colors.black87,
         onPressed: () {
           Navigator.pushNamed(context, '/conversations');
-          //falta añadir funcionalidad
         },
         child: const Icon(Icons.chat_outlined),
       ),
