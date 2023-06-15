@@ -56,9 +56,6 @@ class _ResetPageState extends State<ResetPage> {
                     return 'Campo vacío';
                   }
                   return null;
-                  // else if (mailValid(value) == false) {
-                  //   return 'Correo electrónico inválido';
-                  // }
                 },
                 controller: _mail,
                 decoration: const InputDecoration(

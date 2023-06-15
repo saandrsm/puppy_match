@@ -12,8 +12,8 @@ import 'chatUserProfile.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatData chat;
-  const ChatScreen({Key? key, required this.chat}) : super(key: key);
-  static final routeName = '/chat';
+  const ChatScreen({Key? key, required this.chat}) : super(key: key); //necesita un dato de tipo chat para ejecutarse
+  static final routeName = '/chat'; //ruta de la página
 
   @override
   State<ChatScreen> createState() => _ChatScreenState(chat);
@@ -24,8 +24,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   _ChatScreenState(this.chat);
 
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  final FirebaseFirestore firebaseFire = FirebaseFirestore.instance;
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance; //instancia de auth de firebase
+  final FirebaseFirestore firebaseFire = FirebaseFirestore.instance; //instancia de la base de datos
   late String? userId;
   late bool isShelter;
   bool isLoading = true;
@@ -33,8 +33,8 @@ class _ChatScreenState extends State<ChatScreen> {
   late String? profilePicture;
   late String? name;
   final TextEditingController _messageController = TextEditingController();
-  late Stream<QuerySnapshot<MessageData>> messagesSnapshot;
-  late FocusNode myFocusNode;
+  late Stream<QuerySnapshot<MessageData>> messagesSnapshot; //variable que contiene los mensajes del chat
+  late FocusNode myFocusNode; //objeto que controla el foco cuando se escribe un mensaje
 
   @override
   void initState() {
@@ -44,19 +44,19 @@ class _ChatScreenState extends State<ChatScreen> {
         ?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
     UserData thisUserData;
     UserData chatUserData;
-    DatabaseService(uid: userId).gettingUserData(userId).then((value) {
+    DatabaseService(uid: userId).gettingUserData(userId).then((value) { //obtiene los datos del usuario
       setState(() {
         thisUserData = value;
         isShelter = thisUserData.isShelter!;
         if (isShelter) {
           userChattedId = chat.regularUserId;
-        }
+        } //asigna el id de la persona con la que habla según el método lo haya llamado una protectora o un usuario
         else {
           userChattedId = chat.shelterId;
         }
       });
       Future.delayed(Duration.zero, () async {
-        await DatabaseService(uid: userId).gettingUserData(userChattedId).then((
+        await DatabaseService(uid: userId).gettingUserData(userChattedId).then(( //obtiene los datos del usuario con el que habla
             value) async {
           setState(() {
             chatUserData = value;
@@ -64,7 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
             name = chatUserData.name;
           });
           await DatabaseService(uid: userId)
-              .getAllMessagesFromChat(chat.chatId)
+              .getAllMessagesFromChat(chat.chatId) //obtiene los mensajes del chat
               .then((value) {
             setState(() {
               messagesSnapshot = value;
@@ -85,7 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    return isLoading
+    return isLoading //muestra el icono de carga o el resto de elementos
         ? Center(
       child: LoadingAnimationWidget.staggeredDotsWave(
         color: Colors.orangeAccent,
@@ -100,13 +100,13 @@ class _ChatScreenState extends State<ChatScreen> {
               onTap: () {
                 if(isShelter){
                   DeepRoute.toNamed(ChatUserProfile.routeName, arguments: chat.regularUserId);
-                } else {
+                } else { //accede al perfil de la persona con la que habla según
                   DeepRoute.toNamed(ChatUserProfile.routeName, arguments: chat.shelterId);
                 }
               },
               child: CircleAvatar(
                 radius: 22.0,
-                backgroundImage: NetworkImage(profilePicture!),
+                backgroundImage: NetworkImage(profilePicture!), //foto de perfil del usuario/protectora con el que se está hablando
               ),
             ),
             const SizedBox(width: 13.0),
@@ -114,13 +114,11 @@ class _ChatScreenState extends State<ChatScreen> {
           ],
         ),
         leading: IconButton(
-          //icono a la izquierda (principio) del texto para cerrar sesión
           icon: const Icon(
             Icons.arrow_back,
             semanticLabel: 'logout',
           ),
           onPressed: () {
-            //al presionar vuelve hacia LoginPage
             Navigator.pop(context); // Regresar a la pantalla de conversaciones
           },
         ),
@@ -132,14 +130,13 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           children: [
             Expanded(
-              child: StreamBuilder<QuerySnapshot<MessageData>>(
-                stream: messagesSnapshot,
+              child: StreamBuilder<QuerySnapshot<MessageData>>( //comprueba si hay cambios en el stream de datos y se reconstruye
+                stream: messagesSnapshot,                       //es decir, si se envía un mensaje, actualiza en tiempo real los datos
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
                     Navigator.pop(context);
                   }
-
-                  if (snapshot.connectionState == ConnectionState.waiting) {
+                  if (snapshot.connectionState == ConnectionState.waiting) { //muestra el icono de carga mientras se actualizan los datos
                     return Center(
                       child: LoadingAnimationWidget.staggeredDotsWave(
                         color: Colors.orangeAccent,
@@ -147,23 +144,19 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                     );
                   }
-
-                  List<MessageData>? messageList = snapshot.data?.docs
+                  List<MessageData>? messageList = snapshot.data?.docs //guarda los mensajes en una lista
                       .map((doc) => doc.data() as MessageData)
                       .toList();
-
                   // Agrupa los mensajes por día
                   Map<String, List<MessageData>> groupedMessages =
                   groupMessagesByDay(messageList);
-
                   return ListView.builder(
                     padding: const EdgeInsets.all(8.0),
-                    itemCount: groupedMessages.length,
+                    itemCount: groupedMessages.length, //muestra tantos elementos como grupos de mensajes haya
                     reverse: true,
                     itemBuilder: (context, index) {
-                      String day = groupedMessages.keys.toList()[index];
-                      List<MessageData> messages = groupedMessages[day]!;
-
+                      String day = groupedMessages.keys.toList()[index]; //recoge el día de los mensajes
+                      List<MessageData> messages = groupedMessages[day]!; //guarda los mensajes
                       return Column(
                         children: [
                           _buildDayDivider(day),
@@ -173,18 +166,15 @@ class _ChatScreenState extends State<ChatScreen> {
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: messages.length,
                             itemBuilder: (context, index) {
-                              MessageData message = messages[index];
-                              final isSentMessage = message.senderId == userId;
-
-                              // Aplica el desplazamiento de 2 horas a la hora del mensaje
+                              MessageData message = messages[index]; //asigna cada mensaje en la variable
+                              final isSentMessage = message.senderId == userId; //comrpueba si el mensaje lo ha enviado o recibido el usuario
                               final messageTime = message.time != null
                                   ? DateFormat('HH:mm').format(
-                                message.time!.toDate(),
+                                message.time!.toDate(), //le da formato al timestamp del envío
                               )
                                   : '';
-
                               return Align(
-                                alignment: isSentMessage
+                                alignment: isSentMessage //alinea el mensaje según lo haya enviado el usuario o no
                                     ? Alignment.centerRight
                                     : Alignment.centerLeft,
                                 child: Column(
@@ -203,13 +193,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                           margin: const EdgeInsets.symmetric(
                                               horizontal: 6.0, vertical: 4.0),
                                           decoration: BoxDecoration(
-                                            color: isSentMessage
+                                            color: isSentMessage //color según se ha enviad o recibido
                                                 ? Colors.blueGrey
                                                 : Colors.orangeAccent,
                                             borderRadius: BorderRadius.circular(12.0),
                                           ),
                                           child: Text(
-                                            message.text!,
+                                            message.text!, //texto del mensaje
                                             style: theme.textTheme.bodyMedium?.copyWith(
                                               color: isSentMessage
                                                   ? Colors.white
@@ -221,7 +211,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       ],
                                     ),
                                     SizedBox(height: 4.0),
-                                    Align(
+                                    Align( //alinea la hora del mensaje
                                       alignment: isSentMessage
                                           ? Alignment.centerRight
                                           : Alignment.centerLeft,
@@ -248,7 +238,6 @@ class _ChatScreenState extends State<ChatScreen> {
                       );
                     },
                   );
-
                 },
               ),
             ),
@@ -256,7 +245,7 @@ class _ChatScreenState extends State<ChatScreen> {
               padding: const EdgeInsets.all(13.0),
               child: Row(
                 children: [
-                  Expanded(
+                  Expanded( //widget de la estructura para enviar un mensaje
                     child: TextFormField(
                       focusNode: myFocusNode,
                       controller: _messageController,
@@ -269,19 +258,11 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   const SizedBox(width: 4.0),
-                  // IconButton(
-                  //   onPressed: () {
-                  //
-                  //   },
-                  //   icon: const Icon(Icons.attach_file),
-                  // ),
-                  //const SizedBox(width: 0.0),
                   IconButton(
-                    onPressed: () {
+                    onPressed: () { //guarda el mensaje en la base de datos, vacía el texto escrito y pierde el foco
                       DatabaseService(uid: userId).sendMessageToChatroom(chat.chatId!, userId!, _messageController.text);
                       _messageController.clear();
                       myFocusNode.unfocus();
-
                     },
                     icon: const Icon(Icons.send),
                   ),
@@ -315,7 +296,6 @@ class _ChatScreenState extends State<ChatScreen> {
         }
       }
     }
-
     return groupedMessages;
   }
 

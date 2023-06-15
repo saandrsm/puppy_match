@@ -7,8 +7,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ChatUserProfile extends StatefulWidget {
   final String userId;
-  const ChatUserProfile({Key? key, required this.userId}) : super(key: key);
-  static final routeName = '/chatUserProfile';
+  const ChatUserProfile({Key? key, required this.userId}) : super(key: key); //requiere un ID de usuario para ejecutarse
+  static final routeName = '/chatUserProfile'; //ruta de la clase
 
   @override
   State<ChatUserProfile> createState() => _ChatUserProfileState(userId);
@@ -16,13 +16,13 @@ class ChatUserProfile extends StatefulWidget {
 
 class _ChatUserProfileState extends State<ChatUserProfile> {
   final String userId;
-  _ChatUserProfileState(this.userId);
+  _ChatUserProfileState(this.userId); //requiere un ID de usuario para ejecutarse
   late String? name;
   late String? userDescription;
   late bool isShelter = true; //variable que define el tipo de usuario
   bool isLoading = true;
   late String profilePicture;
-  late List<File> imageFileList;
+  late List<File> imageFileList; //variable para guardar las imágenes de la galería del usuario
   @override
   void initState() {
     super.initState();
@@ -64,19 +64,17 @@ class _ChatUserProfileState extends State<ChatUserProfile> {
           ),
         ),
         leading: IconButton(
-          //icono a la izquierda (principio) del texto para cerrar sesión
           icon: const Icon(
             Icons.arrow_back,
-            semanticLabel: 'logout',
+            semanticLabel: 'return to chat',
           ),
           onPressed: () {
-            //al presionar vuelve hacia LoginPage
-            Navigator.pop(context);
+            Navigator.pop(context); //vuelve al chat
           },
         ),
       ),
       body: isLoading
-          ? Center(
+          ? Center( //muestra el icono de carga o el resto de elementos
         child: LoadingAnimationWidget.staggeredDotsWave(
           color: Colors.orangeAccent,
           size: 40,
@@ -86,20 +84,15 @@ class _ChatUserProfileState extends State<ChatUserProfile> {
         //cuerpo en formato lista
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
         children: [
-          //detecta el gesto especificado y realiza una acción
           Container(
             width: 110,
             height: 90,
             decoration: BoxDecoration(
               shape: BoxShape.circle, //forma de imagen circular
               image: DecorationImage(
-                  image: NetworkImage(profilePicture),
+                  image: NetworkImage(profilePicture), //imagen del usuario
                   fit: BoxFit.contain),
             ),
-            // child: CircleAvatar(
-            //   radius: 90,
-            //   backgroundImage: NetworkImage(profilePicture),
-            // ),
           ),
           const SizedBox(height: 10), //espacio en blanco de separación
           Container(
@@ -109,7 +102,7 @@ class _ChatUserProfileState extends State<ChatUserProfile> {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment
-                        .center, //alineación en el centro
+                        .center,
                     children: [
                       Container(
                         //contenedor de texto (para poder poner padding)
@@ -123,7 +116,7 @@ class _ChatUserProfileState extends State<ChatUserProfile> {
                         ),
                       ),
                       Text(
-                        name!,
+                        name!, //nombre del usuario
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
@@ -141,7 +134,7 @@ class _ChatUserProfileState extends State<ChatUserProfile> {
                           ),
                         ),
                       ),
-                      //prueba de paquete de texto ocultable (leer mas, leer menos)
+                      //paquete de texto ocultable
                       Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: ReadMoreText(
@@ -151,8 +144,8 @@ class _ChatUserProfileState extends State<ChatUserProfile> {
                           trimLines: 3,
                           //colorClickableText: Colors.red,
                           trimMode: TrimMode.Line,
-                          trimCollapsedText: 'Show more',
-                          trimExpandedText: ' Hide',
+                          trimCollapsedText: ' Mostrar más',
+                          trimExpandedText: ' Ocultar',
                           //estilo de texto que amplía
                           moreStyle: const TextStyle(
                               fontSize: 14,
@@ -178,7 +171,7 @@ class _ChatUserProfileState extends State<ChatUserProfile> {
           ),
           isShelter
               ? const SizedBox(height: 0)
-              : ListView(
+              : ListView( //si es un usuario particular muestra la galeria de imagenes
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               children: [
@@ -208,11 +201,9 @@ class _ChatUserProfileState extends State<ChatUserProfile> {
                     gridDelegate:
                     const SliverGridDelegateWithFixedCrossAxisCount(
                       mainAxisSpacing: 10,
-                      // mainAxisExtent: 350,
                       crossAxisCount: 1, //columnas(imagenes) x fila
                     ),
                     itemBuilder: (BuildContext context, int index) {
-                      final item = imageFileList[index];
                       return Row(
                         children: [
                           Expanded(

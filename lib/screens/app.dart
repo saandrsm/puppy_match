@@ -8,7 +8,6 @@ import 'package:PuppyMatch/screens/register.dart';
 import 'package:PuppyMatch/screens/resetPassword.dart';
 import 'package:PuppyMatch/screens/chatListScreen.dart';
 import 'package:PuppyMatch/screens/chatScreen.dart';
-import 'package:PuppyMatch/screens/chatUserProfile.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'dogRegister.dart';
@@ -24,7 +23,7 @@ class PuppyMatch extends StatelessWidget {
     return DeepMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'PuppyMatch',
-      home: AnimatedSplashScreen(
+      home: AnimatedSplashScreen( //animación que aparece al iniciar la app
         splash: Text(
             'PUPPY MATCH',
           style: TextStyle(
@@ -38,9 +37,8 @@ class PuppyMatch extends StatelessWidget {
         splashTransition: SplashTransition.fadeTransition,
         pageTransitionType: PageTransitionType.fade,
         backgroundColor: Colors.brown,
-        nextScreen: LoginPage(),
+        nextScreen: LoginPage(), //lleva a la pantalla de Login
       ),
-      //initialRoute: '/', //ruta de la pantalla donde comienza a cargar la app
       routes: {        //rutas de otras pantallas a las que dirigirnos
         '/login': (context) => const LoginPage(),
         '/home': (context) => const HomePage(),
@@ -53,8 +51,8 @@ class PuppyMatch extends StatelessWidget {
 
       },
       onGenerateRoute: (settings){
-    if (settings.name == InfoDog.routeName) {
-      final args = settings.arguments as String;
+    if (settings.name == InfoDog.routeName) { //comprueba si la ruta pasada coincide con la que tiene la pantalla de información del perro
+      final args = settings.arguments as String; //y pasa los argumentos como String asociándolos al id que tiene que recibir al ejecutarse
       return MaterialPageRoute(
         builder: (context) {
           return InfoDog(
@@ -63,8 +61,8 @@ class PuppyMatch extends StatelessWidget {
         },
       );
     }
-    if (settings.name == ChatScreen.routeName) {
-      final args = settings.arguments as ChatData;
+    if (settings.name == ChatScreen.routeName) { //comprueba si la ruta pasada coincide con la que tiene la pantalla de Chat
+      final args = settings.arguments as ChatData; //y pasa los argumentos como ChatData asociándolos al chat que tiene que recibir al ejecutarse
       return MaterialPageRoute(
         builder: (context) {
           return ChatScreen(
@@ -73,8 +71,8 @@ class PuppyMatch extends StatelessWidget {
         },
       );
     }
-    if (settings.name == ChatUserProfile.routeName) {
-      final args = settings.arguments as String;
+    if (settings.name == ChatUserProfile.routeName) { //comprueba si la ruta pasada coincide con la que tiene la pantalla del perfil del chat
+      final args = settings.arguments as String; //y pasa los argumentos como ChatData asociándolos al perfil que tiene que recibir al ejecutarse
       return MaterialPageRoute(
         builder: (context) {
           return ChatUserProfile(
@@ -83,7 +81,7 @@ class PuppyMatch extends StatelessWidget {
         },
       );
     }
-        assert(false, 'No se ha recibido ${settings.name}');
+        assert(false, 'No se ha recibido ${settings.name}'); //Da error si no hay ruta
         return null;
       },
       theme: ThemeData(   //definición del tema claro

@@ -23,7 +23,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   final FirebaseFirestore firebaseFire = FirebaseFirestore.instance; //instancia de la base de datos
   late bool isShelter = false; //variable que define el tipo de usuario
   bool isLoading = true;
-  late List<ChatData> chats;
+  late List<ChatData> chats; //variable donde se van a guardar los datos de los chats
   int update = 0;
 
   @override
@@ -47,7 +47,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
             },
           )
       ),
-      body: isLoading
+      body: isLoading //muestra el icono de carga o el resto de elementos
           ? Center(
         child: LoadingAnimationWidget.staggeredDotsWave(
           color: Colors.orangeAccent,
@@ -59,16 +59,16 @@ class _ChatListScreenState extends State<ChatListScreen> {
           color: theme.colorScheme.background,
         ),
         child: ListView.builder(
-          itemCount: chats.length,
+          itemCount: chats.length, //muestra tantos chats como la longitud de la variable
           itemBuilder: (context, index) {
-            final chat = chats[index];
-            return ChatListItem(
+            final chat = chats[index]; //asigna a la variable los datos de cada chat
+            return ChatListItem( //genera un chat con la estructura del widget ChatListItem
               chat: chat,
               onTap: () async {
                  await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ChatScreen(chat: chat),
+                    builder: (context) => ChatScreen(chat: chat), //te envía a la pantalla del chat pasando los datos como argumento
                   ),
                 ).then((value) { //espera a que se haga el navigator.pop del chat y sustituye la pantalla por una actualizada
                    Navigator.pushReplacement(
@@ -79,7 +79,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                    );
                  });
               },
-              isShelter: isShelter,
+              isShelter: isShelter, //pasa la variable para cambiar el comportamiento del widget según qué reciba
             );
           },
         ),
@@ -93,12 +93,12 @@ class _ChatListScreenState extends State<ChatListScreen> {
     try {
       userId = firebaseAuth.currentUser?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
       UserData userData;
-      DatabaseService(uid: userId).gettingUserData(userId).then((value) {
+      DatabaseService(uid: userId).gettingUserData(userId).then((value) { //obtiene los datos del usuario
         userData = value;
         isShelter = userData.isShelter!;
         Future.delayed(Duration.zero, () async {
           if(isShelter){
-            await DatabaseService(uid: userId).getAllShelterChats().then((value) {
+            await DatabaseService(uid: userId).getAllShelterChats().then((value) { //obtiene todos los chats de la protectora
               setState(() {
                 chats = value;
                 isLoading = false;
@@ -106,7 +106,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
             });
           }
           else{
-            await DatabaseService(uid: userId).getAllRegularUserChats().then((value) {
+            await DatabaseService(uid: userId).getAllRegularUserChats().then((value) { //obtiene todos los chats del usuario
               setState(() {
                 chats = value;
                 isLoading = false;
@@ -121,7 +121,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   }
 }
 
-class ChatListItem extends StatefulWidget {
+class ChatListItem extends StatefulWidget { //widget utilizado para constuir cada chat que se muestra
   final ChatData chat;
   final VoidCallback onTap;
   final bool isShelter;
@@ -144,7 +144,7 @@ class _ChatListItemState extends State<ChatListItem> {
   late String? userChattedId;
   late MessageData lastMessageData;
 
-  String formatTimestamp(Timestamp timestamp) {
+  String formatTimestamp(Timestamp timestamp) { //metodo para formatear el timeStamp de firestore
     DateTime dateTime = timestamp.toDate();
     DateTime localDateTime = dateTime.toLocal(); // Convierte a la zona horaria local del dispositivo
     DateTime now = DateTime.now();
@@ -170,17 +170,17 @@ class _ChatListItemState extends State<ChatListItem> {
     userId = firebaseAuth.currentUser?.uid;
     if(isShelter) {
       userChattedId = chat.regularUserId;
-    }
+    } //asigna el id de la persona con la que habla según el método lo haya llamado una protectora o un usuario
     else{
       userChattedId = chat.shelterId;
     }
-    DatabaseService(uid: userId).gettingUserData(userChattedId).then((value){
+    DatabaseService(uid: userId).gettingUserData(userChattedId).then((value){ //recibe y asigna los datos de la persona
       setState(() {
         userData = value;
         profilePicture = userData.profilePicture;
         name = userData.name;
       });
-      DatabaseService(uid: userId).getLastMessageDataFromChat(chat.chatId).then((value) {
+      DatabaseService(uid: userId).getLastMessageDataFromChat(chat.chatId).then((value) { //recibe el último mensaje para mostrarlo
         setState(() {
           lastMessageData = value;
           isLoading = false;
@@ -192,7 +192,7 @@ class _ChatListItemState extends State<ChatListItem> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    return isLoading
+    return isLoading //muestra el icono de carga o el resto de elementos
         ? Center(
       child: LoadingAnimationWidget.staggeredDotsWave(
         color: Colors.orangeAccent,
@@ -220,7 +220,7 @@ class _ChatListItemState extends State<ChatListItem> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                  image: NetworkImage(profilePicture!),
+                  image: NetworkImage(profilePicture!), //imagen del perfil del usuario
                   fit: BoxFit.cover,
                 ),
               ),
@@ -231,12 +231,12 @@ class _ChatListItemState extends State<ChatListItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name!,
+                    name!, //nombre del usuario
                     style: theme.textTheme.titleLarge,
                   ),
               const SizedBox(height: 8),
               Text(
-                lastMessageData.text!,
+                lastMessageData.text!, //último mensaje
                 style: theme.textTheme.bodyMedium,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -246,7 +246,7 @@ class _ChatListItemState extends State<ChatListItem> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    formatTimestamp(lastMessageData.time!),
+                    formatTimestamp(lastMessageData.time!), //timestamp formateado
                     style: theme.textTheme.bodyMedium!.copyWith(
                       color: theme.colorScheme.onSurface.withOpacity(0.6),
                     ),

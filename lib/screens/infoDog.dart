@@ -11,10 +11,10 @@ import '../model/userData.dart';
 import '../services/database.dart';
 
 class InfoDog extends StatefulWidget {
-  final String dogId; //inicializa la variable donde se guarda el Id de la Card
+  final String dogId;
   const InfoDog({Key? key, required this.dogId})
-      : super(key: key); //obtiene el valor de la key y lo asigna a la variable
-  static final routeName = '/info';
+      : super(key: key); //necesita un ID de perro para ejecutrase
+  static final routeName = '/info'; //ruta de la pantalla
   @override
   State<InfoDog> createState() => _InfoDogState(dogId);
 }
@@ -22,8 +22,7 @@ class InfoDog extends StatefulWidget {
 class _InfoDogState extends State<InfoDog> {
   final String? dogId;
   _InfoDogState(this.dogId);
-  final FirebaseAuth firebaseAuth =
-      FirebaseAuth.instance; //instancia de la base de datos
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance; //instancia de la base de datos
   late bool isShelter = false; //variable que define el tipo de usuario
   bool isEditing = false;
   late String? dogName = "";
@@ -38,7 +37,7 @@ class _InfoDogState extends State<InfoDog> {
   late bool _isFavorite = false;
   bool isLoading = true;
 
-  //metodo para marcar/desmarcar button favoritos
+  //metodo para marcar/desmarcar button favoritos y añadirlo o quitarlo del array del usuario en la base de datos
   void _toggleFavorite() async {
     if (_isFavorite) {
       await DatabaseService(uid: userId)
@@ -66,10 +65,9 @@ class _InfoDogState extends State<InfoDog> {
   void initState() {
     super.initState();
     try {
-      userId = firebaseAuth.currentUser
-          ?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
+      userId = firebaseAuth.currentUser?.uid; //obtiene el id del usuario que se le ha asignado al iniciar sesión (auth)
       UserData userData;
-      DatabaseService(uid: userId).gettingUserData(userId).then((value) {
+      DatabaseService(uid: userId).gettingUserData(userId).then((value) { //obtiene los datos del usuario y carga si el perro ya es favorito o no
         setState(() {
           userData = value;
           isShelter = userData.isShelter!;
@@ -81,7 +79,7 @@ class _InfoDogState extends State<InfoDog> {
           }
         });
       });
-      Future.delayed(Duration.zero, () async {
+      Future.delayed(Duration.zero, () async { //obtiene los datos del perro y los asigna
         await DatabaseService(uid: userId).gettingDogData(dogId).then((value) {
           setState(() {
             DogData dogData = value;
@@ -131,7 +129,7 @@ class _InfoDogState extends State<InfoDog> {
           dogName!,
           dogDescription!,
           breedName!,
-          dogAge!); //llama al método para actualizar el nombre y descripción al dejar de editar
+          dogAge!); //llama al método para actualizar los datos del perro al dejar de editar
     });
   }
 
@@ -140,8 +138,7 @@ class _InfoDogState extends State<InfoDog> {
   //metodo del imagePicker para abrir galería
   Future<void> _openImagePicker() async {
     File? _image;
-    final XFile? pickedImage =
-        await _pickerPerfil.pickImage(source: ImageSource.gallery);
+    final XFile? pickedImage = await _pickerPerfil.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
         _image = File(pickedImage.path);
@@ -155,7 +152,7 @@ class _InfoDogState extends State<InfoDog> {
       try {
         DatabaseService(uid: userId).updateDogProfilePictures(dogId,
             profileImageUrl); //llama al método para actualizar la foto de perfil con la nueva
-        // y borra la antigua del storage
+                              // y borra la antigua del storage
       } catch (e) {
         print("No se ha podido borrar nada");
       }
@@ -193,7 +190,7 @@ class _InfoDogState extends State<InfoDog> {
           isShelter
             ? SizedBox(width: 0)
             : IconButton(
-                onPressed: _toggleFavorite,
+                onPressed: _toggleFavorite, //lama al método para asignar favoritos
                 icon:
                     (_isFavorite //si se presiona o no (cambia el valor o no) muestra un icono u otro
                         ? const Icon(Icons.favorite)
@@ -252,7 +249,6 @@ class _InfoDogState extends State<InfoDog> {
             color: Colors.blueGrey),
       ),
     );
-
     return Scaffold(
       appBar: AppBar(
         //barra superior
@@ -398,14 +394,14 @@ class _InfoDogState extends State<InfoDog> {
                     isShelter
                         ? ElevatedButton(
                             onPressed: () {
-                              showAlertDialogInfo(context, userId!, dogId!);
+                              showAlertDialogInfo(context, userId!, dogId!); //abre el dialog para confirmar el borrado
                             },
                             child: const Text('ELIMINAR PERRO'),
                           )
                         : ElevatedButton(
                             onPressed: () {
                               DatabaseService(uid: userId)
-                                  .createNewChat(userId!, shelterId!);
+                                  .createNewChat(userId!, shelterId!); //abre o crea un chat con la protectora asignada al perro
                             },
                             child: const Text('ENVIAR MENSAJE'),
                           )
@@ -423,15 +419,15 @@ showAlertDialogInfo(BuildContext context, String userId, dogId) {
   Widget okButton = TextButton(
     child: const Text("ELIMINAR"),
     onPressed: () async {
-      await DatabaseService(uid: userId).deleteDog(dogId).then((value) {
-        Navigator.pushNamed(context, '/home');
+      await DatabaseService(uid: userId).deleteDog(dogId).then((value) { //llama al método para eliminar al perro
+        Navigator.pushNamed(context, '/home'); //vuelve a la pantalla de inicio
       });
     },
   );
   Widget cancelButton = TextButton(
     child: const Text("CANCELAR"),
     onPressed: () {
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(); //cierra el dialog
     },
   );
 

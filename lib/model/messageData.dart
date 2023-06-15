@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-//definición de un modelo de usuario para poder usarlo al sacar datos de Firestore
+//definición de un modelo de mensaje para poder usarlo al sacar datos de Firestore
 
 class MessageData {
   final String? chatId;
