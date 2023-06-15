@@ -23,11 +23,10 @@ class _SearchPageState extends State<SearchPage> {
   late String? description;
   late bool isShelter; //variable que define el tipo de usuario
   late String profilePicture;
-  List<Card> dogCards = [];
-  bool isSearching = false;
-  bool isLoading = true;
-
-    final TextEditingController _searchController = TextEditingController();
+  List<Card> dogCards = []; //variable para guardar las Cards que muestran a cada perro
+  bool isSearching = false; //variable que controla la condición de la barra de búsqueda
+  bool isLoading = true; //variable que controla la condición de carga
+  final TextEditingController _searchController = TextEditingController();
 
 
   @override
@@ -47,8 +46,8 @@ class _SearchPageState extends State<SearchPage> {
                 borderSide: BorderSide(color: Colors.black38)),
           ),
         )
-        : Text("Bienvenido"), //sino, se muestra un Text
-        automaticallyImplyLeading: false, //esto no lo entiendo
+        : Text("Bienvenido"), //si no, se muestra un Text
+        automaticallyImplyLeading: false,
         actions: [
           isSearching //si esta buscando, al pulsar el boton deja de hacerlo
           ? IconButton(
@@ -78,20 +77,20 @@ class _SearchPageState extends State<SearchPage> {
                             onTap: ()  {
                               Future.delayed(Duration.zero, (){
                                 setState(() {
-                                  isLoading = true;
+                                  isLoading = true; //muestra el icono de carga
                                 });
                                 if(isShelter){
-                                  DatabaseService(uid: userId).getAllShelterDogs(context).then((value) {
-                                    setState(() {
+                                  DatabaseService(uid: userId).getAllShelterDogs(context).then((value) { //llama al método para cargar los perros
+                                    setState(() {                                                        // de la protectora
                                       isLoading = true;
-                                      dogCards.clear();
-                                      dogCards = value;
+                                      dogCards.clear(); //vacía la lista de los perros anteriores si los hubiera
+                                      dogCards = value; //le asigna la nueva lista de Cards
                                       isLoading = false;
                                     });
                                   });
                                 }
                                 else{
-                                  DatabaseService(uid: userId).getAllDogs(context).then((value) {
+                                  DatabaseService(uid: userId).getAllDogs(context).then((value) { //llama al método para cargar todos los perros
                                     setState(() {
                                       isLoading = true;
                                       dogCards.clear();
@@ -114,7 +113,7 @@ class _SearchPageState extends State<SearchPage> {
                                 setState(() {
                                   isLoading = true;
                                 });
-                                DatabaseService(uid: userId).getFavouriteDogs(context).then((value) {
+                                DatabaseService(uid: userId).getFavouriteDogs(context).then((value) { //carga los perros guardados en favoritos
                                   setState(() {
                                     isLoading = true;
                                     dogCards.clear();
@@ -135,8 +134,8 @@ class _SearchPageState extends State<SearchPage> {
                                   isLoading = true;
                                 });
                                 if(isShelter){
-                                  DatabaseService(uid: userId).getShelterFemaleDogs(context).then((value) {
-                                    setState(() {
+                                  DatabaseService(uid: userId).getShelterFemaleDogs(context).then((value) { //carga los perros de sexo hembra
+                                    setState(() {                                                           //de la protectora
                                       isLoading = true;
                                       dogCards.clear();
                                       dogCards = value;
@@ -145,7 +144,7 @@ class _SearchPageState extends State<SearchPage> {
                                   });
                                 }
                                 else{
-                                  DatabaseService(uid: userId).getFemaleDogs(context).then((value) {
+                                  DatabaseService(uid: userId).getFemaleDogs(context).then((value) { //carga los perros de sexo hembra
                                     setState(() {
                                       isLoading = true;
                                       dogCards.clear();
@@ -167,8 +166,8 @@ class _SearchPageState extends State<SearchPage> {
                                   isLoading = true;
                                 });
                                 if(isShelter){
-                                  DatabaseService(uid: userId).getShelterMaleDogs(context).then((value) {
-                                    setState(() {
+                                  DatabaseService(uid: userId).getShelterMaleDogs(context).then((value) { //carga los perros de sexo macho
+                                    setState(() {                                                         //de la protectora
                                       isLoading = true;
                                       dogCards.clear();
                                       dogCards = value;
@@ -177,7 +176,7 @@ class _SearchPageState extends State<SearchPage> {
                                   });
                                 }
                                 else{
-                                  DatabaseService(uid: userId).getMaleDogs(context).then((value) {
+                                  DatabaseService(uid: userId).getMaleDogs(context).then((value) { ////carga los perros de sexo macho
                                     setState(() {
                                       isLoading = true;
                                       dogCards.clear();
@@ -187,7 +186,7 @@ class _SearchPageState extends State<SearchPage> {
                                   });
                                 }
                               });
-                              Navigator.pop(context); //navega hacia pantalla anterior
+                              Navigator.pop(context); //cierra el menú de opciones
                             },
                           ),
                         ],
@@ -215,7 +214,7 @@ class _SearchPageState extends State<SearchPage> {
           },
         ),
       ),
-      body: isLoading
+      body: isLoading //muestra el icono de carga o los elementos de la página
           ? Center(
         child: LoadingAnimationWidget.staggeredDotsWave(
           color: Colors.orangeAccent,
@@ -228,8 +227,8 @@ class _SearchPageState extends State<SearchPage> {
             //hay 2 columns en vertical y 4 en horizontal
             crossAxisCount: orientation == Orientation.portrait ? 2 : 4,
             padding: const EdgeInsets.all(16.0),
-            childAspectRatio: 8.0 / 9.0, //esto no se muy bien que es
-            children: dogCards, //llama al metodo para generar las Cards
+            childAspectRatio: 8.0 / 9.0,
+            children: dogCards, //asigna las cards devueltas por el método ejecutado
             );
       }),
       floatingActionButton: FloatingActionButton(
@@ -237,7 +236,7 @@ class _SearchPageState extends State<SearchPage> {
         backgroundColor: Colors.orangeAccent,
         foregroundColor: Colors.black87,
         onPressed: () {
-          Navigator.pushNamed(context, '/conversations'); //pasa hacia pantalla Chat
+          Navigator.pushNamed(context, '/conversations'); //pasa hacia pantalla de conversaciones
         },
         child: const Icon(Icons.chat_outlined),
       ),
@@ -302,7 +301,7 @@ class _SearchPageState extends State<SearchPage> {
       setState(() {
         isLoading = true;
       });
-      if(_searchController.text.isEmpty){
+      if(_searchController.text.isEmpty){ //si está vacío, llama a los métodos para mostrar todos los perros
         if(isShelter){
           DatabaseService(uid: userId).getAllShelterDogs(context).then((value) {
             setState(() {
@@ -324,7 +323,7 @@ class _SearchPageState extends State<SearchPage> {
           });
         }
       }
-      else{
+      else{ // si no, llama a los métodos que filtran los perros por nombre
         if(isShelter){
           DatabaseService(uid: userId).getAllShelterDogsByName(context, _searchController.text).then((value) {
             setState(() {

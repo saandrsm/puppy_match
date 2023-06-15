@@ -16,10 +16,10 @@ class DogRegisterPage extends StatefulWidget {
 enum Sex { male, female }
 
 class _DogRegisterPageState extends State<DogRegisterPage> {
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  late String? userId = firebaseAuth.currentUser?.uid;
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance; //instancia de firebase auth
+  late String? userId = firebaseAuth.currentUser?.uid; //id del usuario que ha iniciado sesión
   late String profileImageUrl;
-  final _claveSingupDog = GlobalKey<FormState>();
+  final _claveSingupDog = GlobalKey<FormState>(); //controlador del estado de los TextFormFields
   final TextEditingController _nameDogController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -36,7 +36,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
     await _pickerPerfil.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
-        _image = File(pickedImage.path);
+        _image = File(pickedImage.path); //guarda el path de la imagen
       });
     }
   }
@@ -60,7 +60,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
           //los LeadingIcon se situan al principio de la línea (a la izquierda del texto)
           icon: const Icon(
             Icons.arrow_back_ios,
-            semanticLabel: 'back',
+            semanticLabel: 'atrás',
           ),
           onPressed: () {
             Navigator.of(context).pop();
@@ -96,7 +96,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                     fontSize: 15,
                   ),
                 ),
-                Expanded(child: SizedBox(width: 60)), //espacio en blanco de separación que ocupa todo el espacio posible
+                Expanded(child: SizedBox(width: 60)), //espacio en blanco de separación que ocupa el espacio disponible
               ],
             ),
             DropdownButtonFormField<String>(
@@ -128,7 +128,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                     fontSize: 15,
                   ),
                 ),
-                const Expanded(child: SizedBox(width: 60)), //espacio en blanco de separación que ocupa todo el espacio posible
+                const Expanded(child: SizedBox(width: 60)), //espacio en blanco de separación que ocupa el espacio disponible
                 SegmentedButton<Sex>( //botón segmentado en dos opciones
                   segments: const <ButtonSegment<Sex>>[
                     ButtonSegment<Sex>(
@@ -233,7 +233,7 @@ class _DogRegisterPageState extends State<DogRegisterPage> {
                   profileImageUrl = await storageReference.getDownloadURL();
                   DatabaseService(uid: userId).registerDogData(_nameDogController.text, dropdownValue, sexView.name, int.parse(_ageController.text),
                       _descriptionController.text, profileImageUrl); //coge los datos de todos los campos y registra un nuevo perro en la bbdd con ellos
-                  Navigator.pushNamed(context, '/home');
+                  Navigator.pushNamed(context, '/home'); //vuelve a la pantalla de inicio
                 }
               },
               child: const Text('REGISTRAR PERRO'),

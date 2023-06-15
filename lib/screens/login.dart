@@ -155,11 +155,6 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           ),
                           const SizedBox(height: 200.0),
-                          //espacio en blanco de separación
-                          // Text(
-                          //   '$screenWidth, $screenHeight',
-                          //   textAlign: TextAlign.center,
-                          // ),
                           const Text(
                             '¿Todavía no estás registrado?',
                             textAlign: TextAlign.center,
@@ -259,7 +254,7 @@ class _LoginPageState extends State<LoginPage> {
                               ElevatedButton(
                                 onPressed: () async {
                                   if (_claveLogin.currentState!.validate()) {
-                                    //si se valida todo el formulario
+                                    //si se valida el formulario entero
                                     FirebaseAuth.instance.signInWithEmailAndPassword(
                                         email: _usernameController.text,
                                         password: _passwordController.text
@@ -287,10 +282,6 @@ class _LoginPageState extends State<LoginPage> {
                           forgetPassword2(context),
                           const SizedBox(height: 200.0),
                           //espacio en blanco de separación
-                          // Text(
-                          //   '$screenWidth, $screenHeight',
-                          //   textAlign: TextAlign.center,
-                          // ),
                           const Text(
                             '¿Todavía no estás registrado?',
                             textAlign: TextAlign.center,
@@ -298,7 +289,7 @@ class _LoginPageState extends State<LoginPage> {
                           TextButton(
                               onPressed: () {
                                 Navigator.pushNamed(context,
-                                    '/register'); //al pulsar pasa hacia pantalla RegisterPage
+                                    '/register'); //al pulsar pasa hacia pantalla de registro de usuario
                               },
                               child: const Text('Registrarme')),
                         ],
@@ -306,7 +297,6 @@ class _LoginPageState extends State<LoginPage> {
                     );
                   }
                 },
-
               ),
             ),
           );

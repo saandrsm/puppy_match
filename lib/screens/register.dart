@@ -21,7 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _confPasswordController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  AuthService authService = AuthService();
+  AuthService authService = AuthService(); //instancia de authservice
 
 
   //metodo para visibilizar e invisibilizar texto (contraseñas)
@@ -68,7 +68,7 @@ class _RegisterPageState extends State<RegisterPage> {
         key: _claveSingup,
         child: ListView(
           //en formato lista
-          shrinkWrap: true, //esto aun no se que es
+          shrinkWrap: true,
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
             const SizedBox(height: 30.0), //espacio en blanco de separación
@@ -225,7 +225,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ElevatedButton(
                   onPressed: () async {
                     if (_claveSingup.currentState!.validate()) {
-                      //si se valida todo el formulario
+                      //si se valida el formulario llama al método que registra el usuario y pasa a la pantalla home; si no, muestra un error
                       authService.registerUserWithEmailandPassword(_nameController.text, _mailController.text, _confPasswordController.text)
                       .then((value) {
                         print('Created new account');

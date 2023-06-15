@@ -78,7 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
       name = nameEditingController.text;
       userDescription = userDescriptionEditingController.text;
       DatabaseService(uid: userId).updateNameAndDescription(name!,
-          userDescription!); //llama al método para actualizar el nombre y descripción al dejar de editar
+          userDescription!); //llama al método para actualizar el nombre y descripción en la base de datos al dejar de editar
     });
   }
 
@@ -91,22 +91,22 @@ class _ProfilePageState extends State<ProfilePage> {
     if (selectedImages.isNotEmpty) {
       selectedImages.forEach((element) {
         setState(() {
-          imageElement = File(element.path);
+          imageElement = File(element.path); //guarda el path de la imagen
         });
         var storageReference = FirebaseStorage.instance
             .ref()
             .child(userId!)
             .child('${DateTime.now()}.jpg'); //crea o se dirige a una referencia  (dependiendo si ya existe) con nombre
                                             //del id del usuario y dentro otra con la fechahora.jpg
-        UploadTask uploadTask = storageReference.putFile(imageElement);
+        UploadTask uploadTask = storageReference.putFile(imageElement); //guarda la imagen en firebase storage
         uploadTask.whenComplete(() async {
-          groupImageUrls = await storageReference.getDownloadURL();
+          groupImageUrls = await storageReference.getDownloadURL(); //guarda la url de la imagen en la lista de imágenes
           setState(() {
             imageFileList.add(File(groupImageUrls));
           });
-          storageReference.root;
+          storageReference.root; //vuelve a la raiz de firebase storage para evitar anidación de carpetas
           FirebaseFirestore.instance.collection('users').doc(userId).update({
-            'gallery': FieldValue.arrayUnion([groupImageUrls])
+            'gallery': FieldValue.arrayUnion([groupImageUrls]) //añade la url al array galería del usuario en la base de datos
           });
         });
       });
@@ -138,10 +138,9 @@ class _ProfilePageState extends State<ProfilePage> {
       } catch (e) {
         print("No se ha podido borrar nada");
       }
-
       setState(() {
         profilePicture =
-            profileImageUrl; //modifica la foto de perfil que se muestra con la añadida
+            profileImageUrl; //modifica la foto de perfil que se muestre la nueva
       });
     }
   }
@@ -202,7 +201,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
       body: isLoading
-          ? Center(
+          ? Center( //muestra el icono de carga o el resto de elementos
               child: LoadingAnimationWidget.staggeredDotsWave(
                 color: Colors.orangeAccent,
                 size: 40,
@@ -325,7 +324,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           FilledButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/registerDog'); //pasa hacia pantalla dogRegister
+                              Navigator.pushNamed(context, '/registerDog'); //pasa hacia pantalla de registro de perros
                             },
                             child: const Text('AÑADIR PERRO'),
                           ),
@@ -336,7 +335,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       shrinkWrap: true,
                       children: [
                         Row(
-                          //alignment: MainAxisAlignment.center,
                           children: <Widget>[
                             IconButton(
                               onPressed: () {
@@ -364,10 +362,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               icon: const Icon(
                                 Icons.photo_library_rounded,
                                 semanticLabel: 'gallery',
-                                //color: Colors.brown,
                               ),
-                              // child: const Text("Abrir Galería",
-                              //     style: TextStyle(fontWeight: FontWeight.bold))
                             ),
                             const SizedBox(width: 10), //espacio en blanco de separación
                           ],
@@ -396,7 +391,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       onDismissed: (direction) {
                                         //cuando se deslice en cualquier dirección
                                         setState(() {
-                                          //se elimina ese item de la lista
+                                          //se elimina ese item de la lista y del array galería del usuario
                                           FirebaseFirestore.instance
                                               .collection('users')
                                               .doc(userId)
@@ -404,7 +399,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             'gallery': FieldValue.arrayRemove(
                                                 [imageFileList[index].path])
                                           });
-                                          final Reference storageReference =
+                                          final Reference storageReference = //elimina la imagen de firebase storage
                                           FirebaseStorage.instance.refFromURL(
                                               imageFileList[index].path);
                                           try {
@@ -414,14 +409,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                           }
                                           imageFileList.removeAt(index);
                                         });
-
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(const SnackBar(
                                               content: Text('Imagen eliminada'),
                                               duration: Duration(seconds: 1),
                                         ));
                                       },
-                                      //background: Container(color: Colors.red),
                                       child: Image.network(imageFileList[index].path,
                                           fit: BoxFit.fill),
                                     ),
@@ -433,7 +426,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
               ],
             ),
-      floatingActionButton: FloatingActionButton( //button flotante para acceder al chat
+      floatingActionButton: FloatingActionButton( //button flotante para acceder a la pantalla de conversaciones
         backgroundColor: Colors.orangeAccent,
         foregroundColor: Colors.black87,
         onPressed: () {
@@ -458,7 +451,6 @@ class _ProfilePageState extends State<ProfilePage> {
       title: const Text(
         'Información',
         style: TextStyle(
-            //color: Colors.orangeAccent
             ),
       ),
       content: const Text(
@@ -478,44 +470,4 @@ class _ProfilePageState extends State<ProfilePage> {
       },
     );
   }
-
-//alertDailog para cambiar imagen de perfil
-//   showAlertDialogPhoto(BuildContext context) {
-//     Widget cancelButton = TextButton(
-//       child: const Text("Cancel"),
-//       onPressed: () {
-//         Navigator.of(context).pop();
-//       },
-//     );
-//
-//     Widget openCamera = TextButton(
-//       child: const Text("Abrir Cámara"),
-//       onPressed: () {},
-//     );
-//
-//     Widget openGallery = TextButton(
-//       child: const Text("Abrir Galería"),
-//       onPressed: () {},
-//     );
-//
-//     // set up the AlertDialog
-//     AlertDialog alert = AlertDialog(
-//       title: const Text('Perfil'),
-//       content: const Text('Selecciona una imagen de pérfil desde'
-//           ' la cámara o desde la galería'),
-//       actions: [
-//         openCamera,
-//         openGallery,
-//         cancelButton,
-//       ],
-//     );
-//
-//     // show the dialog
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return alert;
-//       },
-//     );
-//   }
 }
