@@ -56,6 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  //métodos para cambiar y guardar el texto
   @override
   void dispose() {
     nameEditingController.dispose();
@@ -81,11 +82,11 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  //método para abrir la galería del dispositivo y seleccionar varias imágenes
   final ImagePicker imagePicker = ImagePicker();
   void selectedImages() async {
     late String groupImageUrls;
     late File imageElement;
-    //File? _image;
     final List<XFile> selectedImages = await imagePicker.pickMultiImage();
     if (selectedImages.isNotEmpty) {
       selectedImages.forEach((element) {
@@ -95,7 +96,8 @@ class _ProfilePageState extends State<ProfilePage> {
         var storageReference = FirebaseStorage.instance
             .ref()
             .child(userId!)
-            .child('${DateTime.now()}.jpg');
+            .child('${DateTime.now()}.jpg'); //crea o se dirige a una referencia  (dependiendo si ya existe) con nombre
+                                            //del id del usuario y dentro otra con la fechahora.jpg
         UploadTask uploadTask = storageReference.putFile(imageElement);
         uploadTask.whenComplete(() async {
           groupImageUrls = await storageReference.getDownloadURL();
@@ -114,7 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final _pickerPerfil = ImagePicker();
 
-  //metodo del imagePicker para abrir galería
+  //metodo del imagePicker para abrir galería y seleccionar una imagen
   Future<void> _openImagePicker() async {
     File? _image;
     final XFile? pickedImage =
@@ -124,8 +126,8 @@ class _ProfilePageState extends State<ProfilePage> {
         _image = File(pickedImage.path);
       });
       var storageReference = FirebaseStorage.instance.ref().child(userId!).child(
-          '${DateTime.now()}.jpg'); //crea o se dirige a una referencia  (dependiendo si ya existe) con nombre del id del usuario y dentro otra con
-      // la fechahora.jpg
+          '${DateTime.now()}.jpg'); //crea o se dirige a una referencia  (dependiendo si ya existe) con nombre
+                                    //del id del usuario y dentro otra con la fechahora.jpg
       await storageReference.putFile(
           _image!); //guarda la imagen en la referencia de encima con los datos de fechahora.jpg
       profileImageUrl = await storageReference.getDownloadURL();
@@ -144,7 +146,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  //metodo del imagePicker para abrir cámara
+  //metodo del imagePicker para abrir cámara no utilizado
   // Future<void> _takeImagePicker() async {
   //   File? _image;
   //   final XFile? pickedImage =
@@ -158,11 +160,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    //final ThemeData theme = Theme.of(context); //variable theme para usar colores
-    // DatabaseService(uid: userId).getUserProfileImage(userId).then((value){
-    //   String? backgroundPicture = value;
-    // });
-
     return Scaffold(
       appBar: AppBar(
         //barra superior
@@ -189,14 +186,14 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         ),
         actions: [
-          isEditing
+          isEditing //si se está editando, al pulsar el boton se guarda el texto
               ? IconButton(
                   onPressed: () {
                     saveText();
                   },
                   icon: const Icon(Icons.save),
                 )
-              : IconButton(
+              : IconButton( //si no se esta editando, al pulsar el boton se hace editable
                   onPressed: () {
                     startEditing();
                   },
@@ -211,8 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 size: 40,
               ),
             )
-          : ListView(
-              //cuerpo en formato lista
+          : ListView( //cuerpo en formato lista
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
               children: [
                 //detecta el gesto especificado y realiza una acción
@@ -228,10 +224,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           image: NetworkImage(profilePicture),
                           fit: BoxFit.contain),
                     ),
-                    // child: CircleAvatar(
-                    //   radius: 90,
-                    //   backgroundImage: NetworkImage(profilePicture),
-                    // ),
                   ),
                 ),
                 const SizedBox(height: 10), //espacio en blanco de separación
@@ -255,7 +247,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                             ),
-                            isEditing
+                            isEditing //si se está editando se muestra un textField
                                 ? TextField(
                                     controller: nameEditingController,
                                     maxLength: 20,
@@ -264,14 +256,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                       border: OutlineInputBorder(),
                                     ),
                                   )
-                                : Text(
+                                : Text( //si no se está editando se muestra un Text
                                     name!,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                            const SizedBox(height: 10),
-                            //espacio en blanco de separación
+                            const SizedBox(height: 10), //espacio en blanco de separación
                             Container(
                               //contenedor de texto (para poder poner padding)
                               padding: const EdgeInsets.only(bottom: 8),
@@ -283,11 +274,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                             ),
-                            //prueba de paquete de texto ocultable (leer mas, leer menos)
                             Padding(
                               padding: const EdgeInsets.all(5.0),
                               child: isEditing
-                                  ? TextField(
+                                  ? TextField( //si se está editando se muestra un textField
                                       controller:
                                           userDescriptionEditingController,
                                       textCapitalization:
@@ -299,12 +289,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                       maxLines: 10,
                                     )
-                                  : ReadMoreText(
+                                  : ReadMoreText( //si no se está editando se muestra un ReadMoreText
                                       userDescription!,
                                       textAlign: TextAlign.center,
-                                      //texto justificado
                                       trimLines: 3,
-                                      //colorClickableText: Colors.red,
                                       trimMode: TrimMode.Line,
                                       trimCollapsedText: ' Mostrar más',
                                       trimExpandedText: ' Ocultar',
@@ -331,20 +319,19 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ),
                 ),
-                isShelter
+                isShelter //si es una protectora muestra un boton de añadir perro
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           FilledButton(
                             onPressed: () {
-                              Navigator.pushNamed(context,
-                                  '/registerDog'); //pasa hacia pantalla dogRegister
+                              Navigator.pushNamed(context, '/registerDog'); //pasa hacia pantalla dogRegister
                             },
                             child: const Text('AÑADIR PERRO'),
                           ),
                         ],
                       )
-                    : ListView(
+                    : ListView( //si es un usuario particular muestra la galeria de imagenes
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       children: [
@@ -361,7 +348,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 //color: Colors.brown,
                               ),
                             ),
-                            const Expanded(child: SizedBox(width: 5)),
+                            const Expanded(child: SizedBox(width: 5)), //espacio en blanco de separación que rellena el espacio disponible
                             const Text(
                               'Galería',
                               style: TextStyle(
@@ -369,7 +356,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 fontSize: 16,
                               ),
                             ),
-                            const Expanded(child: SizedBox(width: 5)),
+                            const Expanded(child: SizedBox(width: 5)), //espacio en blanco de separación que rellena el espacio disponible
                             IconButton(
                               onPressed: () {
                                 selectedImages();
@@ -382,31 +369,19 @@ class _ProfilePageState extends State<ProfilePage> {
                               // child: const Text("Abrir Galería",
                               //     style: TextStyle(fontWeight: FontWeight.bold))
                             ),
-                            const SizedBox(
-                                width: 10), //espacio en blanco de separación
-                            //button de abrir camara proxima implementacion en foto de perfil
-                            // IconButton(
-                            //     onPressed: () {
-                            //       _takeImagePicker();
-                            //     },
-                            //   icon: const Icon(Icons.photo_camera_rounded),
-                            //     // child: const Text("Abrir Cámara",
-                            //     //     style: TextStyle(fontWeight: FontWeight.bold))
-                            // ),
+                            const SizedBox(width: 10), //espacio en blanco de separación
                           ],
                         ),
                         const SizedBox(height: 20), //espacio en blanco de separación
                         GridView.builder(
                           //tabla para mostrar las imagenes seleccionadas
                             padding: const EdgeInsets.fromLTRB(40.0, 0.0, 40.0, 0.0),
-                            scrollDirection: Axis.vertical,
-                            //scroll vertical
+                            scrollDirection: Axis.vertical, //scroll vertical
                             shrinkWrap: true,
                             itemCount: imageFileList.length,
                             gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                               mainAxisSpacing: 10,
-                              // mainAxisExtent: 350,
                               crossAxisCount: 1, //columnas(imagenes) x fila
                             ),
                             itemBuilder: (BuildContext context, int index) {
@@ -442,18 +417,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(const SnackBar(
-                                          content: Text(
-                                              'Imagen eliminada'), //texto del snackbar
-                                          duration: Duration(
-                                              seconds: 1), //duracion del snackbar
+                                              content: Text('Imagen eliminada'),
+                                              duration: Duration(seconds: 1),
                                         ));
                                       },
                                       //background: Container(color: Colors.red),
                                       child: Image.network(imageFileList[index].path,
                                           fit: BoxFit.fill),
-                                      // child: imageFileList!= null
-                                      //     ? Image.file(File(imageFileList![index].path), fit: BoxFit.fill)
-                                      //     : const Text('Selecciona una imagen'),
                                     ),
                                   ),
                                 ],
@@ -463,8 +433,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
               ],
             ),
-      floatingActionButton: FloatingActionButton(
-        //button flotante para acceder al chat
+      floatingActionButton: FloatingActionButton( //button flotante para acceder al chat
         backgroundColor: Colors.orangeAccent,
         foregroundColor: Colors.black87,
         onPressed: () {
@@ -472,12 +441,6 @@ class _ProfilePageState extends State<ProfilePage> {
         },
         child: const Icon(Icons.chat_outlined),
       ),
-      // floatingActionButton: isEditing
-      //     ? FloatingActionButton(
-      //         onPressed: saveText,
-      //         child: const Icon(Icons.save),
-      //       )
-      //     : null,
     );
   }
 
@@ -517,42 +480,42 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
 //alertDailog para cambiar imagen de perfil
-  showAlertDialogPhoto(BuildContext context) {
-    Widget cancelButton = TextButton(
-      child: const Text("Cancel"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    Widget openCamera = TextButton(
-      child: const Text("Abrir Cámara"),
-      onPressed: () {},
-    );
-
-    Widget openGallery = TextButton(
-      child: const Text("Abrir Galería"),
-      onPressed: () {},
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: const Text('Perfil'),
-      content: const Text('Selecciona una imagen de pérfil desde'
-          ' la cámara o desde la galería'),
-      actions: [
-        openCamera,
-        openGallery,
-        cancelButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
+//   showAlertDialogPhoto(BuildContext context) {
+//     Widget cancelButton = TextButton(
+//       child: const Text("Cancel"),
+//       onPressed: () {
+//         Navigator.of(context).pop();
+//       },
+//     );
+//
+//     Widget openCamera = TextButton(
+//       child: const Text("Abrir Cámara"),
+//       onPressed: () {},
+//     );
+//
+//     Widget openGallery = TextButton(
+//       child: const Text("Abrir Galería"),
+//       onPressed: () {},
+//     );
+//
+//     // set up the AlertDialog
+//     AlertDialog alert = AlertDialog(
+//       title: const Text('Perfil'),
+//       content: const Text('Selecciona una imagen de pérfil desde'
+//           ' la cámara o desde la galería'),
+//       actions: [
+//         openCamera,
+//         openGallery,
+//         cancelButton,
+//       ],
+//     );
+//
+//     // show the dialog
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return alert;
+//       },
+//     );
+//   }
 }

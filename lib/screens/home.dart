@@ -15,8 +15,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    //final ThemeData theme = Theme.of(context);  //variable para utilizar colores del tema definido
-
     //el indice en 0 muestra la HomePage y el indice en 1 muestra la ProfilePage
     Widget page;
     switch(selectedIndex){
@@ -43,13 +41,6 @@ class _HomePageState extends State<HomePage> {
           return page;
         }
       ),
-        // builder: (context, constraints) {
-
-          // if (constraints.maxWidth < 450){
-          //   return Column(
-          //     children: [
-          //       SafeArea(
-          //         child:
         bottomNavigationBar: BottomNavigationBar( //barra de navegación entre HomePage y ProfilePage
                     items: const [
                       BottomNavigationBarItem(
@@ -70,35 +61,6 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                 ),
-              //],
-            //);
-          // } else {
-          //   return Row(
-          //     children: [
-          //       SafeArea(
-          //         child: NavigationRail(
-          //           extended: constraints.maxWidth >= 600,
-          //           destinations: const [
-          //             NavigationRailDestination(
-          //               icon: Icon(Icons.home),
-          //               label: Text('Home'),
-          //             ),
-          //             NavigationRailDestination(
-          //               icon: Icon(Icons.person),
-          //               label: Text('Profile'),
-          //             ),
-          //           ],
-          //           selectedIndex: selectedIndex,
-          //           onDestinationSelected: (value) {
-          //             setState(() {
-          //               selectedIndex = value;
-          //             });
-          //           },
-          //         ),
-          //       ),
-          //     ],
-          //   );
-          // }
     );
   }
 }

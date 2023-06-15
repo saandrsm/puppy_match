@@ -310,17 +310,9 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           );
-}
+  }
 }
 
-// Widget buttonElevated (String texto, Function onpressed) {
-//   return ElevatedButton(
-//       onPressed: () {
-//         onpressed;
-//       },
-//       child: Text(texto)
-//   );
-// }
 
 //alertDailog para advertir de error
 showAlertDialogError(BuildContext context) {
@@ -385,47 +377,3 @@ Widget forgetPassword2(BuildContext context) {
     },
   );
 }
-
-//metodo aparte para visibilizar e invisibilizar contraseñas pero impide controlar el texto del TextField
-
-// class PasswordVisible extends StatefulWidget {
-//   const PasswordVisible({super.key});
-//
-//   @override
-//   State<PasswordVisible> createState() => _PasswordVisibleState();
-// }
-//
-// class _PasswordVisibleState extends State<PasswordVisible> {
-//   bool _isVisible = true;
-//
-//   void _toggleVisible(){
-//     setState(() {
-//       if(_isVisible) {
-//         _isVisible = false;
-//       } else {
-//         _isVisible = true;
-//       }
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return TextField(
-//       decoration: InputDecoration(
-//         filled: false,
-//         labelText: 'Password',
-//         suffixIcon: IconButton(
-//           padding: const EdgeInsets.all(0),
-//           alignment: Alignment.center,
-//           icon: (_isVisible
-//               ? const Icon(Icons.lock)
-//               : const Icon(Icons.lock_open)
-//           ),
-//           color: Colors.orangeAccent,
-//           onPressed: _toggleVisible,
-//           ),
-//         ),
-//       obscureText: _isVisible,
-//     );
-//   }
-// }

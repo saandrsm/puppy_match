@@ -23,13 +23,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _dateController = TextEditingController();
   AuthService authService = AuthService();
 
-  //String dropdownValue = 'Dog'; //item por defecto en lista de DropDownButton de mascotas
-
-  //metodo para validar email
-  // void mailValid(String email) {
-  //   bool isvalid = EmailValidator.validate(email);
-  //   print(isvalid);
-  // }
 
   //metodo para visibilizar e invisibilizar texto (contraseñas)
   bool _isVisible = true;
@@ -66,7 +59,6 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           onPressed: () {
             //al pulsar vuelve hacia pantalla LoginPage
-            //Navigator.pushNamed(context, '/');
             Navigator.popAndPushNamed(context, "/login");
           },
         ),
@@ -196,7 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 labelText: 'Fecha de nacimiento',
               ),
               onTap: () async {
-                //al pulsar llama a un DatePicker
+                //al pulsar llama a un DatePicker (calendario)
                 DateTime? pickedDate = await showDatePicker(
                     context: context,
                     initialDate:
@@ -207,8 +199,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   //si ha sido seleccionada una fecha el estado del controlador de
                   setState(() {
                     //texto se rellena en el formato establecido
-                    _dateController.text =
-                        DateFormat('dd-MM-yyyy').format(pickedDate);
+                    _dateController.text = DateFormat('dd-MM-yyyy').format(pickedDate);
                   });
                 }
               },
