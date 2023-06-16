@@ -187,24 +187,27 @@ class _ChatScreenState extends State<ChatScreen> {
                                           ? MainAxisAlignment.end
                                           : MainAxisAlignment.start,
                                       children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 12.0, vertical: 8.0),
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 6.0, vertical: 4.0),
-                                          decoration: BoxDecoration(
-                                            color: isSentMessage //color según se ha enviad o recibido
-                                                ? Colors.blueGrey
-                                                : Colors.orangeAccent,
-                                            borderRadius: BorderRadius.circular(12.0),
-                                          ),
-                                          child: Text(
-                                            message.text!, //texto del mensaje
-                                            style: theme.textTheme.bodyMedium?.copyWith(
-                                              color: isSentMessage
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              fontSize: 16,
+                                        Flexible(
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12.0, vertical: 8.0),
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 6.0, vertical: 4.0),
+                                            decoration: BoxDecoration(
+                                              color: isSentMessage //color según se ha enviad o recibido
+                                                  ? Colors.blueGrey
+                                                  : Colors.orangeAccent,
+                                              borderRadius: BorderRadius.circular(12.0),
+                                            ),
+                                            child: Text(
+                                              softWrap: true,
+                                              message.text!, //texto del mensaje
+                                              style: theme.textTheme.bodyMedium?.copyWith(
+                                                color: isSentMessage
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                                fontSize: 16,
+                                              ),
                                             ),
                                           ),
                                         ),
