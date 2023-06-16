@@ -234,7 +234,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         _mailController.clear();
                         _newPasswordController.clear();
                         _dateController.clear();
-                        _confPasswordController.clear();
+                        _confPasswordController.clear(); 
                         _confMailController.clear();
                         _nameController.clear();
                       }).onError((error, stackTrace) {
