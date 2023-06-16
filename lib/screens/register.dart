@@ -221,7 +221,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                   child: const Text('CANCELAR'),
                 ),
-                const SizedBox(width: 5.0),
+                const SizedBox(width: 5.0), //espacio en blanco de separación
                 ElevatedButton(
                   onPressed: () async {
                     if (_claveSingup.currentState!.validate()) {
@@ -247,7 +247,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 )
               ],
             ),
-            SizedBox(height: 10)
+            SizedBox(height: 10) //espacio en blanco de separación
           ],
         ),
       ),

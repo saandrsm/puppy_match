@@ -49,8 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: ListView(
                         padding: const EdgeInsets.fromLTRB(24, 20, 24, 0), //left, top, right, bottom
                         children: <Widget>[
-                          const SizedBox(height: 35.0),
-                          //espacio en blanco de separación
+                          const SizedBox(height: 35.0), //espacio en blanco de separación
                           Column(
                             children: <Widget>[
                               Image.asset(
@@ -62,8 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 85.0),
-                          //espacio en blanco de separación
+                          const SizedBox(height: 85.0), //espacio en blanco de separación
                           TextFormField(
                             validator: (value) {
                               if (value!.isEmpty) {
@@ -77,8 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                               labelText: 'Correo electrónico',
                             ),
                           ),
-                          const SizedBox(height: 16.0),
-                          //espacio en blanco de separación
+                          const SizedBox(height: 16.0), //espacio en blanco de separación
                           TextFormField(
                             validator: (value) {
                               //validador de textField, si el campo está vacio da error
@@ -108,15 +105,13 @@ class _LoginPageState extends State<LoginPage> {
                             //por defecto la contraseña está oculta
                             controller: _passwordController,
                           ),
-                          const SizedBox(height: 10.0),
-                          //espacio en blanco de separación
-
+                          const SizedBox(height: 10.0), //espacio en blanco de separación
                           Row(
                             //barra donde se encuentran los botones de log in y cancel
                             //alignment: MainAxisAlignment.end, //posicionados al final (a la derecha)
                             children: [
                               forgetPassword(context),
-                              const Expanded(child: SizedBox(width: 30)),
+                              const Expanded(child: SizedBox(width: 30)), //espacio en blanco de separación que ocupa el espacio disponible
                               TextButton(
                                 //al presionar se borra el texto de los controladores
                                 onPressed: () {
@@ -125,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                                 },
                                 child: const Text('CANCELAR'),
                               ),
-                              const SizedBox(width: 5.0),
+                              const SizedBox(width: 5.0), //espacio en blanco de separación
                               ElevatedButton(
                                 onPressed: () async {
                                   if (_claveLogin.currentState!.validate()) {
@@ -154,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                               )
                             ],
                           ),
-                          const SizedBox(height: 200.0),
+                          const SizedBox(height: 200.0), //espacio en blanco de separación
                           const Text(
                             '¿Todavía no estás registrado?',
                             textAlign: TextAlign.center,
@@ -176,8 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                         padding: const EdgeInsets.fromLTRB(
                             24, 20, 24, 0), //left, top, right, bottom
                         children: <Widget>[
-                          const SizedBox(height: 30.0),
-                          //espacio en blanco de separación
+                          const SizedBox(height: 30.0), //espacio en blanco de separación
                           Column(
                             children: <Widget>[
                               Image.asset(
@@ -189,8 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 60.0),
-                          //espacio en blanco de separación
+                          const SizedBox(height: 60.0), //espacio en blanco de separación
                           TextFormField(
                             validator: (value) {
                               if (value!.isEmpty) {
@@ -204,8 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                               labelText: 'Correo electrónico',
                             ),
                           ),
-                          const SizedBox(height: 16.0),
-                          //espacio en blanco de separación
+                          const SizedBox(height: 16.0), //espacio en blanco de separación
                           TextFormField(
                             validator: (value) {
                               //validador de textField, si el campo está vacio da error
@@ -235,8 +227,7 @@ class _LoginPageState extends State<LoginPage> {
                             //por defecto la contraseña está oculta
                             controller: _passwordController,
                           ),
-                          const SizedBox(height: 10.0),
-                          //espacio en blanco de separación
+                          const SizedBox(height: 10.0), //espacio en blanco de separación
                           OverflowBar(
                             //barra donde se encuentran los botones de log in y cancel
                             alignment: MainAxisAlignment.center, //posicionados al final (a la derecha)
@@ -250,7 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                                 },
                                 child: const Text('CANCELAR'),
                               ),
-                              const SizedBox(width: 5.0),
+                              const SizedBox(width: 5.0), //espacio en blanco de separación
                               ElevatedButton(
                                 onPressed: () async {
                                   if (_claveLogin.currentState!.validate()) {
@@ -280,8 +271,7 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           ),
                           forgetPassword2(context),
-                          const SizedBox(height: 200.0),
-                          //espacio en blanco de separación
+                          const SizedBox(height: 200.0), //espacio en blanco de separación
                           const Text(
                             '¿Todavía no estás registrado?',
                             textAlign: TextAlign.center,
