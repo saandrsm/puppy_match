@@ -181,7 +181,8 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           onPressed: () {
             //al presionar vuelve hacia LoginPage
-            Navigator.pushNamed(context, '/');
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
           },
         ),
         actions: [

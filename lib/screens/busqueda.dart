@@ -209,7 +209,8 @@ class _SearchPageState extends State<SearchPage> {
           onPressed: () {
             FirebaseAuth.instance.signOut().then((value) {
               print('Signed out');
-              Navigator.pushNamed(context, '/'); //navega hacia la pantalla de inicio de la app
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false); //navega hacia la pantalla de inicio de la app
             });
           },
         ),
